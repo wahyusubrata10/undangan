@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0b0807" />
+    <meta name="color-scheme" content="dark" />
+    <!-- OG: nilai default; Vercel Middleware menimpa dengan nama tamu (?to=) & URL absolut -->
+    <title>Pawiwahan Wahyu &amp; Diah · 01.01.2027</title>
+    <meta name="description" content="Dengan memohon Asung Kertha Wara Nugraha Ida Sang Hyang Widhi Wasa, kami mengundang Anda pada hari bahagia kami. 1 Januari 2027." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Pawiwahan Wahyu &amp; Diah" />
+    <meta property="og:title" content="Pawiwahan Wahyu &amp; Diah · 01.01.2027" />
+    <meta property="og:description" content="Dengan memohon Asung Kertha Wara Nugraha Ida Sang Hyang Widhi Wasa, kami mengundang Anda pada hari bahagia kami." />
+    <meta property="og:image" content="/api/og" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <style>
+      /* tampilan instan sebelum JS: layar gelap + cahaya emas (hindari kedip putih) */
+      html,body{background:#0b0807;margin:0}
+      #boot{position:fixed;inset:0;display:grid;place-items:center;background:radial-gradient(60% 45% at 50% 55%,#3a0b0f,#0b0807 75%);z-index:0}
+      #boot i{width:2px;height:38vh;background:linear-gradient(transparent,#f1d58a,transparent);opacity:.7}
+    </style>
+  </head>
+  <body>
+    <div id="boot" aria-hidden="true"><i></i></div>
+    <div id="root"></div>
+    <noscript><p style="color:#f3e9d2;text-align:center;padding:2rem;font-family:serif">Mohon aktifkan JavaScript untuk membuka undangan.</p></noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

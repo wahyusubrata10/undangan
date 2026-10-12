@@ -1,0 +1,14 @@
+node_modules
+dist
+.env
+.env.local
+.env.*.local
+.vercel
+*.log
+.DS_Store
+# File mentah milikmu (besar). Hasil kompres ada di public/media.
+media-src/photos/*
+media-src/video/*
+!media-src/photos/.gitkeep
+!media-src/video/.gitkeep
+media-src/.cache.json
