@@ -6,6 +6,43 @@ Undangan pernikahan digital bertema **adat Bali**: sinematik, mewah, dan tetap r
 
 ---
 
+## 🚀 Panduan Mudah: Online dalam ±10 Menit (tanpa coding)
+
+Hanya **4 langkah**, semuanya lewat klik di browser. Tidak perlu install apa pun.
+
+**1. Masuk ke Vercel**
+Buka **https://vercel.com/signup**, pilih **Continue with GitHub**, lalu login dengan akun GitHub `wahyusubrata10`. Paket gratis (Hobby) sudah cukup.
+
+**2. Pasang undangan**
+- Klik **Add New… → Project**.
+- Di daftar repo, cari **undangan** lalu klik **Import**. Kalau repo tidak muncul, klik *Adjust GitHub App Permissions* dan izinkan repo `undangan`.
+- Buka bagian **Environment Variables**, lalu isi:
+  - **Key:** `ADMIN_PASSWORD`
+  - **Value:** password bebas buatanmu (untuk masuk halaman admin)
+- Klik **Deploy** dan tunggu ±1 menit sampai muncul kembang api 🎉.
+- Undangan sudah online di alamat seperti `https://undangan-xxxx.vercel.app`.
+
+**3. Aktifkan penyimpanan ucapan & RSVP**
+- Di halaman project, buka tab **Storage**.
+- Klik **Create Database → Upstash for Redis** (gratis) → **Continue** → beri nama bebas → **Create**.
+- Pastikan project **undangan** tercentang, lalu klik **Connect**. Kunci database terpasang otomatis, tidak perlu copy-paste.
+
+**4. Terapkan**
+- Buka tab **Deployments**, klik **⋯** pada deployment teratas, lalu **Redeploy**.
+
+Selesai! ✅
+
+| Yang ingin dibuka | Alamat |
+|---|---|
+| Undangan | `https://alamatmu.vercel.app` |
+| Undangan untuk tamu tertentu | `https://alamatmu.vercel.app/?to=Bapak+Wayan` |
+| **Panel admin** (buat link & pesan WA untuk semua tamu, lihat RSVP) | `https://alamatmu.vercel.app/admin` → masukkan `ADMIN_PASSWORD` |
+
+> Mengganti nama alamat (mis. `wahyu-diah.vercel.app`): **Settings → Domains → Edit**.
+> Setiap ada perubahan isi di GitHub, Vercel otomatis memperbarui undangan dalam ±1 menit.
+
+---
+
 ## Isi
 
 - [Fitur](#fitur)
@@ -150,11 +187,16 @@ Backend dipilih otomatis dari environment variable:
 
 | Env yang diisi | Mode |
 |---|---|
-| `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` (+ server: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`) | **Supabase**: realtime, rate limit per IP, moderasi di `/admin` (direkomendasikan) |
+| `KV_REST_API_URL` + `KV_REST_API_TOKEN` (otomatis dari **Vercel → Storage → Upstash for Redis**) | **Redis**: paling mudah, 1 klik, rate limit per IP, moderasi di `/admin`, ucapan baru muncul tiap 15 detik |
+| `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` (+ server: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`) | **Supabase**: realtime instan, cocok untuk ribuan tamu |
 | `VITE_SHEETS_URL` | **Google Sheets** via Apps Script: gratis, ucapan diperbarui tiap 20 detik |
 | (kosong) | **Demo**: ucapan hanya tersimpan di perangkat tamu |
 
-### Supabase (direkomendasikan)
+### Redis via Vercel Storage (paling mudah)
+
+Lihat langkah 3 di [Panduan Mudah](#-panduan-mudah-online-dalam-10-menit-tanpa-coding). Tidak ada kunci yang perlu disalin.
+
+### Supabase (opsional, untuk acara besar)
 
 1. Buat project di [supabase.com](https://supabase.com) (paket gratis cukup).
 2. Buka **SQL Editor → New query**, tempel isi [`supabase/schema.sql`](supabase/schema.sql), lalu **Run**.
@@ -181,7 +223,8 @@ Ikuti petunjuk di bagian atas [`apps-script/Code.gs`](apps-script/Code.gs): buat
    | Nama | Wajib | Keterangan |
    |---|---|---|
    | `ADMIN_PASSWORD` | ✓ | password halaman `/admin` |
-   | `APP_SECRET` | ✓ | string acak panjang (`openssl rand -hex 32`) untuk menandatangani sesi & hash IP |
+   | `APP_SECRET` | opsional | string acak panjang (`openssl rand -hex 32`). Bila kosong, memakai `ADMIN_PASSWORD` |
+   | `KV_REST_API_URL`, `KV_REST_API_TOKEN` | otomatis | terisi sendiri saat Upstash Redis di-Connect |
    | `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` | Supabase | |
    | `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | Supabase | server only |
    | `VITE_SHEETS_URL` | Sheets | alternatif Supabase |
@@ -238,7 +281,7 @@ src/
   fx/                     ← opening timeline, reveal (GSAP), scroll (Lenis), particles (Three.js shader), audio
   services/guestbook/     ← adapter Supabase / Sheets / demo
   pages/Admin.tsx         ← /admin
-api/                      ← Vercel Edge Functions (rsvp, admin, og)
+api/                      ← Vercel Edge Functions (rsvp, admin, og) + penyimpanan Redis/Supabase
 middleware.ts             ← meta OG per tamu
 supabase/schema.sql       ← skema database
 apps-script/Code.gs       ← backend Google Sheets

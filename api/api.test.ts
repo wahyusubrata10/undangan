@@ -29,9 +29,10 @@ describe('api/rsvp', () => {
     new Request('https://wd.id/api/rsvp', { method: 'POST', headers: { 'content-type': 'application/json', 'x-real-ip': '1.2.3.4', ...headers }, body: JSON.stringify(body) })
   const valid = { name: 'Wayan', attendance: 'yes', guests: 2, message: 'Selamat!', website: '', elapsed: 5000 }
 
-  it('menolak metode selain POST', async () => {
+  it('menolak metode selain GET/POST; GET tanpa database → 404 (klien pakai mode demo)', async () => {
     const { default: rsvp } = await import('./rsvp')
-    expect((await rsvp(new Request('https://wd.id/api/rsvp'))).status).toBe(405)
+    expect((await rsvp(new Request('https://wd.id/api/rsvp', { method: 'PUT' }))).status).toBe(405)
+    expect((await rsvp(new Request('https://wd.id/api/rsvp'))).status).toBe(404)
   })
   it('honeypot terisi → pura-pura sukses tanpa menyimpan', async () => {
     const { default: rsvp } = await import('./rsvp')
@@ -93,6 +94,58 @@ describe('api/admin-login', () => {
     expect(check.status).toBe(200)
     const forged = await login(new Request('https://wd.id/api/admin-login', { headers: { cookie: 'adm_sess=99999999999999.deadbeef' } }))
     expect(forged.status).toBe(401)
+    vi.unstubAllEnvs()
+  }, 10000)
+})
+
+describe('mode Redis (Vercel Storage / Upstash)', () => {
+  it('simpan, baca, statistik, rate limit, hapus', async () => {
+    vi.stubEnv('KV_REST_API_URL', 'https://kv.upstash.io')
+    vi.stubEnv('KV_REST_API_TOKEN', 'tok')
+    vi.stubEnv('ADMIN_PASSWORD', 'pw')
+    // Redis palsu di memori yang meniru REST pipeline Upstash
+    const list: string[] = []
+    const hash: Record<string, number> = {}
+    const counters: Record<string, number> = {}
+    vi.stubGlobal('fetch', async (_u: string, init: RequestInit) => {
+      const cmds = JSON.parse(String(init.body)) as (string | number)[][]
+      const out = cmds.map(([c, ...a]) => {
+        switch (c) {
+          case 'LPUSH': list.unshift(String(a[1])); return { result: list.length }
+          case 'LRANGE': return { result: list.slice(Number(a[1]), Number(a[2]) + 1) }
+          case 'LLEN': return { result: list.length }
+          case 'LREM': { const i = list.indexOf(String(a[2])); if (i >= 0) list.splice(i, 1); return { result: i >= 0 ? 1 : 0 } }
+          case 'HINCRBY': hash[String(a[1])] = (hash[String(a[1])] ?? 0) + Number(a[2]); return { result: hash[String(a[1])] }
+          case 'HGETALL': return { result: Object.entries(hash).flatMap(([k, v]) => [k, String(v)]) }
+          case 'INCR': counters[String(a[0])] = (counters[String(a[0])] ?? 0) + 1; return { result: counters[String(a[0])] }
+          case 'EXPIRE': return { result: 1 }
+        }
+        return { error: 'unknown ' + c }
+      })
+      return new Response(JSON.stringify(out))
+    })
+    const { default: rsvp } = await import('./rsvp')
+    const post = (b: object) => rsvp(new Request('https://wd.id/api/rsvp', { method: 'POST', headers: { 'content-type': 'application/json', 'x-real-ip': '9.9.9.9' }, body: JSON.stringify({ website: '', elapsed: 5000, ...b }) }))
+    expect((await post({ name: 'Wayan', attendance: 'yes', guests: 3, message: 'Rahajeng' })).status).toBe(201)
+    expect((await post({ name: 'Ketut', attendance: 'no', guests: 0, message: 'Maaf' })).status).toBe(201)
+    const g = (await (await rsvp(new Request('https://wd.id/api/rsvp?page=0&size=6'))).json()) as { mode: string; total: number; items: { name: string; id: string }[]; stats: Record<string, number> }
+    expect(g.mode).toBe('redis')
+    expect(g.total).toBe(2)
+    expect(g.items[0]!.name).toBe('Ketut')
+    expect(g.stats).toEqual({ yes: 1, no: 1, maybe: 0, guests: 3, total: 2 })
+    expect((await post({ name: 'Spam', attendance: 'no', message: 'x' })).status).toBe(201)
+    expect((await post({ name: 'Spam', attendance: 'no', message: 'x' })).status).toBe(429)
+
+    // admin: hapus ucapan
+    const { default: login } = await import('./admin-login')
+    const cookie = (await login(new Request('https://wd.id/api/admin-login', { method: 'POST', body: JSON.stringify({ password: 'pw' }) }))).headers.get('set-cookie')!.split(';')[0]!
+    const { default: admin } = await import('./admin-rsvp')
+    const all = (await (await admin(new Request('https://wd.id/api/admin-rsvp', { headers: { cookie } }))).json()) as { items: { id: string }[] }
+    expect(all.items.length).toBe(3)
+    await admin(new Request(`https://wd.id/api/admin-rsvp?id=${all.items[0]!.id}`, { method: 'DELETE', headers: { cookie } }))
+    expect(list.length).toBe(2)
+    expect(hash.total).toBe(2)
+    vi.unstubAllGlobals()
     vi.unstubAllEnvs()
   }, 10000)
 })

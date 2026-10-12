@@ -33,7 +33,7 @@ export type SubmitError = 'invalid' | 'rate' | 'fast' | 'server'
 export type SubmitResult = { ok: true; wish: Wish } | { ok: false; error: SubmitError }
 
 export interface Guestbook {
-  mode: 'supabase' | 'sheets' | 'demo'
+  mode: 'supabase' | 'sheets' | 'api' | 'demo'
   list(page: number, size: number): Promise<{ items: Wish[]; total: number }>
   stats(): Promise<Stats>
   submit(input: SubmitInput): Promise<SubmitResult>

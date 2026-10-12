@@ -129,6 +129,56 @@ function sheetsBook(): Guestbook {
   }
 }
 
+/* ---------------- API Vercel + Redis (dideteksi saat runtime) ---------------- */
+function apiBook(fallback: Guestbook): Guestbook {
+  // cek sekali apakah /api/rsvp punya database; jika tidak → mode demo
+  const probe: Promise<boolean> = fetch('/api/rsvp?page=0&size=1')
+    .then(async (r) => r.ok && ((await r.json()) as { mode?: string }).mode === 'redis')
+    .catch(() => false)
+  const book: Guestbook = {
+    mode: 'demo',
+    async list(page, size) {
+      if (!(await probe)) return fallback.list(page, size)
+      const r = await fetch(`/api/rsvp?page=${page}&size=${size}`)
+      const j = (await r.json()) as { items: Wish[]; total: number }
+      return { items: j.items, total: j.total }
+    },
+    async stats() {
+      if (!(await probe)) return fallback.stats()
+      const r = await fetch('/api/rsvp?page=0&size=1')
+      return ((await r.json()) as { stats: Stats }).stats
+    },
+    async submit(input) {
+      return (await probe) ? postApi(input) : fallback.submit(input)
+    },
+    subscribe(onNew) {
+      // "realtime" sederhana: cek ucapan baru tiap 15 detik saat tab terlihat
+      let known: Set<string> | null = null
+      let stop = false
+      const tick = async () => {
+        if (stop || document.hidden || !(await probe)) return
+        try {
+          const { items } = await book.list(0, 10)
+          if (known) items.filter((w) => !known!.has(w.id)).reverse().forEach(onNew)
+          known = new Set([...(known ?? []), ...items.map((w) => w.id)])
+        } catch {
+          /* coba lagi nanti */
+        }
+      }
+      void tick()
+      const id = window.setInterval(tick, 15_000)
+      return () => {
+        stop = true
+        window.clearInterval(id)
+      }
+    },
+  }
+  void probe.then((ok) => {
+    if (ok) book.mode = 'api'
+  })
+  return book
+}
+
 /* ---------------- Demo (localStorage) ---------------- */
 function demoBook(): Guestbook {
   const KEY = 'rsvp_demo'
@@ -180,7 +230,7 @@ function demoBook(): Guestbook {
 let book: Guestbook | null = null
 export function getGuestbook(): Guestbook {
   if (book) return book
-  const base = SUPABASE_URL && SUPABASE_KEY ? supabaseBook() : SHEETS_URL ? sheetsBook() : demoBook()
+  const base = SUPABASE_URL && SUPABASE_KEY ? supabaseBook() : SHEETS_URL ? sheetsBook() : apiBook(demoBook())
   const inner = base.submit.bind(base)
   // lapisan validasi & anti-spam bersama untuk semua backend
   base.submit = async (raw) => {

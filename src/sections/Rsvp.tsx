@@ -91,12 +91,9 @@ export default function Rsvp() {
   // realtime: ucapan baru masuk di halaman pertama
   useEffect(
     () =>
-      gb.subscribe((w) => {
-        setItems((prev) => (prev.some((x) => x.id === w.id) ? prev : page === 0 ? [w, ...prev].slice(0, size) : prev))
-        setTotal((n) => n + 1)
-        void gb.stats().then(setStats)
-      }),
-    [gb, page, size],
+      // ada ucapan baru → muat ulang halaman aktif (hindari hitungan ganda)
+      gb.subscribe(() => void load(page)),
+    [gb, page, load],
   )
 
   const pages = Math.max(1, Math.ceil(total / size))
