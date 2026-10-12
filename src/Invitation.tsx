@@ -3,42 +3,39 @@ import { useApp } from '@/context'
 import { wedding } from '@/config/wedding'
 import type { SectionId } from '@/config/types'
 import { lockScroll, startSmoothScroll, ScrollTrigger } from '@/fx/scroll'
-import { setupReveals } from '@/fx/reveal'
-import Backdrop from '@/components/Backdrop'
-import PatraWipe from '@/components/PatraWipe'
+import { setupMotion } from '@/fx/motion'
 import Dock from '@/components/Dock'
 import Opening from '@/sections/Opening'
-import Countdown from '@/sections/Countdown'
-import Couple from '@/sections/Couple'
+import Meet from '@/sections/Meet'
 import Story from '@/sections/Story'
 import Events from '@/sections/Events'
-import Live from '@/sections/Live'
 import Gallery from '@/sections/Gallery'
 import Gift from '@/sections/Gift'
 import Rsvp from '@/sections/Rsvp'
 import Closing from '@/sections/Closing'
 
+/**
+ * Alur 11 tahap (urutan tetap):
+ * Cover → Pembuka → Pria → Wanita → Berdua → Love story → Countdown+Acara → Galeri → Amplop → Ucapan → Penutup
+ */
 export default function Invitation() {
   const { opened, reduced, setActive } = useApp()
   const root = useRef<HTMLDivElement>(null)
 
   const ids = useMemo(() => {
-    const list: SectionId[] = ['opening', 'countdown', 'couple']
+    const list: SectionId[] = ['opening', 'groom', 'bride', 'couple']
     if (wedding.story.enabled && wedding.story.chapters.length) list.push('story')
-    list.push('events')
-    if (wedding.liveStream.enabled) list.push('live')
-    list.push('gallery')
+    list.push('events', 'gallery')
     if (wedding.gift.enabled) list.push('gift')
     if (wedding.rsvp.enabled) list.push('rsvp')
     list.push('closing')
     return list
   }, [])
 
-  // animasi reveal & smooth scroll baru aktif setelah gerbang dibuka
   useEffect(() => {
     if (!opened || !root.current) return
     startSmoothScroll(reduced)
-    const cleanup = setupReveals(root.current, reduced)
+    const cleanup = setupMotion(root.current, reduced)
     const id = window.setTimeout(() => {
       lockScroll(false)
       ScrollTrigger.refresh()
@@ -62,41 +59,41 @@ export default function Invitation() {
     }
   }, [opened, reduced])
 
-  // section aktif (untuk navigasi & crossfade video)
+  // section aktif untuk navigasi (pria/wanita/berdua diatur oleh Meet)
   useEffect(() => {
     if (!opened) return
-    const triggers = ids.map((id) =>
-      ScrollTrigger.create({
-        trigger: `#${id}`,
-        start: 'top 55%',
-        end: 'bottom 55%',
-        onToggle: (self) => self.isActive && setActive(id),
-      }),
-    )
-    return () => triggers.forEach((t) => t.kill())
-  }, [opened, ids, setActive])
+    const triggers = ids
+      .filter((id) => !['groom', 'bride', 'couple'].includes(id) || reduced)
+      .map((id) =>
+        ScrollTrigger.create({
+          trigger: `#${id}`,
+          start: 'top 55%',
+          end: 'bottom 55%',
+          onToggle: (self) => self.isActive && setActive(id),
+        }),
+      )
+    return () => triggers.forEach((tr) => tr.kill())
+  }, [opened, ids, setActive, reduced])
 
   return (
     <>
-      <Backdrop />
-      <main ref={root} className="invite-col z-10 lg:border-l lg:border-prada/20 lg:bg-hitam/40">
+      {/* warna latar halaman: ivory dasar + lapisan cream/pasir yang di-crossfade (opacity) */}
+      <div className="pointer-events-none fixed inset-0 -z-0" aria-hidden="true">
+        <div id="tone-cream" className="absolute inset-0 bg-cream opacity-0" />
+        <div id="tone-pasir" className="absolute inset-0 bg-pasir opacity-0" />
+        <div className="grain absolute inset-0" />
+      </div>
+      <main ref={root} className="relative z-10">
         <Opening />
-        <Countdown />
-        <Couple />
+        <Meet />
         <Story />
         <Events />
-        <Live />
         <Gallery />
         <Gift />
         <Rsvp />
         <Closing />
       </main>
-      {opened && (
-        <>
-          <PatraWipe />
-          <Dock ids={ids} />
-        </>
-      )}
+      {opened && <Dock ids={ids} />}
     </>
   )
 }

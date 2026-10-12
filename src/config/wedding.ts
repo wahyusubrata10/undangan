@@ -59,9 +59,13 @@ export const wedding: WeddingConfig = {
       id: 'Tanpa mengurangi rasa hormat, kami bermaksud mengundang Bapak/Ibu/Saudara/i pada upacara Manusa Yadnya Pawiwahan (pernikahan) putra-putri kami:',
       en: 'With great respect, we joyfully invite you to celebrate the Manusa Yadnya Pawiwahan (wedding ceremony) of our beloved children:',
     },
+    coupleLine: {
+      id: 'Dua jiwa, satu janji suci di hadapan Ida Sang Hyang Widhi.',
+      en: 'Two souls, one sacred promise before the Divine.',
+    },
     quote: {
-      id: '“Wahai pasangan suami-istri, semoga kalian tetap bersatu dan tidak pernah terpisahkan. Semoga kalian mencapai hidup penuh kebahagiaan, tinggal di rumah yang penuh kegembiraan bersama seluruh keturunanmu.”',
-      en: '“O couple, may you stay together here and never be separated. May you reach a full span of life, rejoicing in your home with your children and grandchildren.”',
+      id: '“Semoga kalian tetap bersatu dan tak pernah terpisahkan, hidup bahagia di rumah yang penuh suka cita.”',
+      en: '“May you stay together and never be separated, rejoicing in a home full of joy.”',
     },
     quoteSource: 'Rgveda X.85.42',
     closing: 'Om Shanti Shanti Shanti Om',
@@ -143,7 +147,8 @@ export const wedding: WeddingConfig = {
   },
 
   photos: {
-    hero: '', // TODO mis. 'hero.jpg' (portrait, min. 1600px)
+    // TODO FOTO BERDUA (momen paling dramatis), portrait min. 1600px, mis. 'berdua.jpg'
+    couple: '',
     closing: '', // TODO mis. 'closing.jpg'
     // TODO isi 12+ foto galeri, mis. ['g01.jpg', 'g02.jpg', ...]
     gallery: ['', '', '', '', '', '', '', '', '', '', '', ''],
@@ -154,10 +159,9 @@ export const wedding: WeddingConfig = {
   ],
 
   video: {
-    // TODO setelah `npm run media:video`, isi seperti:
-    // background: { mp4: '/media/video/prewedding.mp4', webm: '/media/video/prewedding.webm', poster: 'prewedding-poster.jpg' },
-    background: {},
-    perSection: {},
+    // Opsional: video prewedding di momen "berdua". Setelah `npm run media:video`, isi seperti:
+    // couple: { mp4: '/media/video/prewedding.mp4', webm: '/media/video/prewedding.webm', poster: 'prewedding-poster.jpg' },
+    couple: {},
   },
 
   gift: {

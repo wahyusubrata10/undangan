@@ -1,6 +1,7 @@
 /**
- * Membuat musik placeholder bernuansa rindik (bambu Bali) — disintesis dari nol, bebas hak cipta.
- * Laras selendro 5 nada, dua pola kotekan (polos & sangsih) yang saling mengisi + bas jegog pelan.
+ * Membuat musik placeholder bernuansa gamelan semar pagulingan / rindik yang LEMBUT —
+ * disintesis dari nol, bebas hak cipta. Laras pelog (patet selisir), tempo pelan,
+ * dua pola kotekan (polos & sangsih) yang saling mengisi + gong/jegog panjang.
  * Output: public/audio/rindik-placeholder.mp3 (butuh ffmpeg). Ganti dengan musikmu sendiri kapan saja.
  *
  *   node scripts/make-placeholder-music.mjs
@@ -11,7 +12,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
 const SR = 44100
-const BPM = 76
+const BPM = 58
 const BEAT = 60 / BPM
 const STEP = BEAT / 4 // 16-an
 const BARS = 16
@@ -20,10 +21,10 @@ const LEN = STEPS * STEP
 const N = Math.ceil(LEN * SR)
 const out = new Float32Array(N)
 
-// selendro (perkiraan), oktaf dasar ~ D4
-const base = 293.66
-const slendro = [0, 240, 480, 720, 960].map((c) => base * Math.pow(2, c / 1200))
-const note = (deg, oct = 0) => slendro[((deg % 5) + 5) % 5] * Math.pow(2, oct + Math.floor(deg / 5))
+// pelog selisir (perkiraan, dalam cent), oktaf dasar ~ E4
+const base = 329.6
+const pelog = [0, 120, 270, 540, 670].map((c) => base * Math.pow(2, c / 1200))
+const note = (deg, oct = 0) => pelog[((deg % 5) + 5) % 5] * Math.pow(2, oct + Math.floor(deg / 5))
 
 // suara bilah bambu: nada dasar + parsial inharmonis, serangan cepat, peluruhan eksponensial
 function bamboo(freq, t0, vel = 0.5, decay = 1.1) {
@@ -37,11 +38,11 @@ function bamboo(freq, t0, vel = 0.5, decay = 1.1) {
   ]
   for (let i = 0; i < len; i++) {
     const t = i / SR
-    const atk = Math.min(1, t / 0.004)
+    const atk = Math.min(1, t / 0.012) // serangan lebih lembut
     let v = 0
     for (const [m, a, dk] of partials) v += a * Math.sin(2 * Math.PI * freq * m * t) * Math.exp((-t * dk) / decay)
-    // sedikit "ketukan" pemukul
-    v += (Math.random() * 2 - 1) * 0.08 * Math.exp(-t * 120)
+    // ketukan pemukul yang sangat halus
+    v += (Math.random() * 2 - 1) * 0.03 * Math.exp(-t * 160)
     const idx = (start + i) % N // wrap → loop mulus
     out[idx] += v * vel * atk
   }
@@ -63,12 +64,12 @@ for (let s = 0; s < STEPS; s++) {
   const p = polos[s % 16]
   const q = sangsih[s % 16]
   const dyn = 0.75 + 0.25 * Math.sin((s / STEPS) * Math.PI * 2)
-  if (p !== null) bamboo(note(p + shift, 0), t, 0.22 * dyn, 0.55)
-  if (q !== null) bamboo(note(q + shift, 0), t, 0.17 * dyn, 0.5)
+  if (p !== null) bamboo(note(p + shift, 0), t, 0.12 * dyn, 0.7)
+  if (q !== null) bamboo(note(q + shift, 0), t, 0.09 * dyn, 0.65)
   // melodi utama (lebih rendah, tiap ketukan)
-  if (s % 4 === 0) bamboo(note(shift, -1), t, 0.34, 1.2)
-  // bas jegog tiap 2 ketukan
-  if (s % 8 === 0) bamboo(note(shift, -2), t, 0.42, 2.2)
+  if (s % 4 === 0) bamboo(note(shift, -1), t, 0.3, 1.8)
+  // jegog/gong panjang tiap birama
+  if (s % 16 === 0) bamboo(note(shift, -2), t, 0.4, 3.6)
 }
 
 // reverb sederhana (beberapa delay feedback)
@@ -90,7 +91,7 @@ for (let i = 0; i < N; i++) {
   mix[i] = out[i] + wet[i] * 0.35
   peak = Math.max(peak, Math.abs(mix[i]))
 }
-const gain = 0.85 / peak
+const gain = 0.7 / peak
 
 // tulis WAV 16-bit mono
 const buf = Buffer.alloc(44 + N * 2)
@@ -113,4 +114,4 @@ writeFileSync(wav, buf)
 mkdirSync('public/audio', { recursive: true })
 execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', wav, '-codec:a', 'libmp3lame', '-b:a', '96k', '-ac', '1', 'public/audio/rindik-placeholder.mp3'])
 rmSync(wav)
-console.log(`✓ public/audio/rindik-placeholder.mp3 (${LEN.toFixed(1)} detik, loop)`)
+console.log(`✓ public/audio/rindik-placeholder.mp3 (${LEN.toFixed(1)} detik, loop, pelog)`)

@@ -1,10 +1,12 @@
 -- =====================================================================
 --  Skema RSVP & Ucapan — jalankan di Supabase → SQL Editor → New query → Run
 -- =====================================================================
---  Keamanan:
---   • Publik (anon key di browser) hanya bisa MEMBACA ucapan & statistik.
---   • Menulis hanya lewat /api/rsvp (service role, di server Vercel) yang
---     menjalankan honeypot, validasi, dan rate limit per IP.
+--  Keamanan (PRIVASI TAMU):
+--   • Tabel TERTUTUP total untuk publik (anon key). Tidak ada policy sama sekali.
+--   • Halaman tamu membaca ucapan lewat GET /api/rsvp (server, service role) yang
+--     hanya mengirim nama + ucapan + waktu — TANPA status kehadiran/jumlah tamu.
+--   • Statistik hanya tersedia di /admin (login).
+--   • Menulis hanya lewat POST /api/rsvp (honeypot, validasi, rate limit per IP).
 -- =====================================================================
 
 create extension if not exists pgcrypto;
@@ -31,13 +33,16 @@ create index if not exists rsvp_ratelimit_idx on public.rsvp_ratelimit (ip_hash,
 alter table public.rsvp enable row level security;
 alter table public.rsvp_ratelimit enable row level security;
 
+-- hapus akses publik lama (bila skema versi sebelumnya pernah dijalankan)
 drop policy if exists "ucapan bisa dibaca publik" on public.rsvp;
-create policy "ucapan bisa dibaca publik" on public.rsvp for select to anon, authenticated using (true);
--- sengaja TIDAK ada policy insert/update/delete untuk anon → hanya service role (server) yang bisa menulis.
--- rsvp_ratelimit: tanpa policy sama sekali → tertutup untuk publik.
+revoke all on public.rsvp from anon, authenticated;
+revoke all on public.rsvp_ratelimit from anon, authenticated;
+-- sengaja TIDAK ada policy apa pun → anon/authenticated tidak bisa membaca maupun menulis.
+-- service role (hanya di server Vercel) melewati RLS.
 
--- ---------- Statistik ----------
-create or replace view public.rsvp_stats with (security_invoker = true) as
+-- ---------- Statistik (hanya untuk admin, via service role) ----------
+drop view if exists public.rsvp_stats;
+create view public.rsvp_stats with (security_invoker = true) as
 select
   count(*) filter (where attendance = 'yes')::int                        as yes,
   count(*) filter (where attendance = 'no')::int                         as no,
@@ -45,19 +50,7 @@ select
   coalesce(sum(guests) filter (where attendance = 'yes'), 0)::int        as guests,
   count(*)::int                                                          as total
 from public.rsvp;
-
-grant select on public.rsvp to anon, authenticated;
-grant select on public.rsvp_stats to anon, authenticated;
-
--- ---------- Realtime (ucapan baru langsung muncul) ----------
-do $$
-begin
-  if not exists (
-    select 1 from pg_publication_tables where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'rsvp'
-  ) then
-    alter publication supabase_realtime add table public.rsvp;
-  end if;
-end $$;
+revoke all on public.rsvp_stats from anon, authenticated;
 
 -- ---------- Bersih-bersih data rate limit lama (opsional, jalankan sesekali) ----------
 -- delete from public.rsvp_ratelimit where created_at < now() - interval '1 day';

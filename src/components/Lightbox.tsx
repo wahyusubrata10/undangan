@@ -36,7 +36,7 @@ export default function Lightbox({ photos, index, onClose }: Props) {
     if (!img.current) return
     img.current.style.transition = animate ? 'transform .45s cubic-bezier(.16,1,.3,1)' : 'none'
     img.current.style.transform = `translate3d(${s.x + s.dx}px, ${s.y + s.dy}px, 0) scale(${s.scale})`
-    if (stage.current) stage.current.style.backgroundColor = `rgba(11,8,7,${s.scale === 1 ? Math.max(0.4, 0.96 - Math.abs(s.dy) / 600) : 0.96})`
+    if (stage.current) stage.current.style.backgroundColor = `rgba(28,22,17,${s.scale === 1 ? Math.max(0.4, 0.96 - Math.abs(s.dy) / 600) : 0.96})`
   }, [])
 
   const reset = useCallback(() => {
@@ -155,14 +155,14 @@ export default function Lightbox({ photos, index, onClose }: Props) {
       aria-modal="true"
       aria-label={`${t.photo} ${i + 1} / ${photos.length}`}
       tabIndex={-1}
-      className="fixed inset-0 z-[80] flex touch-none select-none items-center justify-center bg-hitam/95 outline-none"
+      className="fixed inset-0 z-[80] flex touch-none select-none items-center justify-center bg-[#1c1611]/95 outline-none"
       style={{ animation: 'lb-in .4s cubic-bezier(.16,1,.3,1)' }}
     >
       <style>{`@keyframes lb-in{from{opacity:0}to{opacity:1}}`}</style>
       <div className="absolute inset-0" onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp}>
         <div ref={img} className="flex h-full w-full items-center justify-center will-change-transform">
           {r.kind === 'empty' ? (
-            <div className="grid aspect-[3/4] w-[70%] max-w-sm place-items-center rounded-3xl border border-prada/30 font-display text-xs tracking-[0.3em] text-prada/70 uppercase">
+            <div className="grid aspect-[3/4] w-[70%] max-w-sm place-items-center rounded-3xl bg-white/5 text-xs tracking-[0.3em] text-ivory/60 uppercase">
               {t.emptyPhoto} {i + 1}
             </div>
           ) : (
@@ -180,10 +180,10 @@ export default function Lightbox({ photos, index, onClose }: Props) {
         </div>
       </div>
       <div className="pointer-events-none absolute inset-x-0 top-0 flex items-center justify-between p-4 pt-[max(1rem,env(safe-area-inset-top))]">
-        <span className="font-display text-xs tracking-[0.3em] text-gading-dim">
+        <span className="text-xs tracking-[0.3em] text-ivory/70">
           {String(i + 1).padStart(2, '0')} / {String(photos.length).padStart(2, '0')}
         </span>
-        <button type="button" onClick={close} className="pointer-events-auto grid h-11 w-11 place-items-center rounded-full border border-prada/40 bg-hitam/60 text-prada-light" aria-label={t.close}>
+        <button type="button" onClick={close} className="pointer-events-auto grid h-11 w-11 place-items-center rounded-full bg-white/10 text-ivory backdrop-blur" aria-label={t.close}>
           <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.6">
             <path d="M6 6 L18 18 M18 6 L6 18" strokeLinecap="round" />
           </svg>
@@ -191,10 +191,10 @@ export default function Lightbox({ photos, index, onClose }: Props) {
       </div>
       {photos.length > 1 && (
         <>
-          <button type="button" onClick={() => go(-1)} className="absolute left-3 top-1/2 hidden h-12 w-12 -translate-y-1/2 place-items-center rounded-full border border-prada/40 bg-hitam/60 text-prada-light md:grid" aria-label={t.prev}>
+          <button type="button" onClick={() => go(-1)} className="absolute left-3 top-1/2 hidden h-12 w-12 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-ivory backdrop-blur md:grid" aria-label={t.prev}>
             ‹
           </button>
-          <button type="button" onClick={() => go(1)} className="absolute right-3 top-1/2 hidden h-12 w-12 -translate-y-1/2 place-items-center rounded-full border border-prada/40 bg-hitam/60 text-prada-light md:grid" aria-label={t.next}>
+          <button type="button" onClick={() => go(1)} className="absolute right-3 top-1/2 hidden h-12 w-12 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-ivory backdrop-blur md:grid" aria-label={t.next}>
             ›
           </button>
         </>

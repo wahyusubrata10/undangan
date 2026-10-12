@@ -35,14 +35,18 @@ export function redis() {
     })
 
   return {
-    async list(page: number, size: number): Promise<{ items: Wish[]; total: number; stats: Stats }> {
+    async list(page: number, size: number): Promise<{ items: Wish[]; total: number }> {
       const from = page * size
-      const [items, total, stats] = await pipeline([
+      const [items, total] = await pipeline([
         ['LRANGE', LIST, from, from + size - 1],
         ['LLEN', LIST],
-        ['HGETALL', STATS],
       ])
-      return { items: parse(items), total: Number(total) || 0, stats: toStats(stats) }
+      return { items: parse(items), total: Number(total) || 0 }
+    },
+    /** statistik — hanya dipanggil dari /api/admin-rsvp */
+    async stats(): Promise<Stats> {
+      const [raw] = await pipeline([['HGETALL', STATS]])
+      return toStats(raw)
     },
     async all(): Promise<Wish[]> {
       const [items] = await pipeline([['LRANGE', LIST, 0, 9999]])

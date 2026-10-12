@@ -4,7 +4,7 @@ import { wedding } from '@/config/wedding'
 import { tx } from '@/lib/i18nText'
 import { formatDateLong, formatTime } from '@/lib/format'
 import { buildMessage, download, linkFor, parseGuestList, toCsv, waUrl } from '@/lib/admin'
-import { Jepun, PatraPunggel } from '@/ornaments'
+import { Canang, Jepun } from '@/ornaments'
 import type { Wish } from '@/services/guestbook'
 
 type Auth = 'checking' | 'out' | 'in' | 'dev'
@@ -53,7 +53,7 @@ export default function Admin() {
   return (
     <Shell>
       {auth === 'dev' && (
-        <p className="mb-6 rounded-xl border border-yellow-500/40 bg-yellow-900/20 p-3 text-[13px] text-yellow-100">
+        <p className="mb-6 rounded-xl border border-prada/40 bg-cream p-3 text-[13px] text-ink">
           Mode pengembangan: API Vercel tidak berjalan di <code>npm run dev</code>, login dilewati. Di produksi halaman ini dilindungi password (<code>ADMIN_PASSWORD</code>).
         </p>
       )}
@@ -64,13 +64,13 @@ export default function Admin() {
             ['rsvp', 'Data RSVP'],
           ] as const
         ).map(([k, label]) => (
-          <button key={k} type="button" onClick={() => setTab(k)} className={`rounded-full px-4 py-2 text-sm transition-colors ${tab === k ? 'bg-prada text-hitam' : 'border border-prada/40 text-gading-dim hover:bg-prada/10'}`}>
+          <button key={k} type="button" onClick={() => setTab(k)} className={`rounded-full px-4 py-2 text-sm transition-colors ${tab === k ? 'bg-ink text-ivory' : 'bg-ink/[.05] text-ink-soft hover:bg-ink/10'}`}>
             {label}
           </button>
         ))}
         <button
           type="button"
-          className="ml-auto text-xs text-gading-dim underline"
+          className="ml-auto text-xs text-ink-soft underline"
           onClick={async () => {
             await fetch('/api/admin-login', { method: 'DELETE' }).catch(() => {})
             setAuth('out')
@@ -86,13 +86,13 @@ export default function Admin() {
 
 function Shell({ children }: { children?: React.ReactNode }) {
   return (
-    <div className="min-h-svh bg-hitam text-gading">
-      <header className="border-b border-prada/20 bg-[linear-gradient(180deg,#1f0709,#0b0807)]">
+    <div className="min-h-svh bg-ivory text-ink">
+      <header className="border-b border-ink/10 bg-cream">
         <div className="mx-auto flex max-w-6xl items-center gap-3 px-5 py-5">
           <Jepun className="w-8" />
           <div>
-            <p className="eyebrow">Panel Admin</p>
-            <h1 className="font-serif text-2xl italic text-prada-light">
+            <p className="label">Panel Admin</p>
+            <h1 className="font-display text-2xl italic text-ink">
               {wedding.groom.nick} &amp; {wedding.bride.nick}
             </h1>
           </div>
@@ -124,14 +124,14 @@ function Login({ onIn }: { onIn: () => void }) {
   }
   return (
     <Shell>
-      <form onSubmit={submit} className="glass mx-auto mt-10 max-w-sm rounded-3xl p-8 text-center">
-        <PatraPunggel className="mx-auto w-14" />
-        <h2 className="mt-3 font-serif text-2xl italic text-prada">Masuk Admin</h2>
+      <form onSubmit={submit} className="soft mx-auto mt-10 max-w-sm rounded-3xl p-8 text-center">
+        <Canang className="mx-auto w-14" />
+        <h2 className="mt-3 font-display text-2xl italic text-ink-mute">Masuk Admin</h2>
         <input type="password" className="field mt-6" placeholder="Password" value={pw} onChange={(e) => setPw(e.target.value)} autoFocus autoComplete="current-password" />
-        <button className="btn-prada mt-4 w-full" disabled={busy || !pw}>
+        <button className="btn mt-4 w-full" disabled={busy || !pw}>
           {busy ? 'Memeriksa…' : 'Masuk'}
         </button>
-        {err && <p className="mt-3 text-sm text-red-300">{err}</p>}
+        {err && <p className="mt-3 text-sm text-[#a34a3a]">{err}</p>}
       </form>
     </Shell>
   )
@@ -171,7 +171,7 @@ function LinkGenerator() {
   // QR per tamu (berisi link personal → bisa dipindai untuk check-in di lokasi)
   useEffect(() => {
     let cancelled = false
-    void Promise.all(rows.map(async (r) => [r.link, await QRCode.toDataURL(r.link, { margin: 1, width: 320, color: { dark: '#2a0709', light: '#fffaf0' }, errorCorrectionLevel: 'M' })] as const)).then((pairs) => {
+    void Promise.all(rows.map(async (r) => [r.link, await QRCode.toDataURL(r.link, { margin: 1, width: 320, color: { dark: '#3b2f25', light: '#fffdf8' }, errorCorrectionLevel: 'M' })] as const)).then((pairs) => {
       if (!cancelled) setQrs(Object.fromEntries(pairs))
     })
     return () => {
@@ -217,20 +217,20 @@ function LinkGenerator() {
     <div className="grid gap-8 lg:grid-cols-[380px_1fr]">
       <section className="space-y-5">
         <label className="block">
-          <span className="eyebrow !text-[10px]">URL undangan</span>
-          <input className="field mt-2" value={base} onChange={(e) => setBase(e.target.value)} placeholder="https://wahyu-diah.vercel.app" />
+          <span className="label !text-[10px]">URL undangan</span>
+          <input className="field mt-2 !border !border-ink/15 !rounded-lg !px-3" value={base} onChange={(e) => setBase(e.target.value)} placeholder="https://wahyu-diah.vercel.app" />
         </label>
         <label className="block">
-          <span className="eyebrow !text-[10px]">Daftar tamu (satu per baris)</span>
-          <textarea className="field mt-2 min-h-56 font-mono text-[13px]" value={list} onChange={(e) => setList(e.target.value)} spellCheck={false} />
-          <span className="mt-1 block text-[11px] leading-relaxed text-gading-dim">
+          <span className="label !text-[10px]">Daftar tamu (satu per baris)</span>
+          <textarea className="field mt-2 !border !border-ink/15 !rounded-lg !px-3 min-h-56 font-mono text-[13px]" value={list} onChange={(e) => setList(e.target.value)} spellCheck={false} />
+          <span className="mt-1 block text-[11px] leading-relaxed text-ink-soft">
             Format: <code>Nama | Sapaan | No. WA</code> (sapaan & nomor opsional). Bisa juga salin kolom langsung dari Excel/Google Sheets. Sapaan default: “{defaultSal}”.
           </span>
         </label>
         <label className="block">
-          <span className="eyebrow !text-[10px]">Template pesan WhatsApp</span>
-          <textarea className="field mt-2 min-h-56 text-[13px]" value={template} onChange={(e) => setTemplate(e.target.value)} />
-          <span className="mt-1 block text-[11px] text-gading-dim">
+          <span className="label !text-[10px]">Template pesan WhatsApp</span>
+          <textarea className="field mt-2 !border !border-ink/15 !rounded-lg !px-3 min-h-56 text-[13px]" value={template} onChange={(e) => setTemplate(e.target.value)} />
+          <span className="mt-1 block text-[11px] text-ink-soft">
             Placeholder: <code>{'{sapaan} {nama} {link} {mempelai} {tanggal}'}</code>. Ubah default-nya di <code>wedding.ts → share</code>.
           </span>
         </label>
@@ -238,47 +238,47 @@ function LinkGenerator() {
 
       <section>
         <div className="mb-4 flex flex-wrap items-center gap-3">
-          <p className="mr-auto text-sm text-gading-dim">
-            <b className="text-prada-light">{rows.length}</b> tamu
+          <p className="mr-auto text-sm text-ink-soft">
+            <b className="text-ink">{rows.length}</b> tamu
           </p>
-          <button type="button" className="btn-ghost" onClick={exportCsv} disabled={!rows.length}>
+          <button type="button" className="btn-line" onClick={exportCsv} disabled={!rows.length}>
             Export CSV
           </button>
-          <button type="button" className="btn-ghost" onClick={printQr} disabled={!rows.length}>
+          <button type="button" className="btn-line" onClick={printQr} disabled={!rows.length}>
             Cetak QR
           </button>
         </div>
         <ul className="space-y-3">
           {rows.map((r, i) => (
-            <li key={r.link} className="glass flex gap-4 rounded-2xl p-4">
+            <li key={r.link} className="soft flex gap-4 rounded-2xl p-4">
               {qrs[r.link] ? (
                 <a href={qrs[r.link]} download={`qr-${r.name.replace(/\W+/g, '-').toLowerCase()}.png`} title="Unduh QR" className="shrink-0">
                   <img src={qrs[r.link]} alt={`QR ${r.name}`} className="h-24 w-24 rounded-lg" />
                 </a>
               ) : (
-                <div className="h-24 w-24 shrink-0 rounded-lg bg-gading/10" />
+                <div className="h-24 w-24 shrink-0 rounded-lg bg-ink/5" />
               )}
               <div className="min-w-0 flex-1">
-                <p className="font-semibold text-gading">
-                  <span className="mr-2 text-gading-dim">{i + 1}.</span>
+                <p className="font-semibold text-ink">
+                  <span className="mr-2 text-ink-soft">{i + 1}.</span>
                   {r.name}
                 </p>
-                <p className="text-[12px] text-gading-dim">
+                <p className="text-[12px] text-ink-soft">
                   {r.salutation}
                   {r.phone && ` · +${r.phone}`}
                 </p>
-                <p className="mt-1 truncate font-mono text-[12px] text-prada-light/80">{r.link}</p>
+                <p className="mt-1 truncate font-mono text-[12px] text-ink-mute">{r.link}</p>
                 <div className="mt-3 flex flex-wrap gap-2">
-                  <a className="btn-prada !px-4 !py-2 !text-[10px]" href={waUrl(r.message, r.phone || undefined)} target="_blank" rel="noopener noreferrer">
+                  <a className="btn !px-4 !py-2 !text-[10px]" href={waUrl(r.message, r.phone || undefined)} target="_blank" rel="noopener noreferrer">
                     Kirim WA
                   </a>
-                  <button type="button" className="btn-ghost !px-3 !py-2 !text-[10px]" onClick={() => copy(r.message, `m${i}`)}>
+                  <button type="button" className="btn-line !px-3 !py-2 !text-[10px]" onClick={() => copy(r.message, `m${i}`)}>
                     {copied === `m${i}` ? '✓ Tersalin' : 'Salin pesan'}
                   </button>
-                  <button type="button" className="btn-ghost !px-3 !py-2 !text-[10px]" onClick={() => copy(r.link, `l${i}`)}>
+                  <button type="button" className="btn-line !px-3 !py-2 !text-[10px]" onClick={() => copy(r.link, `l${i}`)}>
                     {copied === `l${i}` ? '✓ Tersalin' : 'Salin link'}
                   </button>
-                  <a className="btn-ghost !px-3 !py-2 !text-[10px]" href={r.link} target="_blank" rel="noopener noreferrer">
+                  <a className="btn-line !px-3 !py-2 !text-[10px]" href={r.link} target="_blank" rel="noopener noreferrer">
                     Pratinjau
                   </a>
                 </div>
@@ -340,20 +340,20 @@ function RsvpTable() {
             ['Berhalangan', stats.no],
           ] as const
         ).map(([k, v]) => (
-          <div key={k} className="glass rounded-2xl p-4 text-center">
-            <p className="font-display text-3xl text-prada-light">{v}</p>
-            <p className="text-[11px] uppercase tracking-wider text-gading-dim">{k}</p>
+          <div key={k} className="soft rounded-2xl p-4 text-center">
+            <p className="font-display text-3xl text-ink">{v}</p>
+            <p className="text-[11px] uppercase tracking-wider text-ink-soft">{k}</p>
           </div>
         ))}
       </div>
       <div className="mb-4 flex items-center gap-3">
-        {note && <p className="mr-auto text-sm text-yellow-200">{note}</p>}
-        <button type="button" className="btn-ghost ml-auto" onClick={() => void load()}>
+        {note && <p className="mr-auto text-sm text-[#8a6a24]">{note}</p>}
+        <button type="button" className="btn-line ml-auto" onClick={() => void load()}>
           Muat ulang
         </button>
         <button
           type="button"
-          className="btn-ghost"
+          className="btn-line"
           disabled={!items?.length}
           onClick={() =>
             download(
@@ -368,9 +368,9 @@ function RsvpTable() {
           Export CSV
         </button>
       </div>
-      <div className="overflow-x-auto rounded-2xl border border-prada/20">
+      <div className="overflow-x-auto rounded-2xl border border-ink/10">
         <table className="w-full min-w-[640px] text-left text-sm">
-          <thead className="bg-marun-deep text-[11px] uppercase tracking-wider text-prada">
+          <thead className="bg-cream text-[11px] uppercase tracking-wider text-ink-mute">
             <tr>
               <th className="p-3">Waktu</th>
               <th className="p-3">Nama</th>
@@ -383,27 +383,27 @@ function RsvpTable() {
           <tbody>
             {items === null && (
               <tr>
-                <td className="p-4 text-gading-dim" colSpan={6}>
+                <td className="p-4 text-ink-soft" colSpan={6}>
                   Memuat…
                 </td>
               </tr>
             )}
             {items?.length === 0 && (
               <tr>
-                <td className="p-4 text-gading-dim" colSpan={6}>
+                <td className="p-4 text-ink-soft" colSpan={6}>
                   Belum ada RSVP.
                 </td>
               </tr>
             )}
             {items?.map((w) => (
-              <tr key={w.id} className="border-t border-prada/10 align-top">
-                <td className="whitespace-nowrap p-3 text-gading-dim">{new Date(w.created_at).toLocaleString('id-ID')}</td>
+              <tr key={w.id} className="border-t border-ink/10 align-top">
+                <td className="whitespace-nowrap p-3 text-ink-soft">{new Date(w.created_at).toLocaleString('id-ID')}</td>
                 <td className="p-3 font-semibold">{w.name}</td>
                 <td className="p-3">{label[w.attendance]}</td>
                 <td className="p-3">{w.guests}</td>
-                <td className="max-w-md whitespace-pre-line p-3 text-gading/85">{w.message}</td>
+                <td className="max-w-md whitespace-pre-line p-3 text-ink-soft">{w.message}</td>
                 <td className="p-3">
-                  <button type="button" className="text-xs text-red-300 underline" onClick={() => void remove(w.id)}>
+                  <button type="button" className="text-xs text-[#a34a3a] underline" onClick={() => void remove(w.id)}>
                     Hapus
                   </button>
                 </td>

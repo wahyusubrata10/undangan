@@ -62,18 +62,27 @@ Selesai! ✅
 
 | Bagian | Isi |
 |---|---|
-| **Cover** | Dua sisi candi bentar (SVG orisinal) tertutup, penjor, asap dupa, nama tamu dari `?to=` (disanitasi dari XSS, kapitalisasi rapi). Tombol **Buka Undangan** menjalankan animasi: celah gerbang bercahaya, gapura terbelah dengan parallax kedalaman, kamera maju, kelopak jepun 3D berhamburan, musik fade-in, dan fullscreen di HP. |
-| **Pembuka** | Om Swastyastu, nama dalam aksara Bali, nama mempelai dengan SplitText, dan kutipan suci di atas kartu lontar. |
-| **Countdown** | Angka bergulir seperti odometer di atas plakat bermotif songket, plus tombol simpan tanggal. |
-| **Mempelai** | Foto berbingkai lengkung kori dengan ornamen patra, nama lengkap, putra/putri ke-, orang tua, dan Instagram. |
-| **Love Story** | Section di-pin: scroll vertikal menggeser timeline horizontal, garis janur tumbuh, dan foto ber-parallax. |
-| **Acara** | Kartu per acara (WITA/WIB/WIT), Google Maps, peta bergaya gelap yang dimuat saat diketuk, serta Google Calendar dan file `.ics`. |
-| **Live streaming** | Bisa dinyalakan atau dimatikan di config, dengan bingkai kain poleng. |
-| **Galeri** | Grid editorial yang tidak monoton dan muncul lewat mask (lengkung/kelopak). Lightbox fullscreen mendukung swipe, pinch-zoom, double-tap, keyboard, dan tombol back HP. |
-| **Amplop digital** | Kartu bank/e-wallet bermotif songket dengan tilt 3D (kursor atau gyroscope) dan kilau, salin nomor dengan getaran kecil, QRIS, dan alamat kado. |
-| **RSVP & ucapan** | Nama terisi otomatis dari `?to=`, hadir/ragu/tidak, jumlah tamu, ucapan realtime, pagination, statistik, dan anti-spam (honeypot, jeda minimum, rate limit per IP). |
-| **Penutup** | Terima kasih, Om Shanti Shanti Shanti Om, dan gapura menutup perlahan mengikuti scroll. |
-| **Ekstra** | `/admin` (generator link, pesan WhatsApp, QR check-in, export CSV, moderasi ucapan), OG image per tamu untuk preview WhatsApp, kontrol musik dengan visualizer bilah rindik, auto-scroll "Nikmati Undangan", navigasi section, transisi patra menyapu layar, partikel jepun dan debu emas yang bereaksi ke jari/kursor dan gyroscope, serta easter egg (**ketuk nama mempelai 3x** untuk hujan bunga jepun). |
+| # | Tahap | Isi |
+|---|---|---|
+| 1 | **Cover** | Cahaya pagi: langit ivory, kabut, sawah terasering, candi bentar batu paras putih tertutup, nama tamu dari `?to=` (disanitasi dari XSS). **Buka Undangan**: gerbang terbelah, kamera maju, kelopak jepun berhamburan, musik fade-in, fullscreen di HP. |
+| 2 | **Pembuka** | Om Swastyastu, kutipan singkat, nama kedua mempelai besar + aksara Bali. |
+| 3 | **Mempelai Pria** | Gerbang paras terbuka saat di-scroll, foto pria membesar dari tengah hingga full-bleed; nama, putra ke-, orang tua. |
+| 4 | **Mempelai Wanita** | Foto pria bergeser & memudar, foto wanita masuk dengan tirai dari kanan. |
+| 5 | **Berdua** (klimaks) | Dua potret bertemu di tengah lalu melebur menjadi foto/video berdua full-bleed. |
+| 6 | **Love story** | Opsional (`story.enabled`). Editorial vertikal, crop asimetris, parallax berlapis. |
+| 7 | **Countdown + Acara** | Angka odometer tipis, kartu acara minimal, Google Maps, Google Calendar & `.ics`, live streaming opsional. |
+| 8 | **Galeri** | Dua kolom ber-parallax berbeda, foto terbuka seperti tirai, lightbox (swipe, pinch-zoom, tombol back HP). |
+| 9 | **Amplop** | Rekening/e-wallet minimal, salin dengan feedback, QRIS, alamat kado. |
+| 10 | **Ucapan & Doa** | Form RSVP + daftar ucapan (**hanya nama, ucapan, waktu**). |
+| 11 | **Penutup** | Terima kasih, Om Shanti Shanti Shanti Om, gapura paras menutup mengikuti scroll. |
+
+Tahap 3–5 adalah **satu panggung yang di-pin** dengan satu master timeline, sehingga perpindahan pria → wanita → berdua tidak pernah patah.
+
+**Ekstra:** `/admin` (generator link, pesan WhatsApp, QR check-in, export CSV, statistik & moderasi ucapan), OG image per tamu untuk preview WhatsApp, kontrol musik dengan visualizer, auto-scroll "Nikmati Undangan", navigasi section, kelopak jepun yang menghindari jari/kursor & mengikuti gyroscope, dan easter egg (**ketuk nama mempelai 3x** untuk hujan bunga jepun).
+
+**Privasi tamu:** status kehadiran, jumlah tamu, dan statistik **tidak pernah** dikirim ke halaman tamu (API publik hanya mengembalikan nama, ucapan, waktu; database tertutup untuk publik). Semua itu hanya ada di `/admin`.
+
+**Gaya:** editorial tanpa bingkai, palet ivory/cream/pasir dengan teks coklat hangat, prada redup, janur muda, dan kuning jepun. Ornamen Bali (candi bentar paras, penjor, janur, canang sari, tedung, lamak, sawah) dipakai sebagai aksen, maksimal satu per section. Font: Cormorant Garamond Light, Italiana, dan Jost.
 
 **Bahasa:** Indonesia dan English (`?lang=en`, atau lewat menu navigasi). Struktur Bahasa Bali sudah disiapkan di `src/i18n/ban.ts`.
 
@@ -105,7 +114,8 @@ Komponen tidak perlu disentuh. Bagian bertanda `// TODO` masih berisi data conto
 - `events`: nama tempat, alamat, link Google Maps, `mapsQuery` (koordinat, mis. `'-8.6705,115.2126'`). Contoh acara **Mesakapan** sudah disiapkan dalam komentar.
 - `gift.accounts`: nomor rekening asli, QRIS, alamat kado
 - `story.chapters`: cerita dan foto kalian
-- `photos`: hero, penutup, galeri (12+)
+- `groom.photo` / `bride.photo`: foto perkenalan masing-masing (portrait, full-bleed)
+- `photos`: **`couple` (foto berdua, momen klimaks)**, penutup, galeri (12+)
 
 Tips:
 
@@ -126,17 +136,17 @@ Tips:
    npm run media
    ```
    Script membuat versi **AVIF + WebP + JPG** (480/960/1600 px), blur placeholder, dan manifest rasio aspek (tanpa layout shift) ke `public/media/photos/`.
-3. Tulis nama filenya di config, misalnya `hero: 'hero.jpg'`, `gallery: ['g01.jpg', 'g02.jpg', …]`.
+3. Tulis nama filenya di config, misalnya `couple: 'berdua.jpg'`, `gallery: ['g01.jpg', 'g02.jpg', …]`.
 
 Slot yang dikosongkan (`''`) tampil sebagai placeholder ornamen yang elegan. Foto mentah di `media-src/` tidak ikut di-commit, sedangkan hasil kompres di `public/media/` ikut di-commit.
 
-Rekomendasi: **hero** portrait 4:5 atau 3:4, **mempelai** 3:4, **love story** 4:5, **galeri** campuran portrait dan landscape.
+Rekomendasi: **mempelai pria/wanita** & **berdua** portrait 3:4 atau 9:16 (tampil full-bleed, subjek di tengah atas), **love story** 4:5, **galeri** campuran portrait dan landscape.
 
 ---
 
 ## Video background
 
-Video diputar di belakang konten (`autoplay muted loop playsinline` + poster). Video otomatis **di-pause** saat tab tidak aktif, dan diganti **foto poster** bila koneksi lambat atau data saver aktif (Network Information API) atau bila `prefers-reduced-motion` aktif.
+Video prewedding (opsional) diputar di momen **Berdua** menggantikan foto berdua: `muted loop playsinline` dengan poster, hanya diputar saat terlihat, dan otomatis memakai foto bila data saver aktif.
 
 ```bash
 # taruh video di media-src/video/ lalu:
@@ -148,9 +158,7 @@ Lalu di config:
 
 ```ts
 video: {
-  background: { mp4: '/media/video/prewedding.mp4', webm: '/media/video/prewedding.webm', poster: 'prewedding-poster.jpg' },
-  // opsional: video berbeda per section, otomatis crossfade
-  perSection: { story: { mp4: '/media/video/story.mp4', poster: 'story-poster.jpg' } },
+  couple: { mp4: '/media/video/prewedding.mp4', webm: '/media/video/prewedding.webm', poster: 'prewedding-poster.jpg' },
 },
 ```
 
@@ -175,7 +183,7 @@ Target: **10–25 detik, < 4 MB**. Variabel `WIDTH`, `CRF_H264`, `CRF_VP9`, dan 
 
 ## Musik
 
-Default: `public/audio/rindik-placeholder.mp3`, loop bernuansa rindik dengan laras selendro yang **disintesis sendiri** (bebas hak cipta) via `npm run music:placeholder`.
+Default: `public/audio/rindik-placeholder.mp3`, loop lembut bernuansa semar pagulingan/rindik dengan laras **pelog** yang **disintesis sendiri** (bebas hak cipta) via `npm run music:placeholder`.
 
 Untuk mengganti, taruh file musikmu (mp3, < 3 MB, pastikan punya hak pakai) di `public/audio/`, lalu ubah `music.src` di config. Musik mulai dengan fade-in saat tamu menekan **Buka Undangan** (browser mewajibkan interaksi dulu sebelum audio boleh diputar).
 
@@ -188,7 +196,7 @@ Backend dipilih otomatis dari environment variable:
 | Env yang diisi | Mode |
 |---|---|
 | `KV_REST_API_URL` + `KV_REST_API_TOKEN` (otomatis dari **Vercel → Storage → Upstash for Redis**) | **Redis**: paling mudah, 1 klik, rate limit per IP, moderasi di `/admin`, ucapan baru muncul tiap 15 detik |
-| `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` (+ server: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`) | **Supabase**: realtime instan, cocok untuk ribuan tamu |
+| `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` (server saja) | **Supabase**: cocok untuk ribuan tamu |
 | `VITE_SHEETS_URL` | **Google Sheets** via Apps Script: gratis, ucapan diperbarui tiap 20 detik |
 | (kosong) | **Demo**: ucapan hanya tersimpan di perangkat tamu |
 
@@ -200,13 +208,12 @@ Lihat langkah 3 di [Panduan Mudah](#-panduan-mudah-online-dalam-10-menit-tanpa-c
 
 1. Buat project di [supabase.com](https://supabase.com) (paket gratis cukup).
 2. Buka **SQL Editor → New query**, tempel isi [`supabase/schema.sql`](supabase/schema.sql), lalu **Run**.
-   Ini membuat tabel `rsvp`, view statistik, Row Level Security (publik hanya bisa *membaca*), tabel rate limit, dan mengaktifkan Realtime.
+   Ini membuat tabel `rsvp`, view statistik, tabel rate limit, dan Row Level Security yang **menutup tabel sepenuhnya dari publik**.
 3. Ambil kredensial di **Project Settings → API**:
-   - `Project URL` → `VITE_SUPABASE_URL` **dan** `SUPABASE_URL`
-   - `anon public` key → `VITE_SUPABASE_ANON_KEY`
+   - `Project URL` → `SUPABASE_URL`
    - `service_role` key → `SUPABASE_SERVICE_ROLE_KEY` (**rahasia**, hanya di Vercel, jangan diawali `VITE_`)
 
-Alur keamanannya: browser membaca ucapan langsung dari Supabase (anon key, read-only). Menulis hanya lewat `POST /api/rsvp` di Vercel, yang menjalankan honeypot, cek jeda minimum 3 detik, validasi panjang/isi, sanitasi HTML, dan **rate limit 3 kiriman per 10 menit per IP** (IP disimpan sebagai hash).
+Alur keamanannya: browser **tidak** mengakses database langsung. Membaca lewat `GET /api/rsvp` (hanya nama, ucapan, waktu); menulis hanya lewat `POST /api/rsvp` di Vercel, yang menjalankan honeypot, cek jeda minimum 3 detik, validasi panjang/isi, sanitasi HTML, dan **rate limit 3 kiriman per 10 menit per IP** (IP disimpan sebagai hash).
 
 ### Google Sheets (gratis, tanpa Supabase)
 
@@ -225,7 +232,6 @@ Ikuti petunjuk di bagian atas [`apps-script/Code.gs`](apps-script/Code.gs): buat
    | `ADMIN_PASSWORD` | ✓ | password halaman `/admin` |
    | `APP_SECRET` | opsional | string acak panjang (`openssl rand -hex 32`). Bila kosong, memakai `ADMIN_PASSWORD` |
    | `KV_REST_API_URL`, `KV_REST_API_TOKEN` | otomatis | terisi sendiri saat Upstash Redis di-Connect |
-   | `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` | Supabase | |
    | `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | Supabase | server only |
    | `VITE_SHEETS_URL` | Sheets | alternatif Supabase |
 
@@ -262,12 +268,13 @@ Format link tamu: `https://domainmu/?to=Bapak+Wayan&sapaan=Bapak/Ibu`. Parameter
 Tamu buka link WA ─► api/invite (meta OG + nama tamu; gagal → /app.html)
                          │
                          ▼
-   index.html + cover (React, tanpa GSAP/Three; ±85 KB JS gzip)
+   app.html + cover (React, tanpa GSAP; ±83 KB JS gzip)
                          │ halaman tenang / tamu berinteraksi
                          ▼
-   chunk terpisah: [undangan + GSAP + Lenis] [Three.js partikel] [lightbox] [admin]
+   chunk terpisah: [undangan + GSAP + Lenis] [kelopak jepun canvas 2D ±2 KB] [lightbox] [admin]
                          │
-   RSVP ─► /api/rsvp (honeypot, validasi, rate limit) ─► Supabase ─► Realtime ─► daftar ucapan
+   Ucapan ─► /api/rsvp (honeypot, validasi, rate limit) ─► Redis/Supabase
+   Daftar ─► GET /api/rsvp → hanya {nama, ucapan, waktu}   ·   statistik → /admin saja
 ```
 
 ```
@@ -275,10 +282,10 @@ src/
   config/wedding.ts       ← konten (satu-satunya yang perlu diedit)
   config/media.generated  ← dibuat otomatis oleh `npm run media`
   i18n/                   ← teks UI (id, en, ban)
-  ornaments/              ← SVG orisinal: candi bentar, patra punggel, jepun, penjor, janur, poleng, songket
-  sections/               ← Cover, Opening, Countdown, Couple, Story, Events, Live, Gallery, Gift, Rsvp, Closing
+  ornaments/              ← SVG orisinal: candi bentar paras, jepun, penjor, janur, canang sari, tedung, lamak, sawah
+  sections/               ← Cover, Opening, Meet (pria→wanita→berdua), Story, Events, Gallery, Gift, Rsvp, Closing
   components/             ← Backdrop (video), Dock (musik/nav/auto-scroll), Lightbox, PatraWipe, Particles, SmartImage
-  fx/                     ← opening timeline, reveal (GSAP), scroll (Lenis), particles (Three.js shader), audio
+  fx/                     ← opening timeline, motion (ScrollTrigger scrub), scroll (Lenis), petals (canvas 2D), audio
   services/guestbook/     ← adapter Supabase / Sheets / demo
   pages/Admin.tsx         ← /admin
 api/                      ← Vercel Edge Functions (rsvp, admin, og) + penyimpanan Redis/Supabase
@@ -289,10 +296,12 @@ scripts/                  ← optimasi foto, kompres video, musik placeholder
 
 **Standar yang diterapkan**
 
-- Animasi hanya memakai `transform`/`opacity`, dengan easing `expo`/`power3` yang konsisten. `prefers-reduced-motion` dihormati: efek berat dimatikan, love story jadi vertikal, dan partikel diganti fade.
-- Partikel 3D dihitung di **vertex shader** (1 draw call). FPS dipantau: bila turun, DPR dan jumlah partikel diturunkan; bila tetap berat, diganti versi CSS ringan.
+- Satu sistem gerak: **Lenis + GSAP ScrollTrigger** dalam satu loop RAF (`lerp 0.09`). Semua animasi konten **terikat scroll** (`scrub`), hanya `transform`/`opacity`, `will-change` dipasang hanya selama trigger aktif. Framer Motion hanya untuk micro-interaction (tombol salin, form, menu).
+- Warna latar berpindah ivory → cream → pasir lewat lapisan yang di-crossfade (opacity).
+- `prefers-reduced-motion`: semua diganti fade sederhana; sekuens pria/wanita/berdua jadi tiga section biasa; kelopak dimatikan.
+- Kelopak jepun memakai **canvas 2D** (±2 KB), berhenti saat tab tersembunyi, dan mengurangi jumlah/resolusi otomatis bila FPS turun.
 - Video/partikel/musik di-pause saat tab disembunyikan. Iframe peta baru dimuat saat diminta.
-- Hasil Lighthouse mobile (build lokal): **Performance 95 · Accessibility 100 · Best Practices 100 · SEO 100**.
+- Hasil Lighthouse mobile (build lokal): **Performance 99 · Accessibility 100 · Best Practices 100 · SEO 100**.
 - Aman di in-app browser WhatsApp/Instagram: fallback clipboard, fullscreen opsional, dan izin gyroscope iOS diminta di tombol buka.
 
 **Catatan:** iPhone (Safari/in-app) tidak mendukung Fullscreen API untuk halaman web, jadi di iOS undangan tetap berjalan normal tanpa fullscreen.

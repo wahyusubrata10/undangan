@@ -69,11 +69,22 @@ describe('api/rsvp', () => {
     const { default: rsvp } = await import('./rsvp')
     const ok = await rsvp(post({ ...valid, message: '<script>x</script>Bahagia selalu' }))
     expect(ok.status).toBe(201)
-    const body = (await ok.json()) as { wish: { message: string; guests: number } }
+    const body = (await ok.json()) as { wish: Record<string, unknown> }
     expect(body.wish.message).toBe('xBahagia selalu')
+    expect(body.wish.attendance).toBeUndefined()
+    expect(body.wish.guests).toBeUndefined()
     expect(calls).toContain('POST https://x.supabase.co/rest/v1/rsvp')
     count = 3
     expect((await rsvp(post(valid))).status).toBe(429)
+    // GET publik via Supabase hanya meminta kolom publik
+    const urls: string[] = []
+    vi.stubGlobal('fetch', async (u: string) => {
+      urls.push(u)
+      return new Response(JSON.stringify([{ id: 'a', name: 'W', message: 'm', created_at: 't', attendance: 'yes' }]), { headers: { 'content-range': '0-0/1' } })
+    })
+    const pub = (await (await rsvp(new Request('https://wd.id/api/rsvp'))).json()) as { items: Record<string, unknown>[] }
+    expect(urls[0]).toContain('select=id,name,message,created_at')
+    expect(pub.items[0]!.attendance).toBeUndefined()
     vi.unstubAllGlobals()
     vi.unstubAllEnvs()
   })
@@ -128,11 +139,15 @@ describe('mode Redis (Vercel Storage / Upstash)', () => {
     const post = (b: object) => rsvp(new Request('https://wd.id/api/rsvp', { method: 'POST', headers: { 'content-type': 'application/json', 'x-real-ip': '9.9.9.9' }, body: JSON.stringify({ website: '', elapsed: 5000, ...b }) }))
     expect((await post({ name: 'Wayan', attendance: 'yes', guests: 3, message: 'Rahajeng' })).status).toBe(201)
     expect((await post({ name: 'Ketut', attendance: 'no', guests: 0, message: 'Maaf' })).status).toBe(201)
-    const g = (await (await rsvp(new Request('https://wd.id/api/rsvp?page=0&size=6'))).json()) as { mode: string; total: number; items: { name: string; id: string }[]; stats: Record<string, number> }
-    expect(g.mode).toBe('redis')
+    const g = (await (await rsvp(new Request('https://wd.id/api/rsvp?page=0&size=6'))).json()) as Record<string, unknown> & { items: Record<string, unknown>[]; total: number }
+    expect(g.mode).toBe('live')
     expect(g.total).toBe(2)
     expect(g.items[0]!.name).toBe('Ketut')
-    expect(g.stats).toEqual({ yes: 1, no: 1, maybe: 0, guests: 3, total: 2 })
+    // PRIVASI: publik hanya mendapat nama, ucapan, waktu
+    expect(g.stats).toBeUndefined()
+    for (const it of g.items) expect(Object.keys(it).sort()).toEqual(['created_at', 'id', 'message', 'name'])
+    expect(JSON.stringify(g)).not.toMatch(/attendance|guests|"yes"|"no"/)
+    expect(hash.yes).toBe(1) // statistik tetap tercatat untuk admin
     expect((await post({ name: 'Spam', attendance: 'no', message: 'x' })).status).toBe(201)
     expect((await post({ name: 'Spam', attendance: 'no', message: 'x' })).status).toBe(429)
 

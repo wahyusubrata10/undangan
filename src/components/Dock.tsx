@@ -41,12 +41,12 @@ function MusicButton() {
     <button
       type="button"
       onClick={() => music.toggle()}
-      className="relative grid h-11 w-11 place-items-center rounded-full border border-prada/50 bg-hitam/70 text-prada-light shadow-[0_10px_30px_-10px_#000] backdrop-blur"
+      className="relative grid h-11 w-11 place-items-center rounded-full bg-ivory/95 text-ink shadow-[0_12px_30px_-14px_rgba(59,47,37,.45)]"
       aria-label={playing ? t.musicPause : t.musicPlay}
       aria-pressed={playing}
       title={typeof wedding.music.title === 'string' ? wedding.music.title : undefined}
     >
-      <span className="absolute inset-0 rounded-full border border-prada/30" style={{ animation: playing ? 'spin-slow 8s linear infinite' : undefined, borderStyle: 'dashed' }} />
+      
       <span className="flex h-5 items-end gap-[3px]" aria-hidden="true">
         {[0, 1, 2, 3, 4].map((i) => (
           <span
@@ -54,7 +54,7 @@ function MusicButton() {
             ref={(el) => {
               bars.current[i] = el
             }}
-            className="block w-[3px] origin-bottom rounded-full bg-[linear-gradient(to_top,#8a6a24,#f1d58a)] transition-transform duration-100"
+            className="block w-[3px] origin-bottom rounded-full bg-[linear-gradient(to_top,#b8975a,#f2c94c)] transition-transform duration-100"
             style={{
               height: `${10 + (i % 3) * 4}px`,
               transform: playing ? undefined : 'scaleY(.25)',
@@ -109,7 +109,7 @@ function AutoScrollButton() {
     <button
       type="button"
       onClick={() => setOn((v) => !v)}
-      className={`grid h-11 w-11 place-items-center rounded-full border border-prada/50 shadow-[0_10px_30px_-10px_#000] backdrop-blur transition-colors ${on ? 'bg-prada text-hitam' : 'bg-hitam/70 text-prada-light'}`}
+      className={`grid h-11 w-11 place-items-center rounded-full shadow-[0_12px_30px_-14px_rgba(59,47,37,.45)] transition-colors ${on ? 'bg-ink text-ivory' : 'bg-ivory/95 text-ink'}`}
       aria-label={on ? t.autoScrollStop : t.autoScroll}
       aria-pressed={on}
       title={on ? t.autoScrollStop : t.autoScroll}
@@ -141,7 +141,7 @@ function SectionNav({ ids }: { ids: SectionId[] }) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 12, scale: 0.97 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute bottom-16 right-0 w-52 overflow-hidden rounded-[22px] border border-prada/40 bg-hitam/92 p-2 shadow-2xl backdrop-blur"
+            className="absolute bottom-14 right-0 w-56 overflow-hidden rounded-2xl bg-ivory p-2 shadow-[0_30px_60px_-20px_rgba(59,47,37,.45)]"
             aria-label={t.navigate}
           >
             {ids.map((id) => {
@@ -155,7 +155,7 @@ function SectionNav({ ids }: { ids: SectionId[] }) {
                     setOpen(false)
                     scrollToEl(`#${id}`)
                   }}
-                  className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-[13px] transition-colors ${active === id ? 'bg-prada/15 text-prada-light' : 'text-gading-dim hover:bg-prada/10'}`}
+                  className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-[13px] transition-colors ${active === id ? 'bg-ink/[.07] text-ink' : 'text-ink-soft hover:bg-ink/5'}`}
                   aria-current={active === id ? 'true' : undefined}
                 >
                   {Icon && <Icon width={18} height={18} />}
@@ -170,7 +170,7 @@ function SectionNav({ ids }: { ids: SectionId[] }) {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="grid h-11 w-11 place-items-center rounded-full border border-prada/50 bg-hitam/70 text-prada-light shadow-[0_10px_30px_-10px_#000] backdrop-blur"
+        className="grid h-11 w-11 place-items-center rounded-full bg-ivory/95 text-ink shadow-[0_12px_30px_-14px_rgba(59,47,37,.45)]"
         aria-label={t.navigate}
         aria-expanded={open}
       >
@@ -187,14 +187,14 @@ function LangSwitch() {
   const { lang, setLang, t } = useApp()
   if (wedding.meta.langs.length < 2) return null
   return (
-    <div className="mt-1 flex items-center gap-1 border-t border-prada/20 px-2 pt-2" role="group" aria-label={t.language}>
+    <div className="mt-1 flex items-center gap-1 border-t border-ink/10 px-2 pt-2" role="group" aria-label={t.language}>
       {wedding.meta.langs.map((l) => (
         <button
           key={l}
           type="button"
           onClick={() => setLang(l)}
           aria-pressed={lang === l}
-          className={`flex-1 rounded-lg py-1.5 font-display text-[10px] tracking-wider transition-colors ${lang === l ? 'bg-prada text-hitam' : 'text-gading-dim hover:bg-prada/10'}`}
+          className={`flex-1 rounded-lg py-1.5 text-[12px] tracking-[0.2em] transition-colors ${lang === l ? 'bg-ink text-ivory' : 'text-ink-soft hover:bg-ink/5'}`}
         >
           {langLabels[l]}
         </button>

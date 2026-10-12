@@ -47,7 +47,7 @@ export default function App() {
   useEffect(() => {
     document.body.classList.add('is-locked')
     music.init(wedding.music.src, wedding.music.volume, wedding.music.startAt)
-    // Cover tetap ringan: bagian undangan & Three.js baru dimuat saat halaman sudah tenang
+    // Cover tetap ringan: bagian undangan & kelopak bunga baru dimuat saat halaman sudah tenang
     // (±3,5 dtk setelah load) ATAU saat tamu mulai berinteraksi — mana yang lebih dulu.
     let started = false
     const prefetch = () => {
@@ -56,7 +56,7 @@ export default function App() {
       void loadOpening()
       void loadInvitation().then(() => {
         setMountInvite(true)
-        if (!reduced) whenIdle(() => void import('@/fx/particles'), 2500)
+        if (!reduced) whenIdle(() => void import('@/fx/petals'), 2500)
       })
     }
     const events = ['pointerdown', 'touchstart', 'keydown', 'wheel'] as const

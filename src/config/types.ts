@@ -89,6 +89,8 @@ export interface WeddingConfig {
     opening: L
     openingSub: L
     intro: L
+    /** kalimat singkat di momen foto berdua */
+    coupleLine: L
     quote: L
     quoteSource: L
     closing: L
@@ -113,20 +115,17 @@ export interface WeddingConfig {
     chapters: StoryChapter[]
   }
   photos: {
-    hero: PhotoRef
+    /** FOTO BERDUA — momen klimaks setelah perkenalan pria & wanita (portrait, full-bleed) */
+    couple: PhotoRef
+    /** foto penutup */
     closing: PhotoRef
     gallery: PhotoRef[]
   }
   /** Video tambahan di galeri (YouTube embed URL atau path mp4 di /public). */
   galleryVideos: { title?: L; src: string; poster?: PhotoRef }[]
   video: {
-    /** Video background utama. */
-    background: VideoSource
-    /**
-     * Opsional: video berbeda per section (id section → video). Akan di-crossfade.
-     * Contoh: { story: { mp4: '/media/video/story.mp4', poster: 'story-poster.jpg' } }
-     */
-    perSection?: Partial<Record<SectionId, VideoSource>>
+    /** Opsional: video prewedding untuk momen "berdua" (menggantikan foto berdua bila diisi). */
+    couple: VideoSource
   }
   gift: {
     enabled: boolean
@@ -160,11 +159,11 @@ export interface WeddingConfig {
 export type SectionId =
   | 'cover'
   | 'opening'
-  | 'countdown'
+  | 'groom'
+  | 'bride'
   | 'couple'
   | 'story'
   | 'events'
-  | 'live'
   | 'gallery'
   | 'gift'
   | 'rsvp'

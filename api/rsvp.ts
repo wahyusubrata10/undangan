@@ -5,7 +5,7 @@
  */
 import { wedding } from '../src/config/wedding'
 import { sanitizeText } from '../src/lib/guest'
-import { LIMITS, validate, type SubmitInput, type Wish } from '../src/services/guestbook/types'
+import { LIMITS, toPublic, validate, type PublicWish, type SubmitInput, type Wish } from '../src/services/guestbook/types'
 import { clientIp, env, json, sha256, supabase } from './_shared'
 import { redis } from './_redis'
 
@@ -15,13 +15,24 @@ const RATE = { max: 3, windowMin: 10 }
 
 export default async function handler(req: Request): Promise<Response> {
   if (req.method === 'GET') {
-    const kv = redis()
-    if (!kv) return json({ mode: 'none' }) // klien beralih ke mode demo
+    // PUBLIK: hanya nama, ucapan, waktu. Tanpa status kehadiran, jumlah tamu, atau statistik.
     const u = new URL(req.url)
     const page = Math.max(0, Math.floor(Number(u.searchParams.get('page')) || 0))
     const size = Math.min(50, Math.max(1, Math.floor(Number(u.searchParams.get('size')) || 6)))
+    const cache = { 'cache-control': 'public, max-age=0, s-maxage=5' }
     try {
-      return json({ mode: 'redis', ...(await kv.list(page, size)) }, 200, { 'cache-control': 'public, max-age=0, s-maxage=5' })
+      const db = supabase()
+      if (db) {
+        const from = page * size
+        const { data, count } = await db.select<PublicWish[]>(`rsvp?select=id,name,message,created_at&order=created_at.desc&offset=${from}&limit=${size}`, { prefer: 'count=exact' })
+        return json({ mode: 'live', items: (data ?? []).map(toPublic), total: count ?? 0 }, 200, cache)
+      }
+      const kv = redis()
+      if (kv) {
+        const { items, total } = await kv.list(page, size)
+        return json({ mode: 'live', items: items.map(toPublic), total }, 200, cache)
+      }
+      return json({ mode: 'none' }) // klien beralih ke mode demo
     } catch (e) {
       console.error(e)
       return json({ error: 'server' }, 500)
@@ -56,7 +67,7 @@ export default async function handler(req: Request): Promise<Response> {
 
   const err = validate(input, wedding.rsvp.maxGuests)
   // honeypot terisi → pura-pura sukses agar bot tidak belajar
-  if (input.website) return json({ wish: { id: 'ok', ...input, created_at: new Date().toISOString() } }, 200)
+  if (input.website) return json({ wish: { id: 'ok', name: input.name, message: input.message, created_at: new Date().toISOString() } }, 200)
   if (err) return json({ error: err }, 400)
 
   const db = supabase()
@@ -76,7 +87,7 @@ export default async function handler(req: Request): Promise<Response> {
         created_at: new Date().toISOString(),
       }
       await kv.add(wish)
-      return json({ wish }, 201)
+      return json({ wish: toPublic(wish) }, 201)
     } catch (e) {
       console.error(e)
       return json({ error: 'server' }, 500)
@@ -98,7 +109,7 @@ export default async function handler(req: Request): Promise<Response> {
       message: input.message,
     })
     await db.insert('rsvp_ratelimit', { ip_hash: ipHash }, false)
-    return json({ wish }, 201)
+    return json({ wish: toPublic(wish) }, 201)
   } catch (e) {
     console.error(e)
     return json({ error: 'server' }, 500)

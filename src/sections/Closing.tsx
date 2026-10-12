@@ -4,11 +4,11 @@ import { useApp } from '@/context'
 import { wedding } from '@/config/wedding'
 import { Section } from '@/components/Section'
 import SmartImage from '@/components/SmartImage'
-import { CandiBentar, Divider, Jepun } from '@/ornaments'
+import { CandiParas, SawahLayer } from '@/ornaments'
 import { coupleOrder } from '@/lib/couple'
 import { toAksaraBali } from '@/lib/aksara'
 
-/** Penutup: foto, terima kasih, salam — lalu gapura menutup perlahan mengikuti scroll. */
+/** 11 · Penutup — terima kasih, Om Shanti; gapura paras menutup perlahan mengikuti scroll. */
 export default function Closing() {
   const { t, c, reduced } = useApp()
   const [a, b] = coupleOrder()
@@ -17,59 +17,59 @@ export default function Closing() {
   useEffect(() => {
     if (reduced || !gate.current) return
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ scrollTrigger: { trigger: gate.current, start: 'top 85%', end: 'bottom bottom', scrub: 1 } })
-      tl.fromTo('.cl-left', { xPercent: -100 }, { xPercent: 0, ease: 'power2.out' }, 0)
-        .fromTo('.cl-right', { xPercent: 100 }, { xPercent: 0, ease: 'power2.out' }, 0)
-        .fromTo('.cl-light', { scaleX: 6, opacity: 0.2 }, { scaleX: 1, opacity: 1, ease: 'none' }, 0.2)
+      gsap
+        .timeline({ scrollTrigger: { trigger: gate.current, start: 'top 90%', end: 'bottom bottom', scrub: 1.2 } })
+        .fromTo('.cl-left', { xPercent: -100 }, { xPercent: 0, ease: 'none' }, 0)
+        .fromTo('.cl-right', { xPercent: 100 }, { xPercent: 0, ease: 'none' }, 0)
+        .fromTo('.cl-far', { yPercent: 30 }, { yPercent: 0, ease: 'none' }, 0)
+        .fromTo('.cl-mid', { yPercent: 50 }, { yPercent: 0, ease: 'none' }, 0)
     }, gate)
     return () => ctx.revert()
   }, [reduced])
 
   return (
-    <Section id="closing" sweep label={t.nav.closing} className="overflow-hidden">
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(11,8,7,.7),rgba(11,8,7,.95)_60%,#0b0807)]" />
-      <div className="relative px-6 pb-10 pt-24 text-center">
-        <div className="relative mx-auto w-[78%] max-w-[320px]" data-reveal="scale">
-          <div data-mask="arch" className="overflow-hidden rounded-t-full">
-            <SmartImage photo={wedding.photos.closing} alt={`${a.nick} & ${b.nick}`} label="Foto Penutup" ratio="3/4" sizes="(min-width:1024px) 320px, 78vw" className="rounded-t-full" />
+    <Section id="closing" tone="cream" label={t.nav.closing} className="overflow-hidden">
+      <div className="px-6 pb-12 pt-32 text-center">
+        <div className="mx-auto w-[74%] max-w-sm overflow-hidden" data-curtain>
+          <div>
+            <SmartImage photo={wedding.photos.closing} alt={`${a.nick} & ${b.nick}`} label="Foto Penutup" ratio="3/4" sizes="(min-width:1024px) 384px, 74vw" className="w-full" />
           </div>
-          <div className="pointer-events-none absolute -inset-2 rounded-t-full border border-prada/50" />
         </div>
-        <p className="mx-auto mt-10 max-w-sm font-serif text-[1.15rem] italic leading-relaxed text-gading" data-reveal="up">
+        <p className="lead mx-auto mt-16 max-w-md" data-anim="lines">
           {c(wedding.greeting.closingText)}
         </p>
-        <p className="mx-auto mt-4 max-w-sm text-[13px] text-gading-dim" data-reveal="up">
+        <p className="mx-auto mt-5 max-w-sm text-[13px] text-ink-soft" data-anim="up">
           {c(wedding.greeting.thanks)}
         </p>
-        <h2 className="mt-10 font-display text-[12px] tracking-[0.45em] text-gading-dim uppercase" data-reveal="fade">
+        <p className="label mt-20" data-anim="fade">
           {t.closingTitle}
-        </h2>
-        <p className="display-name text-prada mt-3 text-[clamp(3rem,15vw,4.6rem)]" data-split="chars">
+        </p>
+        <p className="display-i mt-4 text-[clamp(3.4rem,17vw,7rem)] text-ink" data-anim="lines">
           {a.nick} &amp; {b.nick}
         </p>
-        <p className="aksara text-prada mt-1 text-2xl" lang="ban" data-reveal="fade">
-          {`${a.aksara || toAksaraBali(a.nick)} ᭞ ${b.aksara || toAksaraBali(b.nick)}`}
+        <p className="aksara text-lg" lang="ban" data-anim="fade">
+          {`${a.aksara || toAksaraBali(a.nick)}  ${b.aksara || toAksaraBali(b.nick)}`}
         </p>
-        <Divider className="mx-auto my-8 w-40" />
-        <p className="font-display text-[14px] tracking-[0.35em] text-prada-light" data-split="chars">
+        <p className="accent mt-12 text-[1.5rem] text-prada" data-anim="lines">
           {c(wedding.greeting.closing)}
         </p>
       </div>
 
-      {/* gapura menutup */}
-      <div ref={gate} className="relative h-[70svh] overflow-hidden" aria-hidden="true">
-        <div className="cl-light absolute bottom-0 left-1/2 top-[12%] w-[3px] -translate-x-1/2 bg-[linear-gradient(to_bottom,transparent,rgba(247,227,163,.9)_30%,rgba(247,227,163,.6))]" />
+      {/* gapura menutup + sawah pagi */}
+      <div ref={gate} className="relative h-[75svh] overflow-hidden" aria-hidden="true">
+        <SawahLayer layer="far" className="cl-far absolute inset-x-0 bottom-[22%] h-[30%] w-full opacity-70" />
+        <SawahLayer layer="mid" className="cl-mid absolute inset-x-0 bottom-[8%] h-[30%] w-full" />
         <div className="absolute inset-0 flex justify-center">
           <div className="cl-left relative h-full w-1/2">
-            <CandiBentar side="left" className="absolute bottom-0 right-0 h-[92%] w-auto max-w-none" />
+            <CandiParas side="left" className="absolute bottom-0 right-0 h-[90%] w-auto max-w-none" />
           </div>
           <div className="cl-right relative h-full w-1/2">
-            <CandiBentar side="right" className="absolute bottom-0 left-0 h-[92%] w-auto max-w-none" />
+            <CandiParas side="right" className="absolute bottom-0 left-0 h-[90%] w-auto max-w-none" />
           </div>
         </div>
-        <Jepun className="absolute bottom-6 left-1/2 w-10 -translate-x-1/2" style={{ animation: 'float-y 4s ease-in-out infinite' }} />
+        <SawahLayer layer="near" className="absolute inset-x-0 bottom-0 h-[14%] w-full" />
       </div>
-      <footer className="relative bg-hitam px-6 pb-28 pt-6 text-center text-[10px] tracking-[0.2em] text-gading-dim/50 uppercase">
+      <footer className="bg-[#d3d8a6] px-6 pb-28 pt-4 text-center text-[12px] tracking-[0.3em] text-ink/60 uppercase">
         {a.nick} &amp; {b.nick} · {new Date(wedding.countdownTo).getFullYear()}
       </footer>
     </Section>

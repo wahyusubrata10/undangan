@@ -1,7 +1,6 @@
 import { useState, type CSSProperties } from 'react'
 import { resolvePhoto, srcSet } from '@/lib/media'
 import { useApp } from '@/context'
-import { PatraPunggel } from '@/ornaments'
 
 interface Props {
   photo: string | undefined
@@ -29,20 +28,17 @@ export default function SmartImage({ photo, alt, sizes = '100vw', className = ''
   const { t } = useApp()
 
   if (r.kind === 'empty') {
+    // placeholder elegan tanpa bingkai: gradasi pasir lembut + label kecil
     return (
       <div
-        className={`relative grid place-items-center overflow-hidden bg-[radial-gradient(120%_90%_at_50%_30%,#3a0b0f,#150b08_70%)] ${className}`}
+        className={`relative grid place-items-center overflow-hidden bg-[radial-gradient(120%_80%_at_30%_20%,#f6efe3,#e6d9c3_70%,#dccdb4)] ${className}`}
         style={{ aspectRatio: ratio, ...style }}
         role="img"
         aria-label={label ? `${t.emptyPhoto}: ${label}` : alt}
         onClick={onClick}
       >
-        <div className="absolute inset-3 rounded-[inherit] border border-prada/25" />
-        <div className="absolute inset-0 opacity-[.08] bg-[repeating-linear-gradient(45deg,#c9a24b_0_1px,transparent_1px_12px)]" />
-        <div className="relative flex flex-col items-center gap-2 px-4 text-center">
-          <PatraPunggel className="w-14 opacity-80" strokeWidth={2.4} />
-          {label && <span className="font-display text-[10px] tracking-[0.3em] uppercase text-prada/70">{label}</span>}
-        </div>
+        <div className="absolute inset-0 opacity-60 bg-[radial-gradient(60%_50%_at_70%_80%,rgba(255,255,255,.7),transparent)]" />
+        {label && <span className="label relative px-6 text-center !text-[12px] !text-ink-soft/70">{label}</span>}
       </div>
     )
   }
