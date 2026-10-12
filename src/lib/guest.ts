@@ -1,6 +1,6 @@
 /**
  * Membaca nama tamu & sapaan dari query string dengan aman.
- * Dipakai di browser (src/) DAN di Edge Middleware (middleware.ts) — jangan import modul browser di sini.
+ * Dipakai di browser (src/) DAN di Vercel Functions (api/) — jangan import modul browser di sini.
  */
 
 const MAX_NAME = 60
@@ -123,7 +123,7 @@ export function guestLink(base: string, name: string, salutation?: string): stri
   return u.toString()
 }
 
-/** Escape untuk disisipkan ke atribut HTML (dipakai middleware OG). */
+/** Escape untuk disisipkan ke atribut HTML (dipakai api/invite untuk meta OG). */
 export function escapeHtml(s: string): string {
   return s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!)
 }

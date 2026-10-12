@@ -16,7 +16,7 @@ const RATE = { max: 3, windowMin: 10 }
 export default async function handler(req: Request): Promise<Response> {
   if (req.method === 'GET') {
     const kv = redis()
-    if (!kv) return json({ mode: 'none' }, 404)
+    if (!kv) return json({ mode: 'none' }) // klien beralih ke mode demo
     const u = new URL(req.url)
     const page = Math.max(0, Math.floor(Number(u.searchParams.get('page')) || 0))
     const size = Math.min(50, Math.max(1, Math.floor(Number(u.searchParams.get('size')) || 6)))

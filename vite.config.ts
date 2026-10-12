@@ -16,6 +16,6 @@ export default defineConfig({
   },
   test: {
     environment: 'node',
-    include: ['src/**/*.test.ts', 'api/**/*.test.ts', 'middleware.test.ts'],
+    include: ['src/**/*.test.ts', 'api/**/*.test.ts'],
   },
 } as Parameters<typeof defineConfig>[0])

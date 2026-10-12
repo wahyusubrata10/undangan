@@ -29,10 +29,10 @@ describe('api/rsvp', () => {
     new Request('https://wd.id/api/rsvp', { method: 'POST', headers: { 'content-type': 'application/json', 'x-real-ip': '1.2.3.4', ...headers }, body: JSON.stringify(body) })
   const valid = { name: 'Wayan', attendance: 'yes', guests: 2, message: 'Selamat!', website: '', elapsed: 5000 }
 
-  it('menolak metode selain GET/POST; GET tanpa database → 404 (klien pakai mode demo)', async () => {
+  it('menolak metode selain GET/POST; GET tanpa database → mode none (klien pakai mode demo)', async () => {
     const { default: rsvp } = await import('./rsvp')
     expect((await rsvp(new Request('https://wd.id/api/rsvp', { method: 'PUT' }))).status).toBe(405)
-    expect((await rsvp(new Request('https://wd.id/api/rsvp'))).status).toBe(404)
+    expect(await (await rsvp(new Request('https://wd.id/api/rsvp'))).json()).toEqual({ mode: 'none' })
   })
   it('honeypot terisi → pura-pura sukses tanpa menyimpan', async () => {
     const { default: rsvp } = await import('./rsvp')
@@ -148,4 +148,27 @@ describe('mode Redis (Vercel Storage / Upstash)', () => {
     vi.unstubAllGlobals()
     vi.unstubAllEnvs()
   }, 10000)
+})
+
+describe('api/invite (halaman utama + meta OG)', () => {
+  it('menyisipkan nama tamu ke HTML', async () => {
+    vi.stubGlobal('fetch', async () => new Response(html, { headers: { 'content-type': 'text/html; charset=utf-8' } }))
+    const { default: invite } = await import('./invite')
+    const res = await invite(new Request('https://wd.id/api/invite?to=wayan'))
+    expect(res.status).toBe(200)
+    const body = await res.text()
+    expect(body).toContain('<title>Kepada Yth. Wayan — Undangan Pawiwahan Wahyu &amp; Diah</title>')
+    expect(body).toContain('content="https://wd.id/?to=wayan"')
+    vi.unstubAllGlobals()
+  })
+  it('gagal → dialihkan ke /app.html (undangan tetap terbuka)', async () => {
+    vi.stubGlobal('fetch', async () => {
+      throw new Error('down')
+    })
+    const { default: invite } = await import('./invite')
+    const res = await invite(new Request('https://wd.id/api/invite?to=wayan'))
+    expect(res.status).toBe(307)
+    expect(res.headers.get('location')).toBe('https://wd.id/app.html?to=wayan')
+    vi.unstubAllGlobals()
+  })
 })

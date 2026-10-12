@@ -234,7 +234,7 @@ Ikuti petunjuk di bagian atas [`apps-script/Code.gs`](apps-script/Code.gs): buat
 
 **Yang berjalan di Vercel:**
 
-- `middleware.ts` menyisipkan meta OG (judul berisi nama tamu) ke HTML, karena WhatsApp tidak menjalankan JavaScript.
+- `api/invite.ts` melayani halaman utama dan menyisipkan meta OG (judul berisi nama tamu) ke HTML, karena WhatsApp tidak menjalankan JavaScript. Bila gagal, otomatis dialihkan ke `/app.html` sehingga undangan tetap terbuka.
 - `api/og.ts` menghasilkan gambar preview 1200×630 per tamu (gapura emas + "Kepada Yth. …").
 - `api/rsvp.ts`, `api/admin-login.ts`, dan `api/admin-rsvp.ts` berjalan di Edge Functions.
 
@@ -259,7 +259,7 @@ Format link tamu: `https://domainmu/?to=Bapak+Wayan&sapaan=Bapak/Ibu`. Parameter
 ## Arsitektur & performa
 
 ```
-Tamu buka link WA ─► Vercel Middleware (meta OG + nama tamu)
+Tamu buka link WA ─► api/invite (meta OG + nama tamu; gagal → /app.html)
                          │
                          ▼
    index.html + cover (React, tanpa GSAP/Three; ±85 KB JS gzip)
@@ -282,7 +282,6 @@ src/
   services/guestbook/     ← adapter Supabase / Sheets / demo
   pages/Admin.tsx         ← /admin
 api/                      ← Vercel Edge Functions (rsvp, admin, og) + penyimpanan Redis/Supabase
-middleware.ts             ← meta OG per tamu
 supabase/schema.sql       ← skema database
 apps-script/Code.gs       ← backend Google Sheets
 scripts/                  ← optimasi foto, kompres video, musik placeholder

@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
-    "preview": "vite preview",
+    "build": "tsc --noEmit && vite build && node scripts/postbuild.mjs",
+    "preview": "vite preview --open /app.html",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "media": "node scripts/optimize-images.mjs",
