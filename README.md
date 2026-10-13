@@ -64,12 +64,12 @@ Selesai! ✅
 |---|---|
 | # | Tahap | Isi |
 |---|---|---|
-| 1 | **Cover** | Cahaya pagi: langit ivory, kabut, sawah terasering, candi bentar khas Bali (badan bata merah, ukiran batu paras, karang bertingkat, pelinggih kecil) tertutup, nama tamu dari `?to=` (disanitasi dari XSS). **Buka Undangan**: gerbang terbelah, kamera maju, kelopak jepun berhamburan, musik fade-in, fullscreen di HP. |
+| 1 | **Cover** | Cahaya pagi: langit ivory, kabut, sawah terasering, candi bentar khas Bali (ramping menjulang, badan bata merah, lis & ukiran batu paras, karang simbar lidah api di tiap tingkat, puncak bermahkota api, pelinggih kecil) tertutup; di desktop gapura di kiri & teks di kanan, nama tamu dari `?to=` (disanitasi dari XSS). **Buka Undangan**: gerbang terbelah, kamera maju, kelopak jepun berhamburan, musik fade-in, fullscreen di HP. |
 | 2 | **Pembuka** | Om Swastyastu, kutipan singkat, nama kedua mempelai besar + aksara Bali. |
 | 3 | **Mempelai Pria** | Gerbang paras terbuka saat di-scroll, foto pria membesar dari tengah hingga full-bleed; nama, putra ke-, orang tua. |
 | 4 | **Mempelai Wanita** | Foto pria bergeser & memudar, foto wanita masuk dengan tirai dari kanan. |
 | 5 | **Berdua** (klimaks) | Dua potret bertemu di tengah lalu melebur menjadi foto/video berdua full-bleed. |
-| 6 | **Galeri sinematik** | Strip film: 5 foto pertama tampil besar dan bergeser horizontal mengikuti scroll (parallax + garis progres), lalu mosaik editorial untuk sisanya. Ketuk foto → lightbox (swipe, pinch-zoom, tombol back HP). |
+| 6 | **Galeri "Momen Kami"** | 5 foto pertama tampil besar dalam strip yang **digeser kiri-kanan biasa** (tidak mengunci scroll), dengan efek kedalaman & penanda 01/05, lalu mosaik editorial untuk sisanya. Ketuk foto → lightbox (swipe, pinch-zoom, tombol back HP). |
 | 7 | **Countdown + Acara** | Angka odometer tipis, kartu acara minimal, Google Maps, Google Calendar & `.ics`, live streaming opsional. |
 | 8 | **Amplop** | Rekening/e-wallet minimal, salin dengan feedback, QRIS, alamat kado. |
 | 9 | **Ucapan & Doa** | Form RSVP + daftar ucapan (**hanya nama, ucapan, waktu**). |
@@ -281,7 +281,7 @@ src/
   config/media.generated  ← dibuat otomatis oleh `npm run media`
   i18n/                   ← teks UI (id, en, ban)
   ornaments/              ← SVG orisinal: candi bentar paras, jepun, penjor, janur, canang sari, tedung, lamak, sawah
-  sections/               ← Cover, Opening, Meet (pria→wanita→berdua), Gallery (strip film + mosaik), Events, Gift, Rsvp, Closing
+  sections/               ← Cover, Opening, Meet (pria→wanita→berdua), Gallery (strip geser + mosaik), Events, Gift, Rsvp, Closing
   components/             ← Backdrop (video), Dock (musik/nav/auto-scroll), Lightbox, PatraWipe, Particles, SmartImage
   fx/                     ← opening timeline, motion (ScrollTrigger scrub), scroll (Lenis), petals (canvas 2D), audio
   services/guestbook/     ← adapter Supabase / Sheets / demo

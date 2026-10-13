@@ -85,6 +85,7 @@ export const en: typeof id = {
     rsvp: 'Wishes',
     closing: 'Closing',
   },
+  swipe: 'Swipe',
   scroll: 'Scroll',
   rsvpPrivate: 'Your RSVP is only visible to the couple.',
   introducing: 'Introducing',

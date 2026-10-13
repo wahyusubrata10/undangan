@@ -82,8 +82,8 @@ export default async function handler(req: Request): Promise<Response> {
     // garis tipis
     h('div', { style: { position: 'absolute', top: 24, left: 24, right: 24, bottom: 24, border: `1px solid rgba(184,151,90,.45)`, borderRadius: 18, display: 'flex' } }),
     // gapura di kiri & kanan
-    h('img', { src: gate, width: 280, height: 280, style: { position: 'absolute', left: 36, bottom: 30 } }),
-    h('img', { src: gate, width: 280, height: 280, style: { position: 'absolute', right: 36, bottom: 30 } }),
+    h('img', { src: gate, width: 220, height: 300, style: { position: 'absolute', left: 50, bottom: 28 } }),
+    h('img', { src: gate, width: 220, height: 300, style: { position: 'absolute', right: 50, bottom: 28 } }),
     // cahaya tengah
     h('div', { style: { position: 'absolute', left: 300, top: 60, width: 600, height: 520, borderRadius: 300, background: 'radial-gradient(circle, rgba(255,240,205,.9), rgba(251,248,242,0) 70%)', display: 'flex' } }),
     h(

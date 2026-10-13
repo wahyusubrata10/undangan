@@ -204,11 +204,12 @@ export function janurStrip(length: number, step = 22, h = 9): string {
 }
 
 /* ===================================================================== */
-/*  Candi bentar gaya Bali: badan bata merah + ukiran paras putih,        */
-/*  karang (sulur api) di tiap tingkat, pelinggih kecil di sisi luar.     */
-/*  Setengah sisi kiri, viewBox 0 0 300 600, garis belah di x = 300.       */
-/*  Menghasilkan daftar "parts" agar bisa dirender di React MAUPUN string  */
-/*  SVG (gambar OG).                                                       */
+/*  Candi bentar gaya Bali — ramping & menjulang.                         */
+/*  Badan bata merah, lis & ukiran batu paras, KARANG SIMBAR (lidah api /  */
+/*  daun runcing menunjuk ke atas) di setiap sudut tingkat, puncak runcing */
+/*  bermahkota api, pelinggih kecil di sisi luar, undag bertingkat.        */
+/*  Setengah sisi kiri, viewBox 0 0 220 600, garis belah di x = 220.       */
+/*  Menghasilkan "parts" agar bisa dirender di React MAUPUN string SVG.    */
 /* ===================================================================== */
 export interface GatePart {
   d: string
@@ -218,108 +219,99 @@ export interface GatePart {
   opacity?: number
 }
 
-const R = (x: number, y: number, w: number, h: number) => `M${x} ${y} H${x + w} V${y + h} H${x} Z`
+const R = (x: number, y: number, w: number, h: number) => `M${f(x)} ${f(y)} H${f(x + w)} V${f(y + h)} H${f(x)} Z`
 
-/** sulur karang: lengkung besar keluar-atas lalu menggulung ke dalam */
-function karang(x: number, y: number, s: number, dir = -1): string {
-  // dir -1 = mengarah ke kiri (sisi luar)
+/** Karang simbar: daun/lidah api yang tumbuh dari sudut, condong keluar lalu ujungnya melengkung ke atas. */
+function simbar(x: number, y: number, s: number, dir = -1): { body: string; vein: string } {
   const X = (v: number) => f(x + dir * v * s)
   const Y = (v: number) => f(y - v * s)
-  return `M${X(0)} ${Y(0)} C${X(10)} ${Y(14)} ${X(30)} ${Y(16)} ${X(36)} ${Y(32)} C${X(42)} ${Y(48)} ${X(28)} ${Y(60)} ${X(16)} ${Y(52)} C${X(8)} ${Y(46)} ${X(14)} ${Y(36)} ${X(22)} ${Y(40)}`
-}
-/** lidah api kecil di atas karang */
-function lidah(x: number, y: number, s: number, dir = -1): string {
-  const X = (v: number) => f(x + dir * v * s)
-  const Y = (v: number) => f(y - v * s)
-  return `M${X(0)} ${Y(0)} C${X(-4)} ${Y(12)} ${X(4)} ${Y(22)} ${X(2)} ${Y(34)} C${X(10)} ${Y(24)} ${X(12)} ${Y(10)} ${X(0)} ${Y(0)} Z`
+  const body =
+    `M${X(0)} ${Y(0)} ` +
+    `C${X(6)} ${Y(4)} ${X(16)} ${Y(10)} ${X(20)} ${Y(22)} ` + // perut luar
+    `C${X(23)} ${Y(32)} ${X(18)} ${Y(42)} ${X(12)} ${Y(50)} ` +
+    `C${X(10)} ${Y(54)} ${X(12)} ${Y(60)} ${X(16)} ${Y(62)} ` + // ujung melengkung
+    `C${X(8)} ${Y(64)} ${X(3)} ${Y(56)} ${X(4)} ${Y(48)} ` +
+    `C${X(5)} ${Y(38)} ${X(10)} ${Y(30)} ${X(7)} ${Y(20)} ` +
+    `C${X(5)} ${Y(12)} ${X(2)} ${Y(6)} ${X(-2)} ${Y(2)} Z`
+  const vein = `M${X(1)} ${Y(3)} C${X(10)} ${Y(12)} ${X(14)} ${Y(26)} ${X(9)} ${Y(46)}`
+  return { body, vein }
 }
 
 export function candiBaliParts(): { W: number; H: number; parts: GatePart[] } {
-  const W = 300
+  const W = 220
   const H = 600
   const P: GatePart[] = []
-  const paras = (d: string) => P.push({ d, fill: 'paras', stroke: '#b5a68e', sw: 0.8 })
-  const brick = (d: string) => P.push({ d, fill: 'brick', stroke: '#9b5a43', sw: 0.6 })
-  const curl = (d: string, sw: number) => {
-    P.push({ d, fill: 'none', stroke: '#a3937a', sw: sw + 3.2 })
-    P.push({ d, fill: 'none', stroke: '#f1ebe0', sw })
-    P.push({ d, fill: 'none', stroke: '#d9cdb9', sw: Math.max(0.8, sw * 0.18) }) // alur ukiran di tengah
+  const paras = (d: string) => P.push({ d, fill: 'paras', stroke: '#b5a68e', sw: 0.7 })
+  const brick = (d: string) => P.push({ d, fill: 'brick', stroke: '#9b5a43', sw: 0.5 })
+  const flame = (x: number, y: number, sz: number, dir = -1) => {
+    const k = simbar(x, y, sz, dir)
+    P.push({ d: k.body, fill: 'paras', stroke: '#a3937a', sw: 0.9 })
+    P.push({ d: k.vein, fill: 'none', stroke: '#c9bba3', sw: 0.8 })
   }
 
-  // ---- undag (tangga dasar) ----
-  paras(R(0, 576, 300, 24))
-  paras(R(14, 557, 286, 19))
-  paras(R(28, 541, 272, 16))
+  // ---- undag (tangga) & bebaturan ----
+  paras(R(0, 580, 220, 20))
+  paras(R(8, 564, 212, 16))
+  paras(R(16, 550, 204, 14))
+  paras(R(40, 500, 180, 50))
+  P.push({ d: R(46, 512, 174, 3), fill: 'parasDark' })
+  P.push({ d: R(46, 534, 174, 3), fill: 'parasDark' })
+  for (let x = 54; x < 216; x += 16) P.push({ d: `M${x} 520 l5 6 l-5 6 l-5 -6 Z`, fill: '#cbbda5' }) // ukiran belah ketupat
 
-  // ---- pelinggih kecil di sisi luar ----
-  paras(R(24, 500, 88, 41))
-  P.push({ d: R(30, 506, 76, 4), fill: 'parasDark' })
-  brick(R(34, 424, 68, 76))
-  paras(R(34, 452, 68, 8))
-  paras(R(26, 412, 84, 12))
-  brick(R(34, 394, 68, 18))
-  paras(R(30, 388, 76, 6))
-  brick(R(44, 372, 48, 16))
-  paras(R(40, 366, 56, 6))
-  paras(R(52, 352, 32, 14))
-  paras('M52 352 C54 336 62 324 68 314 C74 324 82 336 84 352 Z')
-  P.push({ d: 'M68 300 C64 306 64 312 68 316 C72 312 72 306 68 300 Z', fill: '#d6c08f' })
-  curl(karang(26, 412, 0.42), 4)
-  curl(karang(110, 412, 0.42, 1), 4)
-  curl(karang(30, 388, 0.32), 3.4)
-  curl(karang(106, 388, 0.32, 1), 3.4)
+  // ---- pelinggih kecil di sisi luar (atap bertingkat + api) ----
+  paras(R(8, 486, 34, 64))
+  brick(R(12, 430, 26, 56))
+  paras(R(6, 422, 38, 8))
+  paras(R(10, 410, 30, 12))
+  paras(R(14, 400, 22, 10))
+  paras(R(18, 392, 14, 8))
+  flame(8, 422, 0.34)
+  flame(42, 422, 0.34, 1)
+  P.push({ d: 'M25 392 C21 382 22 372 25 362 C28 372 29 382 25 392 Z', fill: '#d6c08f' })
 
-  // ---- badan utama ----
-  paras(R(112, 500, 188, 41))
-  P.push({ d: R(118, 506, 182, 4), fill: 'parasDark' })
-  brick(R(124, 330, 176, 170))
-  paras(R(124, 330, 14, 170)) // pilaster paras
-  paras(R(124, 410, 176, 14)) // sabuk ukiran
-  // panel ukiran: relung melengkung berisi bunga & sulur (paras)
-  paras('M176 494 V452 C176 432 192 420 214 420 C236 420 252 432 252 452 V494 Z')
-  P.push({ d: 'M184 494 V454 C184 438 196 428 214 428 C232 428 244 438 244 454 V494 Z', fill: 'parasDark', opacity: 0.45 })
-  curl('M214 486 C214 470 204 462 196 466 C190 470 194 478 200 476', 3.2)
-  curl('M214 486 C214 470 224 462 232 466 C238 470 234 478 228 476', 3.2)
-  P.push({ d: 'M214 446 m-7 0 a7 7 0 1 0 14 0 a7 7 0 1 0 -14 0', fill: '#f1ebe0', stroke: '#a3937a', sw: 1 })
-  P.push({ d: 'M214 446 m-2.6 0 a2.6 2.6 0 1 0 5.2 0 a2.6 2.6 0 1 0 -5.2 0', fill: '#d6c08f' })
+  // ---- badan utama (bata) ----
+  brick(R(56, 336, 164, 164))
+  paras(R(56, 336, 10, 164)) // pilaster paras
+  paras(R(56, 420, 164, 10)) // sabuk tengah
+  // relung kecil berukir
+  paras('M120 492 V456 C120 444 130 436 142 436 C154 436 164 444 164 456 V492 Z')
+  P.push({ d: 'M127 492 V458 C127 449 134 443 142 443 C150 443 157 449 157 458 V492 Z', fill: 'parasDark', opacity: 0.5 })
+  P.push({ d: 'M142 470 C136 462 132 470 138 474 M142 470 C148 462 152 470 146 474 M142 482 V466', fill: 'none', stroke: '#a3937a', sw: 1.2 })
+  flame(56, 336, 1.45) // karang terbesar di bahu badan
+  flame(66, 336, 0.8)
 
-  // ---- tingkat-tingkat atas (lis paras + badan bata), menyempit ke garis belah ----
-  const tiers = [
-    { cy: 318, ch: 12, cx: 110, by: 268, bx: 132 },
-    { cy: 256, ch: 12, cx: 140, by: 214, bx: 158 },
-    { cy: 202, ch: 12, cx: 164, by: 166, bx: 182 },
-    { cy: 154, ch: 12, cx: 188, by: 124, bx: 206 },
-    { cy: 112, ch: 12, cx: 212, by: 92, bx: 228 },
-  ]
-  tiers.forEach((t, i) => {
-    const bodyH = t.cy - t.by
-    brick(R(t.bx, t.by, W - t.bx, bodyH))
-    paras(R(t.bx, t.by + bodyH * 0.42, W - t.bx, 5)) // garis ukiran tipis
-    paras(R(t.cx, t.cy, W - t.cx, t.ch)) // lis menonjol
-    // deret ukiran bulat pada lis
-    let dots = ''
-    for (let x = t.cx + 8; x < W - 4; x += 12) dots += `M${x} ${t.cy + t.ch / 2} m-2 0 a2 2 0 1 0 4 0 a2 2 0 1 0 -4 0 `
-    P.push({ d: dots, fill: '#cbbda5' })
-    // karang besar di sudut luar + lidah api
-    const s = 1.25 - i * 0.16
-    curl(karang(t.bx - 2, t.by + bodyH * 0.55, s * 0.55), 5 - i * 0.5) // sulur kecil di sisi badan
-    curl(karang(t.cx, t.cy, s), 10.5 - i * 1.3)
-    P.push({ d: lidah(t.cx - 8 * s, t.cy - 6, s), fill: '#f1ebe0', stroke: '#a3937a', sw: 0.9 })
+  // ---- tingkat-tingkat: makin ke atas makin ramping, tiap sudut ber-karang simbar ----
+  let y = 336
+  let x = 66
+  const hs = [26, 24, 22, 20, 18, 16, 14, 12]
+  hs.forEach((h, i) => {
+    const lis = 6
+    const thick = i % 3 === 0
+    const L = thick ? 9 : lis
+    paras(R(x - 7, y - L, W - x + 7, L)) // lis menonjol
+    if (thick) {
+      let dots = ''
+      for (let dx = x - 2; dx < W - 4; dx += 9) dots += `M${f(dx)} ${f(y - L / 2)} m-1.8 0 a1.8 1.8 0 1 0 3.6 0 a1.8 1.8 0 1 0 -3.6 0 `
+      P.push({ d: dots, fill: '#cbbda5' })
+    }
+    brick(R(x, y - L - h, W - x, h))
+    if (h > 18) paras(R(x, y - L - h * 0.55, W - x, 3)) // garis ukiran
+    const sz = 1.12 - i * 0.075
+    flame(x - 7, y - L, sz)
+    flame(x + 2, y - L, sz * 0.55) // daun pendamping
+    y -= L + h
+    x += 14 - i * 0.5
   })
+  // ---- puncak runcing + mahkota api ----
+  paras(`M${f(x - 4)} ${f(y)} C${f(x + 6)} ${f(y - 18)} ${f(W - 16)} ${f(y - 40)} ${W} ${f(y - 58)} V${f(y)} Z`)
+  P.push({ d: `M${f(x + 8)} ${f(y - 5)} C${f(x + 16)} ${f(y - 18)} ${f(W - 20)} ${f(y - 33)} ${W} ${f(y - 45)}`, fill: 'none', stroke: '#c9bba3', sw: 1 })
+  // jambul api di sepanjang puncak
+  flame(x - 4, y, 0.58)
+  flame(x + 14, y - 20, 0.46)
+  flame(W - 24, y - 40, 0.38)
+  P.push({ d: `M${W} ${f(y - 58)} C${W - 11} ${f(y - 70)} ${W - 8} ${f(y - 84)} ${W} ${f(y - 96)} Z`, fill: '#d6c08f', stroke: '#b8975a', sw: 0.6 })
 
-  // ---- puncak (murdha) di garis belah ----
-  paras(R(236, 80, 64, 12))
-  brick(R(246, 62, 54, 18))
-  paras(R(242, 56, 58, 6))
-  brick(R(258, 42, 42, 14))
-  paras(R(254, 36, 46, 6))
-  paras('M266 36 C270 22 282 12 300 4 V36 Z')
-  curl(karang(236, 80, 0.62), 6)
-  curl(karang(242, 56, 0.48), 5)
-  curl(karang(254, 36, 0.36), 4)
-  P.push({ d: 'M300 0 C292 6 290 14 294 20 C297 14 300 8 300 0 Z', fill: '#d6c08f' })
-
-  // ---- bayangan di sisi belahan (kedalaman) ----
-  P.push({ d: R(282, 0, 18, 600), fill: 'shadow' })
+  // ---- bayangan di sisi belahan ----
+  P.push({ d: R(204, y - 58, 16, 600 - (y - 58)), fill: 'shadow' })
   return { W, H, parts: P }
 }

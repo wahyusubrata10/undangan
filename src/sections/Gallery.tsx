@@ -1,6 +1,4 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useApp } from '@/context'
 import { wedding } from '@/config/wedding'
 import { Section } from '@/components/Section'
@@ -8,7 +6,6 @@ import SmartImage from '@/components/SmartImage'
 import { Lamak } from '@/ornaments'
 import { photoUrl } from '@/lib/media'
 
-gsap.registerPlugin(ScrollTrigger)
 const Lightbox = lazy(() => import('@/components/Lightbox'))
 
 /** jumlah foto di strip film (sisanya masuk mosaik) */
@@ -16,8 +13,8 @@ const FILM = 5
 
 /**
  * 6 · Galeri sinematik (menggantikan "Kisah Kami").
- *  A. Strip film: section di-pin, foto besar bergeser horizontal mengikuti scroll,
- *     isi foto ber-parallax & garis progres janur.
+ *  A. Strip foto besar yang digeser kiri-kanan biasa (native scroll-snap, tidak
+ *     mengunci scroll ke bawah) dengan efek kedalaman & penanda foto aktif.
  *  B. Mosaik editorial: ukuran & rasio berirama, foto terbuka seperti tirai.
  * Semua foto bisa diketuk → lightbox (swipe, pinch-zoom, tombol back HP).
  */
@@ -38,40 +35,52 @@ export default function Gallery() {
   const rest = photos.slice(FILM)
   const [open, setOpen] = useState<number | null>(null)
   const close = useCallback(() => setOpen(null), [])
-  const pinRef = useRef<HTMLDivElement>(null)
-  const trackRef = useRef<HTMLDivElement>(null)
-  const barRef = useRef<HTMLDivElement>(null)
+  const stripRef = useRef<HTMLDivElement>(null)
+  const [active, setActive] = useState(0)
 
+  // geser kiri-kanan biasa (native, scroll-snap). Efek kedalaman: isi foto bergeser pelan
+  // berlawanan arah geser (rAF, hanya transform) + penanda foto aktif.
   useEffect(() => {
-    if (reduced || !pinRef.current || !trackRef.current) return
-    const ctx = gsap.context(() => {
-      const track = trackRef.current!
-      const dist = () => Math.max(0, track.scrollWidth - window.innerWidth)
-      const tween = gsap.to(track, {
-        x: () => -dist(),
-        ease: 'none',
-        scrollTrigger: {
-          trigger: pinRef.current,
-          start: 'top top',
-          end: () => `+=${dist()}`,
-          pin: true,
-          scrub: 0.5,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-          onToggle: (self) => (track.style.willChange = self.isActive ? 'transform' : ''),
-          onUpdate: (self) => barRef.current && gsap.set(barRef.current, { scaleX: self.progress }),
-        },
+    const el = stripRef.current
+    if (!el) return
+    let raf = 0
+    const update = () => {
+      raf = 0
+      const mid = el.scrollLeft + el.clientWidth / 2
+      let best = 0
+      let bestD = Infinity
+      el.querySelectorAll<HTMLElement>('[data-film]').forEach((card, i) => {
+        const c = card.offsetLeft + card.offsetWidth / 2
+        const d = c - mid
+        if (Math.abs(d) < bestD) {
+          bestD = Math.abs(d)
+          best = i
+        }
+        if (!reduced) {
+          const img = card.firstElementChild as HTMLElement | null
+          if (img) img.style.transform = `translate3d(${(-d / el.clientWidth) * 9}%,0,0)`
+        }
       })
-      // parallax di dalam tiap foto + sedikit membesar saat melewati tengah
-      gsap.utils.toArray<HTMLElement>('.film-img', track).forEach((img) => {
-        gsap.fromTo(img, { xPercent: -10, scale: 1.12 }, { xPercent: 10, ease: 'none', scrollTrigger: { trigger: img.parentElement!, containerAnimation: tween, start: 'left right', end: 'right left', scrub: true } })
-      })
-      gsap.utils.toArray<HTMLElement>('.film-cap', track).forEach((cap) => {
-        gsap.from(cap, { y: 24, opacity: 0, duration: 0.7, ease: 'power3.out', scrollTrigger: { trigger: cap.parentElement!, containerAnimation: tween, start: 'left 70%', toggleActions: 'play none none reverse' } })
-      })
-    }, pinRef)
-    return () => ctx.revert()
+      setActive(best)
+    }
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update)
+    }
+    update()
+    el.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+    return () => {
+      cancelAnimationFrame(raf)
+      el.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+    }
   }, [reduced])
+
+  const slide = (dir: number) => {
+    const el = stripRef.current
+    if (!el) return
+    el.scrollBy({ left: dir * el.clientWidth * 0.75, behavior: reduced ? 'auto' : 'smooth' })
+  }
 
   const tile = (i: number, ratio: string, cls = '') => (
     <button key={i} type="button" className={`group block w-full text-left ${cls}`} onClick={() => setOpen(i)} aria-label={`${t.photo} ${i + 1}`}>
@@ -94,51 +103,64 @@ export default function Gallery() {
 
   return (
     <Section id="gallery" tone="cream" label={t.nav.gallery}>
-      {/* A — strip film */}
-      <div ref={pinRef} className={`relative overflow-hidden ${reduced ? 'py-24' : 'h-svh'}`}>
+      {/* A — judul + strip foto yang digeser kiri-kanan (tidak mengunci scroll) */}
+      <div className="px-6 pt-32 text-center">
+        <Lamak className="mx-auto w-28" />
+        <p className="label mt-8" data-anim="fade">
+          {t.gallerySub}
+        </p>
+        <h2 className="display-i mt-4 text-[clamp(3.4rem,15vw,6.5rem)] text-ink" data-anim="lines">
+          {t.galleryTitle}
+        </h2>
+      </div>
+      <div className="relative mt-14" data-anim="fade">
         <div
-          ref={trackRef}
-          className={reduced ? 'flex snap-x snap-mandatory gap-4 overflow-x-auto px-6' : 'flex h-full items-center gap-5 pl-[11vw] pr-[12vw] sm:gap-8'}
+          ref={stripRef}
+          className="flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain px-[9vw] pb-2 [scrollbar-width:none] sm:gap-6 [&::-webkit-scrollbar]:hidden"
+          style={{ touchAction: 'pan-x pan-y' }}
+          aria-label={t.galleryTitle}
         >
-          {/* kartu judul */}
-          <div className="flex w-[72vw] shrink-0 flex-col justify-center sm:w-[42vw] lg:w-[34vw]">
-            <Lamak className="w-28" />
-            <p className="label mt-8">{t.gallerySub}</p>
-            <h2 className="display-i mt-4 text-[clamp(3.6rem,17vw,7rem)] text-ink">{t.galleryTitle}</h2>
-            <p className="lead mt-5 max-w-xs !text-[1.05rem]">{c(wedding.greeting.coupleLine)}</p>
-            {!reduced && (
-              <p className="mt-10 flex items-center gap-3 text-[12px] tracking-[0.3em] uppercase text-ink-mute">
-                {t.scroll} <span className="inline-block h-px w-10 bg-ink-mute/60" style={{ animation: 'float-y 1.8s ease-in-out infinite' }} />→
-              </p>
-            )}
-          </div>
           {film.map((_, i) => (
             <button
               key={i}
               type="button"
+              data-film
               onClick={() => setOpen(i)}
               aria-label={`${t.photo} ${i + 1}`}
-              className={`relative shrink-0 snap-center overflow-hidden text-left ${i % 2 ? 'h-[58svh] w-[70vw] sm:w-[40vw] lg:w-[28vw]' : 'h-[68svh] w-[80vw] sm:w-[46vw] lg:w-[32vw]'}`}
+              className="relative h-[64svh] max-h-[640px] w-[82vw] shrink-0 snap-center overflow-hidden text-left sm:w-[46vw] lg:w-[30vw]"
             >
-              <div className="film-img absolute -inset-x-[8%] inset-y-0">
-                <SmartImage photo={photos[i]} alt={`${t.photo} ${i + 1}`} label={`${t.photo} ${i + 1}`} sizes="(min-width:1024px) 34vw, 82vw" className="h-full w-full" />
+              <div className="absolute -inset-x-[10%] inset-y-0 will-change-transform">
+                <SmartImage photo={photos[i]} alt={`${t.photo} ${i + 1}`} label={`${t.photo} ${i + 1}`} sizes="(min-width:1024px) 34vw, 86vw" className="h-full w-full" />
               </div>
-              <span className="film-cap absolute bottom-4 left-4 font-display text-[1.1rem] italic text-ivory [text-shadow:0_1px_12px_rgba(0,0,0,.35)]">
-                {String(i + 1).padStart(2, '0')} <span className="text-[0.8em] opacity-70">/ {String(film.length).padStart(2, '0')}</span>
-              </span>
             </button>
           ))}
         </div>
-        {!reduced && (
-          <div className="absolute inset-x-[8vw] bottom-[6svh] h-px bg-ink/10">
-            <div ref={barRef} className="h-full origin-left scale-x-0 bg-prada" />
+        {/* panah (desktop saja) */}
+        <div className="hidden lg:block">
+          <button type="button" onClick={() => slide(-1)} className="btn-line absolute left-4 top-[32svh] -translate-y-1/2 !bg-ivory/90 !px-4" aria-label={t.prev}>
+            ‹
+          </button>
+          <button type="button" onClick={() => slide(1)} className="btn-line absolute right-4 top-[32svh] -translate-y-1/2 !bg-ivory/90 !px-4" aria-label={t.next}>
+            ›
+          </button>
+        </div>
+        {/* penanda */}
+        <div className="mt-6 flex items-center justify-center gap-4">
+          <span className="font-display text-[1.1rem] italic text-ink">
+            {String(active + 1).padStart(2, '0')} <span className="text-ink-mute">/ {String(film.length).padStart(2, '0')}</span>
+          </span>
+          <div className="flex gap-1.5" aria-hidden="true">
+            {film.map((_, i) => (
+              <span key={i} className={`h-1 rounded-full transition-all duration-500 ${i === active ? 'w-6 bg-prada' : 'w-1.5 bg-ink/15'}`} />
+            ))}
           </div>
-        )}
+        </div>
+        <p className="mt-3 text-center text-[12px] tracking-[0.3em] uppercase text-ink-mute lg:hidden">← {t.swipe} →</p>
       </div>
 
       {/* B — mosaik editorial */}
       {rest.length > 0 && (
-        <div className="mx-auto grid max-w-4xl grid-cols-6 gap-3 px-4 pb-28 pt-10 sm:gap-6">
+        <div className="mx-auto grid max-w-4xl grid-cols-6 gap-3 px-4 pb-28 pt-20 sm:gap-6">
           {rest.map((_, k) => {
             const m = MOSAIC[k % MOSAIC.length]!
             return (

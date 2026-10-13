@@ -229,7 +229,7 @@ export default function Meet() {
       </div>
 
       {/* gerbang paras yang terbuka saat masuk */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex h-full justify-center" aria-hidden="true">
+      <div className="pointer-events-none absolute inset-y-0 left-0 right-0 z-10 flex justify-center lg:left-[42%]" aria-hidden="true">
         <div className="m-gate-l relative h-full w-1/2">
           <CandiBali side="left" className="absolute bottom-0 right-0 h-[92%] w-auto max-w-none" />
         </div>

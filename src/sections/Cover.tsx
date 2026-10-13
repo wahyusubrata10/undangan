@@ -25,8 +25,8 @@ const Cover = forwardRef<HTMLDivElement, Props>(function Cover({ onOpen, opening
       {/* langit pagi + matahari lembut */}
       <div className="cv-sky absolute inset-0" aria-hidden="true">
         <div className="absolute inset-0 bg-[linear-gradient(180deg,#f7f1e6_0%,#fbf8f2_45%,#f3ebdd_100%)]" />
-        <div className="cv-sun absolute left-1/2 top-[30%] h-[60vh] w-[60vh] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,236,190,.85)_0%,rgba(255,236,190,.25)_40%,transparent_70%)]" />
-        <SunRays className="left-1/2 top-[30%] h-[120vh] w-[120vh] -translate-x-1/2 -translate-y-1/2" />
+        <div className="cv-sun absolute left-1/2 top-[30%] lg:left-1/4 h-[60vh] w-[60vh] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,236,190,.85)_0%,rgba(255,236,190,.25)_40%,transparent_70%)]" />
+        <SunRays className="left-1/2 top-[30%] lg:left-1/4 h-[120vh] w-[120vh] -translate-x-1/2 -translate-y-1/2" />
         <Kokokan className="inset-x-0 top-[14%] h-[26%]" count={5} duration={30} />
         <SawahLayer layer="far" className="absolute inset-x-0 bottom-[16%] h-[22vh] w-full opacity-70" />
         <SawahLayer layer="mid" className="absolute inset-x-0 bottom-[6%] h-[22vh] w-full opacity-80" />
@@ -35,7 +35,7 @@ const Cover = forwardRef<HTMLDivElement, Props>(function Cover({ onOpen, opening
       </div>
 
       {/* candi bentar paras putih */}
-      <div className="cv-gate pointer-events-none absolute inset-x-0 bottom-0 flex h-[min(66svh,calc(50vw*2))] justify-center" aria-hidden="true">
+      <div className="cv-gate pointer-events-none absolute inset-x-0 bottom-0 flex h-[min(calc(100svh-18rem),136vw,70svh)] justify-center lg:right-1/2 lg:h-[84svh]" aria-hidden="true">
         <div className="cv-left relative h-full w-1/2 will-change-transform">
           <CandiBali side="left" className="absolute bottom-0 right-0 h-full w-auto max-w-none" />
         </div>
@@ -57,7 +57,7 @@ const Cover = forwardRef<HTMLDivElement, Props>(function Cover({ onOpen, opening
       <SawahLayer layer="near" className="cv-near pointer-events-none absolute inset-x-0 bottom-0 h-[12vh] w-full" />
 
       {/* teks */}
-      <header className="cv-top absolute inset-x-0 top-0 z-10 flex flex-col items-center px-6 pt-[max(2.2rem,env(safe-area-inset-top))] text-center">
+      <header className="cv-top absolute inset-x-0 top-0 z-10 flex flex-col items-center px-6 pt-[max(2.2rem,env(safe-area-inset-top))] text-center lg:left-1/2 lg:pt-[16svh]">
         <p className="label">{c(wedding.eventTitle)}</p>
         <h1 className="display-i mt-3 text-[clamp(3.4rem,17vw,6.5rem)] text-ink">
           {a.nick}
@@ -70,7 +70,7 @@ const Cover = forwardRef<HTMLDivElement, Props>(function Cover({ onOpen, opening
         {main && <p className="mt-1 text-[12px] tracking-[0.5em] text-ink-soft">{dotDate(main.start, main.tzLabel)}</p>}
       </header>
 
-      <div className="cv-plaque absolute inset-x-0 bottom-0 z-10 flex flex-col items-center px-6 pb-[max(2.2rem,env(safe-area-inset-bottom))] pt-28 text-center bg-[linear-gradient(to_top,rgba(251,248,242,.97)_0%,rgba(251,248,242,.9)_55%,transparent)]">
+      <div className="cv-plaque absolute inset-x-0 bottom-0 z-10 flex flex-col items-center px-6 pb-[max(2.2rem,env(safe-area-inset-bottom))] pt-28 text-center bg-[linear-gradient(to_top,rgba(251,248,242,.97)_0%,rgba(251,248,242,.9)_55%,transparent)] lg:left-1/2 lg:bg-none lg:pb-[14svh]">
         <p className="label">{t.dear}</p>
         <p className="mt-2 text-[13px] text-ink-soft">{guest.salutation}</p>
         <p className="display mt-1 max-w-[20rem] text-[2rem] leading-tight text-ink" data-testid="guest-name">

@@ -83,6 +83,7 @@ export const id = {
     rsvp: 'Ucapan',
     closing: 'Penutup',
   },
+  swipe: 'Geser',
   scroll: 'Gulir',
   rsvpPrivate: 'Konfirmasi kehadiran hanya terlihat oleh mempelai.',
   introducing: 'Perkenalkan',
