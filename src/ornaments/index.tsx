@@ -233,3 +233,172 @@ export const NavIcons: Record<string, (p: SvgProps) => React.ReactElement> = {
   rsvp: ico('M4 5 H20 V16 H10 L6 20 V16 H4 Z'),
   closing: ico('M12 21 C12 21 4 15 4 9 a4 4 0 0 1 8-1 a4 4 0 0 1 8 1 c0 6-8 12-8 12Z'),
 }
+
+/* ================================================================== */
+/*  Ornamen tambahan (bergerak halus — hanya transform/opacity)        */
+/* ================================================================== */
+
+/** Patra sari: sulur bunga simetris yang "tergambar" sendiri saat masuk layar (pemisah section). */
+export function PatraSari({ className = '' }: { className?: string }) {
+  // satu sisi sulur (kanan), dicerminkan untuk sisi kiri
+  const vine = 'M160 30 C178 30 186 18 200 18 S224 32 238 26 S258 10 272 16 C282 20 284 30 276 34 C270 37 264 31 268 26'
+  const curl2 = 'M200 18 C204 10 214 8 218 14 C221 19 216 23 212 20'
+  const leaves = [
+    'M222 30 C228 38 238 40 244 36 C238 30 230 28 222 30Z',
+    'M186 24 C190 14 198 10 204 12 C202 20 194 25 186 24Z',
+    'M252 18 C256 10 264 6 270 8 C268 15 260 20 252 18Z',
+  ]
+  const side = (flip: boolean) => (
+    <g transform={flip ? 'translate(320 0) scale(-1 1)' : undefined}>
+      <path className="draw" d={vine} pathLength={1} stroke="#b8975a" strokeWidth="1.1" fill="none" strokeLinecap="round" />
+      <path className="draw" d={curl2} pathLength={1} stroke="#b8975a" strokeWidth="1" fill="none" strokeLinecap="round" />
+      {leaves.map((d, i) => (
+        <path key={i} d={d} fill="#a7b07a" opacity=".55" />
+      ))}
+      <circle cx="268" cy="26" r="1.6" fill="#f2c94c" />
+    </g>
+  )
+  return (
+    <svg viewBox="0 0 320 50" className={className} aria-hidden="true">
+      {side(false)}
+      {side(true)}
+      {/* bunga tengah */}
+      <g transform="translate(160 28)">
+        {[0, 72, 144, 216, 288].map((a) => (
+          <ellipse key={a} cx="0" cy="-7" rx="4.2" ry="7.5" transform={`rotate(${a})`} fill="#fffdf7" stroke="#d6c08f" strokeWidth=".8" />
+        ))}
+        <circle r="2.6" fill="#f2c94c" />
+      </g>
+    </svg>
+  )
+}
+
+/** Ranting bunga jepun dengan daun panjang — bergoyang pelan (sudut/aksen). */
+export const JepunBranch = memo(function JepunBranch({ className = '', style }: { className?: string; style?: CSSProperties }) {
+  const leaf = (x: number, y: number, rot: number, len: number, fill: string) => (
+    <g transform={`translate(${x} ${y}) rotate(${rot})`}>
+      <path d={`M0 0 C${len * 0.3} ${-len * 0.16} ${len * 0.75} ${-len * 0.14} ${len} 0 C${len * 0.75} ${len * 0.14} ${len * 0.3} ${len * 0.16} 0 0Z`} fill={fill} />
+      <path d={`M2 0 H${len - 4}`} stroke="#8e9866" strokeWidth=".7" opacity=".6" />
+    </g>
+  )
+  const flower = (x: number, y: number, s: number, r: number) => (
+    <g transform={`translate(${x} ${y}) rotate(${r}) scale(${s})`}>
+      {[0, 72, 144, 216, 288].map((a) => (
+        <path key={a} d={PETAL} transform={`rotate(${a}) skewX(-8)`} fill="#fffdf7" stroke="#e8dcc6" strokeWidth="1.2" />
+      ))}
+      <circle r="6" fill="#f2c94c" />
+    </g>
+  )
+  return (
+    <svg viewBox="0 0 220 180" className={className} style={style} aria-hidden="true">
+      <g className="sway" style={{ transformOrigin: '210px 6px' }}>
+        <path d="M212 4 C190 20 170 40 150 52 C126 66 104 72 84 92" stroke="#8a7a5a" strokeWidth="3" fill="none" strokeLinecap="round" />
+        <path d="M150 52 C146 70 140 84 128 98" stroke="#8a7a5a" strokeWidth="2" fill="none" strokeLinecap="round" />
+        {leaf(150, 52, 150, 70, '#b9c18c')}
+        {leaf(150, 52, 115, 62, '#a7b07a')}
+        {leaf(150, 52, 190, 58, '#c7cd9f')}
+        {leaf(84, 92, 160, 56, '#a7b07a')}
+        {leaf(84, 92, 120, 50, '#b9c18c')}
+        {flower(80, 96, 0.36, 10)}
+        {flower(108, 108, 0.3, -20)}
+        {flower(126, 100, 0.26, 40)}
+        {flower(60, 116, 0.28, 0)}
+      </g>
+    </svg>
+  )
+})
+
+/** Burung kokokan (bangau putih) terbang melintas — sayap mengepak (scaleY), melintas (translateX). */
+export function Kokokan({ className = '', count = 5, duration = 26, delay = 0 }: { className?: string; count?: number; duration?: number; delay?: number }) {
+  return (
+    <div className={`pointer-events-none absolute overflow-hidden ${className}`} aria-hidden="true">
+      {Array.from({ length: count }, (_, i) => (
+        <div
+          key={i}
+          className="absolute left-0"
+          style={{
+            top: `${10 + ((i * 37) % 60)}%`,
+            animation: `fly ${duration + (i % 3) * 3}s linear ${delay + i * 1.6}s infinite`,
+          }}
+        >
+          <svg viewBox="0 0 40 20" width={22 + (i % 3) * 6} height={11 + (i % 3) * 3} style={{ animation: `flap ${0.9 + (i % 2) * 0.25}s ease-in-out infinite alternate`, transformOrigin: '50% 60%' }}>
+            <path d="M2 10 Q11 2 20 11 Q29 2 38 10" stroke="#8a7a62" strokeWidth="1.6" fill="none" strokeLinecap="round" opacity=".55" />
+          </svg>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+/** Dupa: batang + asap tipis yang naik & memudar. */
+export function Dupa({ className = '' }: { className?: string }) {
+  return (
+    <div className={`pointer-events-none relative ${className}`} aria-hidden="true">
+      {[0, 1, 2].map((i) => (
+        <svg
+          key={i}
+          viewBox="0 0 30 120"
+          className="absolute bottom-[38px] left-1/2 h-28 w-8 -translate-x-1/2"
+          style={{ animation: `smoke ${6 + i * 1.4}s ease-out ${i * 2}s infinite`, opacity: 0 }}
+        >
+          <path d="M15 120 C5 100 25 86 15 66 C6 48 24 34 14 14 C10 6 14 2 16 0" stroke="#b9ab94" strokeWidth="1.4" fill="none" strokeLinecap="round" />
+        </svg>
+      ))}
+      <svg viewBox="0 0 20 44" className="absolute bottom-0 left-1/2 h-11 w-5 -translate-x-1/2">
+        <path d="M10 6 V44" stroke="#8a6a3a" strokeWidth="1.6" />
+        <circle cx="10" cy="5" r="2.2" fill="#e9b93a" style={{ animation: 'ember 2.4s ease-in-out infinite' }} />
+      </svg>
+    </div>
+  )
+}
+
+/** Sinar matahari pagi yang berputar sangat pelan (conic gradient, hanya rotate). */
+export function SunRays({ className = '' }: { className?: string }) {
+  return (
+    <div className={`pointer-events-none absolute ${className}`} aria-hidden="true">
+      <div
+        className="h-full w-full rounded-full"
+        style={{
+          background: 'repeating-conic-gradient(from 0deg, rgba(255,236,190,.38) 0deg 5deg, rgba(255,236,190,0) 5deg 18deg)',
+          WebkitMaskImage: 'radial-gradient(circle, #000 0%, rgba(0,0,0,.6) 35%, transparent 68%)',
+          maskImage: 'radial-gradient(circle, #000 0%, rgba(0,0,0,.6) 35%, transparent 68%)',
+          animation: 'spin-slow 140s linear infinite',
+        }}
+      />
+    </div>
+  )
+}
+
+/** Gebogan: susunan persembahan buah & bunga berbentuk kerucut di atas dulang. */
+export const Gebogan = memo(function Gebogan(p: SvgProps) {
+  const tiers = [
+    { y: 112, n: 6, r: 9, c: ['#f2c94c', '#e8a15a', '#c7cd9f'] },
+    { y: 96, n: 5, r: 8.5, c: ['#e8a15a', '#f2c94c', '#fffdf7'] },
+    { y: 81, n: 4, r: 8, c: ['#c7cd9f', '#f2c94c', '#e8a15a'] },
+    { y: 67, n: 3, r: 7.5, c: ['#f2c94c', '#fffdf7', '#e8a15a'] },
+    { y: 54, n: 2, r: 7, c: ['#e8a15a', '#c7cd9f'] },
+  ]
+  return (
+    <svg viewBox="0 0 120 170" aria-hidden="true" {...p}>
+      {/* dulang */}
+      <path d="M30 128 H90 L84 138 H36Z" fill="#d6c08f" />
+      <path d="M52 138 H68 L72 160 H48Z" fill="#cbb47f" />
+      <path d="M40 160 H80 V166 H40Z" fill="#b8975a" />
+      {tiers.map((t, k) => {
+        const w = t.n * t.r * 2
+        return Array.from({ length: t.n }, (_, i) => (
+          <circle key={`${k}-${i}`} cx={60 - w / 2 + t.r + i * t.r * 2} cy={t.y + 8} r={t.r} fill={t.c[i % t.c.length]} stroke="#d9cdb9" strokeWidth=".6" />
+        ))
+      })}
+      {/* janur & bunga di puncak */}
+      <path d="M60 46 C54 30 56 18 60 6 C64 18 66 30 60 46Z" fill="#c7cd9f" stroke="#a7b07a" strokeWidth=".8" />
+      <path d="M60 44 C48 36 42 26 40 16 M60 44 C72 36 78 26 80 16" stroke="#a7b07a" strokeWidth="1.2" fill="none" />
+      <g transform="translate(60 44) scale(.16)">
+        {[0, 72, 144, 216, 288].map((a) => (
+          <path key={a} d={PETAL} transform={`rotate(${a}) skewX(-8)`} fill="#fffdf7" stroke="#e8dcc6" strokeWidth="3" />
+        ))}
+        <circle r="8" fill="#f2c94c" />
+      </g>
+    </svg>
+  )
+})

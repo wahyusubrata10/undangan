@@ -1,23 +1,20 @@
 /**
- * Sistem gerak terpadu — semua terikat scroll (scrub), hanya transform & opacity.
+ * Sistem gerak terpadu (GSAP ScrollTrigger + Lenis), hanya transform & opacity.
  *
- *  [data-anim="lines"]      teks muncul per baris dari balik mask (SplitText)
- *  [data-anim="up|fade"]    elemen naik/memudar mengikuti scroll
+ *  [data-anim="lines"]      teks muncul per baris dari balik mask (SplitText) saat masuk layar
+ *  [data-anim="up|fade"]    elemen naik/memudar saat masuk layar
+ *  svg .draw                garis ornamen tergambar (stroke)
  *  [data-curtain]           foto terbuka seperti tirai (wrapper & isi bergerak berlawanan)
  *  [data-parallax="0.15"]   lapisan bergerak dengan kecepatan berbeda (foreground/midground/background)
  *  [data-tone="cream|pasir"] warna latar halaman berpindah halus mengikuti section
  *
- * Koreografi: di dalam satu section, elemen diberi offset berdasarkan urutan
- * kemunculannya → foto, judul, teks, aksen mengalir dengan jeda konsisten.
+ * Section pria → wanita → berdua memakai master timeline ber-scrub sendiri (sections/Meet.tsx).
  */
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { SplitText } from 'gsap/SplitText'
 
 gsap.registerPlugin(ScrollTrigger, SplitText)
-
-const SCRUB = 1
-const STEP = 3 // % jarak antar elemen berurutan dalam satu section
 
 /** will-change hanya selama trigger aktif */
 const wc = (els: Element | Element[], v: string) => (self: ScrollTrigger) => {
@@ -29,64 +26,71 @@ export function setupMotion(root: HTMLElement, reduced: boolean): () => void {
   const ctx = gsap.context(() => {
     if (reduced) return
 
-    // urutan elemen per section → offset koreografi
-    const orderOf = new Map<Element, number>()
-    root.querySelectorAll('section').forEach((sec) => {
-      sec.querySelectorAll('[data-anim],[data-curtain]').forEach((el, i) => orderOf.set(el, i))
-    })
-    const startFor = (_el: Element, base = 92) => `top ${base}%`
-    const endFor = (el: Element) => `top ${Math.max(40, 64 - Math.min(6, orderOf.get(el) ?? 0) * STEP)}%`
+    /*
+     * Konten muncul dengan durasi waktu (≈0,9 dtk) begitu masuk layar — tidak perlu scroll jauh.
+     * Berbalik saat di-scroll kembali ke atas (toggleActions), jadi tetap terasa hidup & terhubung scroll.
+     * Parallax di bawah tetap scrub (terikat posisi scroll secara kontinu).
+     */
+    const enter = (trigger: Element, start = 'top 90%') => ({ trigger, start, toggleActions: 'play none none reverse' as const })
+    const wcOn = (els: Element | Element[]) => () => (Array.isArray(els) ? els : [els]).forEach((e) => ((e as HTMLElement).style.willChange = 'transform, opacity'))
+    const wcOff = (els: Element | Element[]) => () => (Array.isArray(els) ? els : [els]).forEach((e) => ((e as HTMLElement).style.willChange = ''))
 
-    // teks per baris
+    // teks per baris dari balik mask
     gsap.utils.toArray<HTMLElement>('[data-anim="lines"]', root).forEach((el) => {
       SplitText.create(el, {
         type: 'lines',
         mask: 'lines',
-        linesClass: 'line-mask-inner',
         autoSplit: true,
         onSplit(self) {
-          return gsap.fromTo(
-            self.lines,
-            { yPercent: 105, opacity: 0 },
-            {
-              yPercent: 0,
-              opacity: 1,
-              ease: 'none',
-              stagger: 0.12,
-              scrollTrigger: { trigger: el, start: startFor(el), end: endFor(el), scrub: SCRUB, onToggle: wc(self.lines, 'transform, opacity') },
-            },
-          )
+          return gsap.from(self.lines, {
+            yPercent: 105,
+            opacity: 0,
+            duration: 0.95,
+            ease: 'power3.out',
+            stagger: 0.08,
+            scrollTrigger: enter(el),
+            onStart: wcOn(self.lines),
+            onComplete: wcOff(self.lines),
+          })
         },
       })
     })
 
     gsap.utils.toArray<HTMLElement>('[data-anim="up"],[data-anim="fade"]', root).forEach((el) => {
-      const up = el.dataset.anim === 'up'
-      gsap.fromTo(
-        el,
-        { y: up ? 46 : 0, opacity: 0 },
-        { y: 0, opacity: 1, ease: 'none', scrollTrigger: { trigger: el, start: startFor(el, 96), end: endFor(el), scrub: SCRUB, onToggle: wc(el, 'transform, opacity') } },
-      )
+      gsap.from(el, {
+        y: el.dataset.anim === 'up' ? 34 : 0,
+        opacity: 0,
+        duration: 0.9,
+        ease: 'power3.out',
+        scrollTrigger: enter(el, 'top 94%'),
+        onStart: wcOn(el),
+        onComplete: wcOff(el),
+      })
     })
 
-    // tirai foto: wrapper naik dari bawah, isi turun → terlihat seperti mask terbuka (tanpa clip-path)
+    // garis ornamen "tergambar" (stroke) saat masuk layar
+    gsap.utils.toArray<SVGPathElement>('svg .draw', root).forEach((p) => {
+      gsap.fromTo(p, { strokeDasharray: 1, strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.6, ease: 'power2.inOut', scrollTrigger: enter(p.ownerSVGElement ?? p, 'top 92%') })
+    })
+
+    // tirai foto: wrapper & isi bergerak berlawanan → seperti mask terbuka (tanpa clip-path)
     gsap.utils.toArray<HTMLElement>('[data-curtain]', root).forEach((el) => {
       const inner = el.firstElementChild as HTMLElement | null
       if (!inner) return
       const dir = el.dataset.curtain === 'x' ? 'xPercent' : 'yPercent'
-      const tl = gsap.timeline({
-        scrollTrigger: { trigger: el, start: 'top 98%', end: 'top 45%', scrub: SCRUB, onToggle: wc([el, inner], 'transform') },
-      })
-      tl.fromTo(el, { [dir]: 100 }, { [dir]: 0, ease: 'none' }, 0).fromTo(inner, { [dir]: -100, scale: 1.18 }, { [dir]: 0, scale: 1, ease: 'none' }, 0)
+      gsap
+        .timeline({ scrollTrigger: enter(el, 'top 92%'), defaults: { duration: 1.15, ease: 'expo.out' }, onStart: wcOn([el, inner]), onComplete: wcOff([el, inner]) })
+        .from(el, { [dir]: 100 }, 0)
+        .from(inner, { [dir]: -100, scale: 1.15 }, 0)
     })
 
-    // parallax berlapis
+    // parallax berlapis (kontinu, terikat scroll)
     gsap.utils.toArray<HTMLElement>('[data-parallax]', root).forEach((el) => {
-      const s = Number(el.dataset.parallax) || 0.15
+      const sp = Number(el.dataset.parallax) || 0.15
       gsap.fromTo(
         el,
-        { yPercent: s * 100 },
-        { yPercent: -s * 100, ease: 'none', scrollTrigger: { trigger: el.closest('section') ?? el, start: 'top bottom', end: 'bottom top', scrub: true, onToggle: wc(el, 'transform') } },
+        { yPercent: sp * 100 },
+        { yPercent: -sp * 100, ease: 'none', scrollTrigger: { trigger: el.closest('section') ?? el, start: 'top bottom', end: 'bottom top', scrub: true, onToggle: wc(el, 'transform') } },
       )
     })
   }, root)

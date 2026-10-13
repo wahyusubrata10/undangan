@@ -5,7 +5,7 @@ import { wedding } from '@/config/wedding'
 import type { GiftAccount } from '@/config/types'
 import { Section, SectionTitle } from '@/components/Section'
 import SmartImage from '@/components/SmartImage'
-import { Jepun } from '@/ornaments'
+import { Gebogan } from '@/ornaments'
 
 async function copyText(text: string): Promise<boolean> {
   try {
@@ -75,7 +75,7 @@ export default function Gift() {
   if (!g.enabled) return null
   return (
     <Section id="gift" tone="cream" label={t.nav.gift} className="px-6 py-32">
-      <Jepun className="mx-auto mb-10 w-10" />
+      <Gebogan className="mx-auto mb-8 w-20" data-anim="up" />
       <SectionTitle label={t.sendGift} title={t.giftTitle} />
       <p className="lead mx-auto mt-8 max-w-md text-center !text-[1.05rem]" data-anim="lines">
         {c(g.intro)}

@@ -124,9 +124,9 @@ export default function Meet() {
       const st = ScrollTrigger.create({
         trigger: el,
         start: 'top top',
-        end: () => `+=${window.innerHeight * 4.2}`,
+        end: () => `+=${window.innerHeight * 2.5}`,
         pin: true,
-        scrub: 1.2,
+        scrub: 0.5,
         anticipatePin: 1,
         animation: tl,
         invalidateOnRefresh: true,

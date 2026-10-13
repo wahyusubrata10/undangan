@@ -1,7 +1,7 @@
 import { forwardRef } from 'react'
 import { useApp } from '@/context'
 import { wedding } from '@/config/wedding'
-import { CandiParas, SawahLayer } from '@/ornaments'
+import { CandiParas, Kokokan, Penjor, SawahLayer, SunRays } from '@/ornaments'
 import { dotDate } from '@/lib/format'
 import { toAksaraBali } from '@/lib/aksara'
 import { coupleOrder } from '@/lib/couple'
@@ -26,6 +26,8 @@ const Cover = forwardRef<HTMLDivElement, Props>(function Cover({ onOpen, opening
       <div className="cv-sky absolute inset-0" aria-hidden="true">
         <div className="absolute inset-0 bg-[linear-gradient(180deg,#f7f1e6_0%,#fbf8f2_45%,#f3ebdd_100%)]" />
         <div className="cv-sun absolute left-1/2 top-[30%] h-[60vh] w-[60vh] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,236,190,.85)_0%,rgba(255,236,190,.25)_40%,transparent_70%)]" />
+        <SunRays className="left-1/2 top-[30%] h-[120vh] w-[120vh] -translate-x-1/2 -translate-y-1/2" />
+        <Kokokan className="inset-x-0 top-[14%] h-[26%]" count={5} duration={30} />
         <SawahLayer layer="far" className="absolute inset-x-0 bottom-[16%] h-[22vh] w-full opacity-70" />
         <SawahLayer layer="mid" className="absolute inset-x-0 bottom-[6%] h-[22vh] w-full opacity-80" />
         {/* kabut pagi */}
@@ -39,6 +41,17 @@ const Cover = forwardRef<HTMLDivElement, Props>(function Cover({ onOpen, opening
         </div>
         <div className="cv-right relative h-full w-1/2 will-change-transform">
           <CandiParas side="right" className="absolute bottom-0 left-0 h-full w-auto max-w-none" />
+        </div>
+      </div>
+      {/* penjor di kiri & kanan, melambai pelan */}
+      <div className="cv-penjor-l pointer-events-none absolute -left-3 bottom-[4vh] h-[58svh] opacity-80" aria-hidden="true">
+        <div className="penjor-sway h-full">
+          <Penjor className="h-full w-auto -scale-x-100" />
+        </div>
+      </div>
+      <div className="cv-penjor-r pointer-events-none absolute -right-3 bottom-[4vh] h-[58svh] opacity-80" aria-hidden="true">
+        <div className="penjor-sway h-full" style={{ animationDelay: '-4s' }}>
+          <Penjor className="h-full w-auto" />
         </div>
       </div>
       <SawahLayer layer="near" className="cv-near pointer-events-none absolute inset-x-0 bottom-0 h-[12vh] w-full" />

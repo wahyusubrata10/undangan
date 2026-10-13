@@ -3,7 +3,7 @@ import { useApp } from '@/context'
 import { wedding } from '@/config/wedding'
 import type { WeddingEvent } from '@/config/types'
 import { Section, SectionTitle } from '@/components/Section'
-import { Tedung } from '@/ornaments'
+import { PatraSari, Tedung } from '@/ornaments'
 import { dateParts, formatTime } from '@/lib/format'
 import { downloadIcs, googleCalendarUrl } from '@/lib/calendar'
 import { calEventFor } from '@/lib/events'
@@ -124,7 +124,8 @@ export default function Events() {
       <div className="mt-14">
         <Countdown />
       </div>
-      <div className="mx-auto mt-28 flex max-w-xl flex-col gap-10">
+      <PatraSari className="mx-auto mt-24 w-60" />
+      <div className="mx-auto mt-14 flex max-w-xl flex-col gap-10">
         <p className="label text-center" data-anim="fade">
           {t.eventsTitle}
         </p>

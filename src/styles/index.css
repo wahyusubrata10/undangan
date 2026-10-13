@@ -270,3 +270,77 @@ body.is-locked {
     transform: rotate(360deg);
   }
 }
+
+/* ---------- gerak ornamen (CSS, hanya transform/opacity; otomatis mati saat reduced motion) ---------- */
+.sway {
+  animation: sway 7s ease-in-out infinite alternate;
+}
+@keyframes sway {
+  from {
+    transform: rotate(-2.2deg);
+  }
+  to {
+    transform: rotate(2.4deg);
+  }
+}
+.penjor-sway {
+  transform-origin: 85% 100%;
+  animation: penjor 9s ease-in-out infinite alternate;
+}
+@keyframes penjor {
+  from {
+    transform: rotate(-1.2deg);
+  }
+  to {
+    transform: rotate(1.6deg);
+  }
+}
+@keyframes fly {
+  from {
+    transform: translate3d(-12vw, 0, 0);
+  }
+  50% {
+    transform: translate3d(50vw, -4vh, 0);
+  }
+  to {
+    transform: translate3d(112vw, 2vh, 0);
+  }
+}
+@keyframes flap {
+  from {
+    transform: scaleY(1);
+  }
+  to {
+    transform: scaleY(0.35);
+  }
+}
+@keyframes smoke {
+  0% {
+    transform: translate3d(0, 10px, 0) scale(0.7);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translate3d(6px, -60px, 0) scale(1.5);
+    opacity: 0;
+  }
+}
+@keyframes ember {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+@keyframes drift {
+  from {
+    transform: translate3d(0, 0, 0) rotate(-6deg);
+  }
+  to {
+    transform: translate3d(0, 10px, 0) rotate(6deg);
+  }
+}

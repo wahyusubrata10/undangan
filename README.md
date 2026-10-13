@@ -82,7 +82,7 @@ Tahap 3–5 adalah **satu panggung yang di-pin** dengan satu master timeline, se
 
 **Privasi tamu:** status kehadiran, jumlah tamu, dan statistik **tidak pernah** dikirim ke halaman tamu (API publik hanya mengembalikan nama, ucapan, waktu; database tertutup untuk publik). Semua itu hanya ada di `/admin`.
 
-**Gaya:** editorial tanpa bingkai, palet ivory/cream/pasir dengan teks coklat hangat, prada redup, janur muda, dan kuning jepun. Ornamen Bali (candi bentar paras, penjor, janur, canang sari, tedung, lamak, sawah) dipakai sebagai aksen, maksimal satu per section. Font: Cormorant Garamond Light, Italiana, dan Jost.
+**Gaya:** editorial tanpa bingkai, palet ivory/cream/pasir dengan teks coklat hangat, prada redup, janur muda, dan kuning jepun. Ornamen Bali orisinal dipakai sebagai aksen yang bergerak halus: candi bentar paras, penjor melambai, sinar pagi, burung kokokan terbang, canang sari dengan asap dupa, ranting jepun bergoyang, sulur patra sari yang tergambar sendiri, gebogan, tedung, lamak, janur, dan sawah terasering. Font: Cormorant Garamond Light, Italiana, dan Jost.
 
 **Bahasa:** Indonesia dan English (`?lang=en`, atau lewat menu navigasi). Struktur Bahasa Bali sudah disiapkan di `src/i18n/ban.ts`.
 
@@ -296,12 +296,12 @@ scripts/                  ← optimasi foto, kompres video, musik placeholder
 
 **Standar yang diterapkan**
 
-- Satu sistem gerak: **Lenis + GSAP ScrollTrigger** dalam satu loop RAF (`lerp 0.09`). Semua animasi konten **terikat scroll** (`scrub`), hanya `transform`/`opacity`, `will-change` dipasang hanya selama trigger aktif. Framer Motion hanya untuk micro-interaction (tombol salin, form, menu).
+- Satu sistem gerak: **Lenis + GSAP ScrollTrigger** dalam satu loop RAF (`lerp 0.09`). Konten muncul dalam ±0,9 detik begitu masuk layar dan berbalik saat di-scroll kembali; parallax & sekuens pria→wanita→berdua (±2,5 layar) **terikat scroll** (`scrub`), hanya `transform`/`opacity`, `will-change` dipasang hanya selama trigger aktif. Framer Motion hanya untuk micro-interaction (tombol salin, form, menu).
 - Warna latar berpindah ivory → cream → pasir lewat lapisan yang di-crossfade (opacity).
 - `prefers-reduced-motion`: semua diganti fade sederhana; sekuens pria/wanita/berdua jadi tiga section biasa; kelopak dimatikan.
 - Kelopak jepun memakai **canvas 2D** (±2 KB), berhenti saat tab tersembunyi, dan mengurangi jumlah/resolusi otomatis bila FPS turun.
 - Video/partikel/musik di-pause saat tab disembunyikan. Iframe peta baru dimuat saat diminta.
-- Hasil Lighthouse mobile (build lokal): **Performance 99 · Accessibility 100 · Best Practices 100 · SEO 100**.
+- Hasil Lighthouse mobile (build lokal): **Performance 95–99 · Accessibility 100 · Best Practices 100 · SEO 100**.
 - Aman di in-app browser WhatsApp/Instagram: fallback clipboard, fullscreen opsional, dan izin gyroscope iOS diminta di tombol buka.
 
 **Catatan:** iPhone (Safari/in-app) tidak mendukung Fullscreen API untuk halaman web, jadi di iOS undangan tetap berjalan normal tanpa fullscreen.

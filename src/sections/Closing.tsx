@@ -4,7 +4,7 @@ import { useApp } from '@/context'
 import { wedding } from '@/config/wedding'
 import { Section } from '@/components/Section'
 import SmartImage from '@/components/SmartImage'
-import { CandiParas, SawahLayer } from '@/ornaments'
+import { CandiParas, Kokokan, PatraSari, SawahLayer } from '@/ornaments'
 import { coupleOrder } from '@/lib/couple'
 import { toAksaraBali } from '@/lib/aksara'
 
@@ -50,13 +50,15 @@ export default function Closing() {
         <p className="aksara text-lg" lang="ban" data-anim="fade">
           {`${a.aksara || toAksaraBali(a.nick)}  ${b.aksara || toAksaraBali(b.nick)}`}
         </p>
-        <p className="accent mt-12 text-[1.5rem] text-prada" data-anim="lines">
+        <PatraSari className="mx-auto mt-12 w-56" />
+        <p className="accent mt-8 text-[1.5rem] text-prada" data-anim="lines">
           {c(wedding.greeting.closing)}
         </p>
       </div>
 
       {/* gapura menutup + sawah pagi */}
       <div ref={gate} className="relative h-[75svh] overflow-hidden" aria-hidden="true">
+        <Kokokan className="inset-x-0 top-[6%] h-[30%]" count={6} duration={24} delay={-6} />
         <SawahLayer layer="far" className="cl-far absolute inset-x-0 bottom-[22%] h-[30%] w-full opacity-70" />
         <SawahLayer layer="mid" className="cl-mid absolute inset-x-0 bottom-[8%] h-[30%] w-full" />
         <div className="absolute inset-0 flex justify-center">

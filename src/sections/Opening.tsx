@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import { useApp } from '@/context'
 import { wedding } from '@/config/wedding'
 import { Section } from '@/components/Section'
-import { Canang } from '@/ornaments'
+import { Canang, Dupa, JepunBranch, PatraSari } from '@/ornaments'
 import { coupleOrder } from '@/lib/couple'
 import { toAksaraBali } from '@/lib/aksara'
 import { dateParts } from '@/lib/format'
@@ -31,9 +31,14 @@ export default function Opening() {
   }
 
   return (
-    <Section id="opening" tone="ivory" label={t.nav.opening} className="px-7 pb-24 pt-[18svh]">
-      <div className="mx-auto max-w-xl text-center">
-        <Canang className="mx-auto w-14" data-anim="fade" />
+    <Section id="opening" tone="ivory" label={t.nav.opening} className="overflow-hidden px-7 pb-24 pt-[16svh]">
+      <JepunBranch className="pointer-events-none absolute -right-6 top-0 w-44 sm:w-60" />
+      <div className="relative mx-auto max-w-xl text-center">
+        {/* canang sari dengan dupa yang mengepul */}
+        <div className="relative mx-auto h-24 w-20" data-anim="fade">
+          <Dupa className="absolute bottom-6 left-1/2 h-20 w-8 -translate-x-1/2" />
+          <Canang className="absolute bottom-0 left-1/2 w-16 -translate-x-1/2" />
+        </div>
         <p className="accent mt-8 text-[1.6rem] text-prada" data-anim="lines">
           {c(wedding.greeting.opening)}
         </p>
@@ -72,7 +77,8 @@ export default function Opening() {
           </p>
         )}
 
-        <p className="lead mx-auto mt-24 max-w-md !text-[1.08rem]" data-anim="lines">
+        <PatraSari className="mx-auto mt-20 w-64" />
+        <p className="lead mx-auto mt-12 max-w-md !text-[1.08rem]" data-anim="lines">
           {c(wedding.greeting.intro)}
         </p>
       </div>
