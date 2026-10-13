@@ -121,7 +121,7 @@ Tips:
 - **Teks multi-bahasa:** `'teks'` atau `{ id: 'teks', en: 'text' }`.
 - **Aksara Bali** dibuat otomatis lewat transliterasi sederhana. Untuk hasil yang benar secara adat, isi `aksara: '...'` di `groom`/`bride` dan minta dicek oleh penutur atau ahli aksara Bali.
 - **Salam & kutipan suci:** `greeting`. **Template pesan WhatsApp:** `share.whatsappTemplate`.
-- **Matikan section:** `liveStream.enabled`, `story.enabled`, `gift.enabled`, `rsvp.enabled`.
+- **Matikan section:** `liveStream.enabled`, `gift.enabled`, `rsvp.enabled`.
 - **Urutan mempelai:** `order: 'groom-first' | 'bride-first'`.
 
 ---
