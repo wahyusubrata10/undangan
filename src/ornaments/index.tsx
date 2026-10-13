@@ -4,7 +4,7 @@
  * Aturan desain: maksimal SATU ornamen per section.
  */
 import { memo, useId, type CSSProperties, type SVGProps } from 'react'
-import { candiBentarHalf, jepunPetal, penjorPath } from './geometry'
+import { candiBaliParts, candiBentarHalf, jepunPetal, penjorPath } from './geometry'
 
 type SvgProps = SVGProps<SVGSVGElement> & { className?: string; style?: CSSProperties }
 
@@ -53,6 +53,49 @@ export const CandiParas = memo(function CandiParas({ side = 'left', ...p }: SvgP
           <rect key={i} x={pn.x} y={pn.y} width={pn.w} height={pn.h} rx="2" fill="#e2d8c7" opacity=".55" />
         ))}
         <path d={flames} fill="#d6c08f" opacity=".75" />
+      </g>
+    </svg>
+  )
+})
+
+/* ------------------------------------------------------------------ */
+/* Candi bentar gaya Bali: bata merah + ukiran paras + karang           */
+/* ------------------------------------------------------------------ */
+const BALI = candiBaliParts()
+export const CandiBali = memo(function CandiBali({ side = 'left', ...p }: SvgProps & { side?: 'left' | 'right' }) {
+  const u = uidOf(useId())
+  const { W, H, parts } = BALI
+  const flip = side === 'right' ? `translate(${W} 0) scale(-1 1)` : undefined
+  const fillOf = (f?: string) =>
+    f === 'brick' ? `url(#br${u})` : f === 'paras' ? `url(#pr${u})` : f === 'parasDark' ? '#cbbda5' : f === 'shadow' ? `url(#sd${u})` : (f ?? 'none')
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMaxYMax meet" aria-hidden="true" {...p}>
+      <defs>
+        {/* bata merah terakota dengan nat */}
+        <pattern id={`br${u}`} width="22" height="10" patternUnits="userSpaceOnUse">
+          <rect width="22" height="10" fill="#c27455" />
+          <rect x="0" y="0" width="22" height="10" fill="url(#bt${u})" />
+          <path d="M0 9.5 H22 M11 0 V4.5 M0 4.5 H22 M0 4.5 V9.5 M22 4.5 V9.5" stroke="#e9d3bf" strokeWidth=".9" />
+        </pattern>
+        <linearGradient id={`bt${u}`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#d08a6a" stopOpacity=".5" />
+          <stop offset="1" stopColor="#a85a40" stopOpacity=".35" />
+        </linearGradient>
+        {/* batu paras: krem keabuan dengan cahaya pagi dari kiri atas */}
+        <linearGradient id={`pr${u}`} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#f7f2ea" />
+          <stop offset=".6" stopColor="#e9e1d3" />
+          <stop offset="1" stopColor="#d8ccb8" />
+        </linearGradient>
+        <linearGradient id={`sd${u}`} x1="1" y1="0" x2="0" y2="0">
+          <stop offset="0" stopColor="#5a4632" stopOpacity=".22" />
+          <stop offset="1" stopColor="#5a4632" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <g transform={flip}>
+        {parts.map((pt, i) => (
+          <path key={i} d={pt.d} fill={fillOf(pt.fill)} stroke={pt.stroke} strokeWidth={pt.sw} opacity={pt.opacity} strokeLinecap="round" strokeLinejoin="round" />
+        ))}
       </g>
     </svg>
   )

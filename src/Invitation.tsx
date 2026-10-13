@@ -7,7 +7,6 @@ import { setupMotion } from '@/fx/motion'
 import Dock from '@/components/Dock'
 import Opening from '@/sections/Opening'
 import Meet from '@/sections/Meet'
-import Story from '@/sections/Story'
 import Events from '@/sections/Events'
 import Gallery from '@/sections/Gallery'
 import Gift from '@/sections/Gift'
@@ -15,17 +14,15 @@ import Rsvp from '@/sections/Rsvp'
 import Closing from '@/sections/Closing'
 
 /**
- * Alur 11 tahap (urutan tetap):
- * Cover → Pembuka → Pria → Wanita → Berdua → Love story → Countdown+Acara → Galeri → Amplop → Ucapan → Penutup
+ * Alur (urutan tetap):
+ * Cover → Pembuka → Pria → Wanita → Berdua → Galeri sinematik → Countdown+Acara → Amplop → Ucapan → Penutup
  */
 export default function Invitation() {
   const { opened, reduced, setActive } = useApp()
   const root = useRef<HTMLDivElement>(null)
 
   const ids = useMemo(() => {
-    const list: SectionId[] = ['opening', 'groom', 'bride', 'couple']
-    if (wedding.story.enabled && wedding.story.chapters.length) list.push('story')
-    list.push('events', 'gallery')
+    const list: SectionId[] = ['opening', 'groom', 'bride', 'couple', 'gallery', 'events']
     if (wedding.gift.enabled) list.push('gift')
     if (wedding.rsvp.enabled) list.push('rsvp')
     list.push('closing')
@@ -86,9 +83,8 @@ export default function Invitation() {
       <main ref={root} className="relative z-10">
         <Opening />
         <Meet />
-        <Story />
-        <Events />
         <Gallery />
+        <Events />
         <Gift />
         <Rsvp />
         <Closing />

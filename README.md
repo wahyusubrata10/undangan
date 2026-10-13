@@ -64,17 +64,16 @@ Selesai! ✅
 |---|---|
 | # | Tahap | Isi |
 |---|---|---|
-| 1 | **Cover** | Cahaya pagi: langit ivory, kabut, sawah terasering, candi bentar batu paras putih tertutup, nama tamu dari `?to=` (disanitasi dari XSS). **Buka Undangan**: gerbang terbelah, kamera maju, kelopak jepun berhamburan, musik fade-in, fullscreen di HP. |
+| 1 | **Cover** | Cahaya pagi: langit ivory, kabut, sawah terasering, candi bentar khas Bali (badan bata merah, ukiran batu paras, karang bertingkat, pelinggih kecil) tertutup, nama tamu dari `?to=` (disanitasi dari XSS). **Buka Undangan**: gerbang terbelah, kamera maju, kelopak jepun berhamburan, musik fade-in, fullscreen di HP. |
 | 2 | **Pembuka** | Om Swastyastu, kutipan singkat, nama kedua mempelai besar + aksara Bali. |
 | 3 | **Mempelai Pria** | Gerbang paras terbuka saat di-scroll, foto pria membesar dari tengah hingga full-bleed; nama, putra ke-, orang tua. |
 | 4 | **Mempelai Wanita** | Foto pria bergeser & memudar, foto wanita masuk dengan tirai dari kanan. |
 | 5 | **Berdua** (klimaks) | Dua potret bertemu di tengah lalu melebur menjadi foto/video berdua full-bleed. |
-| 6 | **Love story** | Opsional (`story.enabled`). Editorial vertikal, crop asimetris, parallax berlapis. |
+| 6 | **Galeri sinematik** | Strip film: 5 foto pertama tampil besar dan bergeser horizontal mengikuti scroll (parallax + garis progres), lalu mosaik editorial untuk sisanya. Ketuk foto → lightbox (swipe, pinch-zoom, tombol back HP). |
 | 7 | **Countdown + Acara** | Angka odometer tipis, kartu acara minimal, Google Maps, Google Calendar & `.ics`, live streaming opsional. |
-| 8 | **Galeri** | Dua kolom ber-parallax berbeda, foto terbuka seperti tirai, lightbox (swipe, pinch-zoom, tombol back HP). |
-| 9 | **Amplop** | Rekening/e-wallet minimal, salin dengan feedback, QRIS, alamat kado. |
-| 10 | **Ucapan & Doa** | Form RSVP + daftar ucapan (**hanya nama, ucapan, waktu**). |
-| 11 | **Penutup** | Terima kasih, Om Shanti Shanti Shanti Om, gapura paras menutup mengikuti scroll. |
+| 8 | **Amplop** | Rekening/e-wallet minimal, salin dengan feedback, QRIS, alamat kado. |
+| 9 | **Ucapan & Doa** | Form RSVP + daftar ucapan (**hanya nama, ucapan, waktu**). |
+| 10 | **Penutup** | Terima kasih, Om Shanti Shanti Shanti Om, gapura menutup mengikuti scroll. |
 
 Tahap 3–5 adalah **satu panggung yang di-pin** dengan satu master timeline, sehingga perpindahan pria → wanita → berdua tidak pernah patah.
 
@@ -82,7 +81,7 @@ Tahap 3–5 adalah **satu panggung yang di-pin** dengan satu master timeline, se
 
 **Privasi tamu:** status kehadiran, jumlah tamu, dan statistik **tidak pernah** dikirim ke halaman tamu (API publik hanya mengembalikan nama, ucapan, waktu; database tertutup untuk publik). Semua itu hanya ada di `/admin`.
 
-**Gaya:** editorial tanpa bingkai, palet ivory/cream/pasir dengan teks coklat hangat, prada redup, janur muda, dan kuning jepun. Ornamen Bali orisinal dipakai sebagai aksen yang bergerak halus: candi bentar paras, penjor melambai, sinar pagi, burung kokokan terbang, canang sari dengan asap dupa, ranting jepun bergoyang, sulur patra sari yang tergambar sendiri, gebogan, tedung, lamak, janur, dan sawah terasering. Font: Cormorant Garamond Light, Italiana, dan Jost.
+**Gaya:** editorial tanpa bingkai, palet ivory/cream/pasir dengan teks coklat hangat, prada redup, janur muda, dan kuning jepun. Ornamen Bali orisinal dipakai sebagai aksen yang bergerak halus: candi bentar bata merah & paras dengan karang, penjor melambai, sinar pagi, burung kokokan terbang, canang sari dengan asap dupa, ranting jepun bergoyang, sulur patra sari yang tergambar sendiri, gebogan, tedung, lamak, janur, dan sawah terasering. Font: Cormorant Garamond Light, Italiana, dan Jost.
 
 **Bahasa:** Indonesia dan English (`?lang=en`, atau lewat menu navigasi). Struktur Bahasa Bali sudah disiapkan di `src/i18n/ban.ts`.
 
@@ -113,7 +112,6 @@ Komponen tidak perlu disentuh. Bagian bertanda `// TODO` masih berisi data conto
 - `groom` / `bride`: nama orang tua, asal (banjar), Instagram, foto
 - `events`: nama tempat, alamat, link Google Maps, `mapsQuery` (koordinat, mis. `'-8.6705,115.2126'`). Contoh acara **Mesakapan** sudah disiapkan dalam komentar.
 - `gift.accounts`: nomor rekening asli, QRIS, alamat kado
-- `story.chapters`: cerita dan foto kalian
 - `groom.photo` / `bride.photo`: foto perkenalan masing-masing (portrait, full-bleed)
 - `photos`: **`couple` (foto berdua, momen klimaks)**, penutup, galeri (12+)
 
@@ -140,7 +138,7 @@ Tips:
 
 Slot yang dikosongkan (`''`) tampil sebagai placeholder ornamen yang elegan. Foto mentah di `media-src/` tidak ikut di-commit, sedangkan hasil kompres di `public/media/` ikut di-commit.
 
-Rekomendasi: **mempelai pria/wanita** & **berdua** portrait 3:4 atau 9:16 (tampil full-bleed, subjek di tengah atas), **love story** 4:5, **galeri** campuran portrait dan landscape.
+Rekomendasi: **mempelai pria/wanita** & **berdua** portrait 3:4 atau 9:16 (tampil full-bleed, subjek di tengah atas), **galeri**: 5 foto pertama sebaiknya yang paling sinematik (tampil besar di strip film), sisanya campuran portrait & landscape.
 
 ---
 
@@ -283,7 +281,7 @@ src/
   config/media.generated  ← dibuat otomatis oleh `npm run media`
   i18n/                   ← teks UI (id, en, ban)
   ornaments/              ← SVG orisinal: candi bentar paras, jepun, penjor, janur, canang sari, tedung, lamak, sawah
-  sections/               ← Cover, Opening, Meet (pria→wanita→berdua), Story, Events, Gallery, Gift, Rsvp, Closing
+  sections/               ← Cover, Opening, Meet (pria→wanita→berdua), Gallery (strip film + mosaik), Events, Gift, Rsvp, Closing
   components/             ← Backdrop (video), Dock (musik/nav/auto-scroll), Lightbox, PatraWipe, Particles, SmartImage
   fx/                     ← opening timeline, motion (ScrollTrigger scrub), scroll (Lenis), petals (canvas 2D), audio
   services/guestbook/     ← adapter Supabase / Sheets / demo

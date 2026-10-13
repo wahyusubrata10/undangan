@@ -45,13 +45,6 @@ export interface WeddingEvent {
   note?: L
 }
 
-export interface StoryChapter {
-  date: L
-  title: L
-  text: L
-  photo: PhotoRef
-}
-
 export interface GiftAccount {
   kind: 'bank' | 'ewallet'
   provider: string
@@ -110,15 +103,12 @@ export interface WeddingConfig {
     url: string
     note?: L
   }
-  story: {
-    enabled: boolean
-    chapters: StoryChapter[]
-  }
   photos: {
     /** FOTO BERDUA — momen klimaks setelah perkenalan pria & wanita (portrait, full-bleed) */
     couple: PhotoRef
     /** foto penutup */
     closing: PhotoRef
+    /** Galeri: 5 foto pertama tampil besar di strip film, sisanya di mosaik. */
     gallery: PhotoRef[]
   }
   /** Video tambahan di galeri (YouTube embed URL atau path mp4 di /public). */
@@ -162,7 +152,6 @@ export type SectionId =
   | 'groom'
   | 'bride'
   | 'couple'
-  | 'story'
   | 'events'
   | 'gallery'
   | 'gift'

@@ -6,7 +6,7 @@ import { ImageResponse } from '@vercel/og'
 import type { ReactElement } from 'react'
 import { wedding } from '../src/config/wedding'
 import { parseGuest } from '../src/lib/guest'
-import { candiBentarHalf } from '../src/ornaments/geometry'
+import { candiBaliParts } from '../src/ornaments/geometry'
 
 export const config = { runtime: 'edge' }
 
@@ -21,14 +21,13 @@ const GOLD = '#b8975a'
 const SOFT = '#6e5d4c'
 
 function gateSvg(): string {
-  const g = candiBentarHalf()
-  const half = (flip: boolean) =>
-    `<g ${flip ? `transform="translate(${g.W * 2} 0) scale(-1 1)"` : ''}>
-      <path d="${g.d}" fill="#efe7da"/>
-      <path d="${g.ledges}" stroke="#cbbda5" stroke-width="1.4" fill="none"/>
-      <path d="${g.flames}" fill="#d6c08f"/>
-    </g>`
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${g.W * 2} ${g.H}">${half(false)}${half(true)}</svg>`
+  const { W, H, parts } = candiBaliParts()
+  const fillOf = (f?: string) => (f === 'brick' ? 'url(#br)' : f === 'paras' ? 'url(#pr)' : f === 'parasDark' ? '#cbbda5' : f === 'shadow' ? 'url(#sd)' : (f ?? 'none'))
+  const body = parts
+    .map((p) => `<path d="${p.d}" fill="${fillOf(p.fill)}"${p.stroke ? ` stroke="${p.stroke}" stroke-width="${p.sw ?? 1}"` : ''}${p.opacity != null ? ` opacity="${p.opacity}"` : ''} stroke-linecap="round" stroke-linejoin="round"/>`)
+    .join('')
+  const defs = `<defs><pattern id="br" width="22" height="10" patternUnits="userSpaceOnUse"><rect width="22" height="10" fill="#c27455"/><path d="M0 9.5 H22 M11 0 V4.5 M0 4.5 H22 M0 4.5 V9.5 M22 4.5 V9.5" stroke="#e9d3bf" stroke-width=".9"/></pattern><linearGradient id="pr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7f2ea"/><stop offset="1" stop-color="#d8ccb8"/></linearGradient><linearGradient id="sd" x1="1" y1="0" x2="0" y2="0"><stop offset="0" stop-color="#5a4632" stop-opacity=".22"/><stop offset="1" stop-color="#5a4632" stop-opacity="0"/></linearGradient></defs>`
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W * 2} ${H}">${defs}<g>${body}</g><g transform="translate(${W * 2} 0) scale(-1 1)">${body}</g></svg>`
 }
 
 function text(v: unknown): string {
@@ -83,8 +82,8 @@ export default async function handler(req: Request): Promise<Response> {
     // garis tipis
     h('div', { style: { position: 'absolute', top: 24, left: 24, right: 24, bottom: 24, border: `1px solid rgba(184,151,90,.45)`, borderRadius: 18, display: 'flex' } }),
     // gapura di kiri & kanan
-    h('img', { src: gate, width: 300, height: 409, style: { position: 'absolute', left: 40, bottom: 34, opacity: 0.9 } }),
-    h('img', { src: gate, width: 300, height: 409, style: { position: 'absolute', right: 40, bottom: 34, opacity: 0.9 } }),
+    h('img', { src: gate, width: 280, height: 280, style: { position: 'absolute', left: 36, bottom: 30 } }),
+    h('img', { src: gate, width: 280, height: 280, style: { position: 'absolute', right: 36, bottom: 30 } }),
     // cahaya tengah
     h('div', { style: { position: 'absolute', left: 300, top: 60, width: 600, height: 520, borderRadius: 300, background: 'radial-gradient(circle, rgba(255,240,205,.9), rgba(251,248,242,0) 70%)', display: 'flex' } }),
     h(

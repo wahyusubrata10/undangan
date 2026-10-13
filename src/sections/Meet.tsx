@@ -5,7 +5,7 @@ import { useApp } from '@/context'
 import { wedding } from '@/config/wedding'
 import type { Person, SectionId } from '@/config/types'
 import SmartImage from '@/components/SmartImage'
-import { CandiParas } from '@/ornaments'
+import { CandiBali } from '@/ornaments'
 import { coupleOrder } from '@/lib/couple'
 import { toAksaraBali } from '@/lib/aksara'
 import { navTargets } from '@/fx/scroll'
@@ -231,10 +231,10 @@ export default function Meet() {
       {/* gerbang paras yang terbuka saat masuk */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex h-full justify-center" aria-hidden="true">
         <div className="m-gate-l relative h-full w-1/2">
-          <CandiParas side="left" className="absolute bottom-0 right-0 h-[92%] w-auto max-w-none" />
+          <CandiBali side="left" className="absolute bottom-0 right-0 h-[92%] w-auto max-w-none" />
         </div>
         <div className="m-gate-r relative h-full w-1/2">
-          <CandiParas side="right" className="absolute bottom-0 left-0 h-[92%] w-auto max-w-none" />
+          <CandiBali side="right" className="absolute bottom-0 left-0 h-[92%] w-auto max-w-none" />
         </div>
       </div>
 

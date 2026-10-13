@@ -4,7 +4,7 @@ import { useApp } from '@/context'
 import { wedding } from '@/config/wedding'
 import { Section } from '@/components/Section'
 import SmartImage from '@/components/SmartImage'
-import { CandiParas, Kokokan, PatraSari, SawahLayer } from '@/ornaments'
+import { CandiBali, Kokokan, PatraSari, SawahLayer } from '@/ornaments'
 import { coupleOrder } from '@/lib/couple'
 import { toAksaraBali } from '@/lib/aksara'
 
@@ -63,10 +63,10 @@ export default function Closing() {
         <SawahLayer layer="mid" className="cl-mid absolute inset-x-0 bottom-[8%] h-[30%] w-full" />
         <div className="absolute inset-0 flex justify-center">
           <div className="cl-left relative h-full w-1/2">
-            <CandiParas side="left" className="absolute bottom-0 right-0 h-[90%] w-auto max-w-none" />
+            <CandiBali side="left" className="absolute bottom-0 right-0 h-[90%] w-auto max-w-none" />
           </div>
           <div className="cl-right relative h-full w-1/2">
-            <CandiParas side="right" className="absolute bottom-0 left-0 h-[90%] w-auto max-w-none" />
+            <CandiBali side="right" className="absolute bottom-0 left-0 h-[90%] w-auto max-w-none" />
           </div>
         </div>
         <SawahLayer layer="near" className="absolute inset-x-0 bottom-0 h-[14%] w-full" />

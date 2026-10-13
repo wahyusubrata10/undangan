@@ -115,42 +115,12 @@ export const wedding: WeddingConfig = {
     note: { id: 'Bagi yang berhalangan hadir, saksikan momen bahagia kami secara langsung.', en: 'Can’t make it? Watch our special moment live.' },
   },
 
-  story: {
-    enabled: true,
-    chapters: [
-      // TODO isi cerita & foto kalian
-      {
-        date: '2019',
-        title: { id: 'Pertemuan Pertama', en: 'First Meeting' },
-        text: { id: 'Semesta mempertemukan kami di sebuah sore yang sederhana. Tak ada yang istimewa, selain senyum yang tertinggal lama.', en: 'The universe brought us together on an ordinary afternoon — nothing special, except a smile that lingered.' },
-        photo: '',
-      },
-      {
-        date: '2021',
-        title: { id: 'Menjalin Kasih', en: 'Falling in Love' },
-        text: { id: 'Dari obrolan panjang hingga perjalanan kecil, kami belajar saling memahami dan bertumbuh bersama.', en: 'From long conversations to small journeys, we learned to understand each other and grow together.' },
-        photo: '',
-      },
-      {
-        date: '2025',
-        title: { id: 'Mesedek', en: 'The Proposal' },
-        text: { id: 'Keluarga besar bertemu, restu diberikan. Kami memantapkan hati melangkah ke jenjang berikutnya.', en: 'Our families met and gave their blessing. We made up our minds to take the next step.' },
-        photo: '',
-      },
-      {
-        date: '2027',
-        title: { id: 'Pawiwahan', en: 'The Wedding' },
-        text: { id: 'Di hadapan Ida Sang Hyang Widhi, keluarga, dan sahabat, kami mengikat janji suci untuk selamanya.', en: 'Before the Divine, our families and friends, we make our sacred vow — forever.' },
-        photo: '',
-      },
-    ],
-  },
-
   photos: {
     // TODO FOTO BERDUA (momen paling dramatis), portrait min. 1600px, mis. 'berdua.jpg'
     couple: '',
     closing: '', // TODO mis. 'closing.jpg'
     // TODO isi 12+ foto galeri, mis. ['g01.jpg', 'g02.jpg', ...]
+    // 5 foto pertama tampil besar di strip film (pilih yang paling sinematik), sisanya di mosaik.
     gallery: ['', '', '', '', '', '', '', '', '', '', '', ''],
   },
 

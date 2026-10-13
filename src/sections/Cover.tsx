@@ -1,7 +1,7 @@
 import { forwardRef } from 'react'
 import { useApp } from '@/context'
 import { wedding } from '@/config/wedding'
-import { CandiParas, Kokokan, Penjor, SawahLayer, SunRays } from '@/ornaments'
+import { CandiBali, Kokokan, Penjor, SawahLayer, SunRays } from '@/ornaments'
 import { dotDate } from '@/lib/format'
 import { toAksaraBali } from '@/lib/aksara'
 import { coupleOrder } from '@/lib/couple'
@@ -35,12 +35,12 @@ const Cover = forwardRef<HTMLDivElement, Props>(function Cover({ onOpen, opening
       </div>
 
       {/* candi bentar paras putih */}
-      <div className="cv-gate pointer-events-none absolute inset-x-0 bottom-0 flex h-[min(62svh,calc(50vw*2.3))] justify-center" aria-hidden="true">
+      <div className="cv-gate pointer-events-none absolute inset-x-0 bottom-0 flex h-[min(66svh,calc(50vw*2))] justify-center" aria-hidden="true">
         <div className="cv-left relative h-full w-1/2 will-change-transform">
-          <CandiParas side="left" className="absolute bottom-0 right-0 h-full w-auto max-w-none" />
+          <CandiBali side="left" className="absolute bottom-0 right-0 h-full w-auto max-w-none" />
         </div>
         <div className="cv-right relative h-full w-1/2 will-change-transform">
-          <CandiParas side="right" className="absolute bottom-0 left-0 h-full w-auto max-w-none" />
+          <CandiBali side="right" className="absolute bottom-0 left-0 h-full w-auto max-w-none" />
         </div>
       </div>
       {/* penjor di kiri & kanan, melambai pelan */}
