@@ -2,8 +2,7 @@ import { useRef } from 'react'
 import { useApp } from '@/context'
 import { wedding } from '@/config/wedding'
 import { Section } from '@/components/Section'
-import { Canang, Dupa, PatraSari } from '@/ornaments'
-import { FloralCorner } from '@/ornaments/scene'
+import { Bingkai, Padma, UkiranBand } from '@/ornaments/ukiran'
 import { coupleOrder } from '@/lib/couple'
 import { toAksaraBali } from '@/lib/aksara'
 import { dateParts } from '@/lib/format'
@@ -32,19 +31,17 @@ export default function Opening() {
   }
 
   return (
-    <Section id="opening" tone="mist" label={t.nav.opening} className="overflow-hidden px-7 pb-24 pt-[14svh] lg:pb-36">
-      <FloralCorner className="pointer-events-none absolute -right-4 -top-2 w-44 sm:w-60" />
-      <FloralCorner flip className="pointer-events-none absolute -left-4 bottom-0 w-36 rotate-180 opacity-90 sm:w-48" />
-      <div className="relative mx-auto max-w-xl text-center">
-        {/* canang sari dengan dupa yang mengepul */}
-        <div className="relative mx-auto h-24 w-20" data-anim="fade">
-          <Dupa className="absolute bottom-6 left-1/2 h-20 w-8 -translate-x-1/2" />
-          <Canang className="absolute bottom-0 left-1/2 w-16 -translate-x-1/2" />
+    <Section id="opening" tone="nila" label={t.nav.opening} className="overflow-hidden px-3 pb-24 pt-[10svh] sm:px-8 lg:pb-36">
+      {/* seperti kartu undangan: bingkai emas dengan sudut ukiran */}
+      <div className="relative mx-auto max-w-2xl px-9 py-20 text-center sm:px-16 sm:py-24">
+        <Bingkai className="inset-0" corner="w-20 sm:w-28" />
+        <div data-anim="fade">
+          <Padma className="mx-auto w-24" />
         </div>
-        <p className="accent mt-8 text-[1.7rem] text-prada" data-anim="up">
+        <p className="accent gold-text mt-6 text-[1.8rem]" data-anim="up">
           {c(wedding.greeting.opening)}
         </p>
-        <p className="mx-auto mt-3 max-w-xs text-[13px] text-ink-soft" data-anim="up">
+        <p className="mx-auto mt-3 max-w-xs text-[13px] text-gading-soft" data-anim="up">
           {c(wedding.greeting.openingSub)}
         </p>
 
@@ -55,20 +52,20 @@ export default function Opening() {
           {c(wedding.greeting.quoteSource)}
         </p>
 
-        <PatraSari className="mx-auto mt-16 w-60" />
+        <UkiranBand className="mx-auto mt-14 w-64" />
 
         <p className="lead mx-auto mt-10 max-w-md !text-[1.08rem]" data-anim="up">
           {c(wedding.greeting.intro)}
         </p>
 
         <h2 className="mt-10 cursor-default" onClick={onNameTap} data-anim="up">
-          <span className="display-i text-[clamp(2.6rem,11vw,4rem)] text-ink">{a.nick}</span>
-          <span className="accent mx-3 align-middle text-2xl text-prada">&amp;</span>
-          <span className="display-i text-[clamp(2.6rem,11vw,4rem)] text-ink">{b.nick}</span>
+          <span className="display-i gold-text text-[clamp(2.6rem,11vw,4rem)]">{a.nick}</span>
+          <span className="accent mx-3 align-middle text-2xl text-emas">&amp;</span>
+          <span className="display-i gold-text text-[clamp(2.6rem,11vw,4rem)]">{b.nick}</span>
           <span className="aksara block text-lg" lang="ban">{`${a.aksara || toAksaraBali(a.nick)}  ${b.aksara || toAksaraBali(b.nick)}`}</span>
         </h2>
         {d && (
-          <p className="mt-4 text-[12px] tracking-[0.42em] uppercase text-ink-soft" data-anim="up">
+          <p className="mt-4 text-[12px] tracking-[0.42em] uppercase text-gading-soft" data-anim="up">
             {d.weekday} · {d.day} {d.month} {d.year}
           </p>
         )}
@@ -76,7 +73,7 @@ export default function Opening() {
       <div
         id="egg-toast"
         role="status"
-        className="pointer-events-none fixed left-1/2 top-6 z-[70] -translate-x-1/2 rounded-full bg-ink/85 px-4 py-2 text-xs text-ivory opacity-0 transition-opacity duration-500"
+        className="pointer-events-none fixed left-1/2 top-6 z-[70] -translate-x-1/2 rounded-full bg-gading/85 px-4 py-2 text-xs text-malam opacity-0 transition-opacity duration-500"
       >
         {t.easterEgg}
       </div>

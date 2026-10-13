@@ -5,7 +5,7 @@ import { wedding } from '@/config/wedding'
 import type { GiftAccount } from '@/config/types'
 import { Section, SectionTitle } from '@/components/Section'
 import SmartImage from '@/components/SmartImage'
-import { Gebogan } from '@/ornaments'
+import { Padma, UkiranBand } from '@/ornaments/ukiran'
 
 async function copyText(text: string): Promise<boolean> {
   try {
@@ -57,9 +57,9 @@ function Account({ acc }: { acc: GiftAccount }) {
   return (
     <div className="soft px-7 py-8" data-anim="up">
       <p className="label">{acc.provider}</p>
-      <p className="display mt-4 text-[1.9rem] tracking-[0.06em] text-ink [font-variant-numeric:lining-nums_tabular-nums]">{acc.number.replace(/(.{4})/g, '$1 ').trim()}</p>
+      <p className="display mt-4 text-[1.9rem] tracking-[0.06em] text-gading [font-variant-numeric:lining-nums_tabular-nums]">{acc.number.replace(/(.{4})/g, '$1 ').trim()}</p>
       <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
-        <p className="text-[13px] text-ink-soft">
+        <p className="text-[13px] text-gading-soft">
           {t.accountHolder} {acc.holder}
         </p>
         <CopyButton text={acc.number} label={t.copy} />
@@ -68,14 +68,16 @@ function Account({ acc }: { acc: GiftAccount }) {
   )
 }
 
-/** 9 · Amplop digital — kartu minimal tanpa bingkai. Aksen: bunga jepun. */
+/** 9 · Amplop digital — kartu gelap berbingkai emas ganda. Aksen: padma & pembatas ukiran. */
 export default function Gift() {
   const { t, c } = useApp()
   const g = wedding.gift
   if (!g.enabled) return null
   return (
-    <Section id="gift" tone="blush" label={t.nav.gift} className="px-6 py-24 lg:py-36">
-      <Gebogan className="mx-auto mb-8 w-20" data-anim="up" />
+    <Section id="gift" tone="merah" label={t.nav.gift} className="px-6 py-24 lg:py-36">
+      <div data-anim="fade">
+        <Padma className="mx-auto mb-8 w-20" />
+      </div>
       <SectionTitle label={t.sendGift} title={t.giftTitle} />
       <p className="lead mx-auto mt-8 max-w-md text-center !text-[1.05rem]" data-anim="lines">
         {c(g.intro)}
@@ -92,10 +94,11 @@ export default function Gift() {
         )}
         {g.address && (
           <div className="px-2 pt-10 text-center" data-anim="up">
+            <UkiranBand className="mx-auto mb-10 w-48" />
             <p className="label">{t.sendGift}</p>
-            <p className="display-i mt-4 text-[1.8rem] text-ink">{g.address.recipient}</p>
-            {g.address.phone && <p className="text-[13px] text-ink-soft">{g.address.phone}</p>}
-            <p className="mx-auto mt-2 max-w-xs text-[14px] text-ink-soft">{c(g.address.text)}</p>
+            <p className="display-i mt-4 text-[1.8rem] text-gading">{g.address.recipient}</p>
+            {g.address.phone && <p className="text-[13px] text-gading-soft">{g.address.phone}</p>}
+            <p className="mx-auto mt-2 max-w-xs text-[14px] text-gading-soft">{c(g.address.text)}</p>
             <div className="mt-5">
               <CopyButton text={`${g.address.recipient}${g.address.phone ? ` (${g.address.phone})` : ''}\n${c(g.address.text)}`} label={t.copyAddress} />
             </div>

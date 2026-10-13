@@ -19,10 +19,10 @@ interface Props {
 }
 
 const TINTS = [
-  'linear-gradient(160deg,#f6efe3 0%,#e9dcc6 100%)',
-  'linear-gradient(160deg,#f1f6f5 0%,#d9e6e8 100%)',
-  'linear-gradient(160deg,#f3f5ee 0%,#dde5d3 100%)',
-  'linear-gradient(160deg,#fbf3f1 0%,#f0dcdc 100%)',
+  'linear-gradient(160deg,#2a1f15 0%,#15100b 100%)',
+  'linear-gradient(160deg,#241c17 0%,#120e0b 100%)',
+  'linear-gradient(160deg,#2b2016 0%,#17110c 100%)',
+  'linear-gradient(160deg,#28191a 0%,#140d0c 100%)',
 ]
 const hash = (s: string) => [...s].reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) >>> 0, 7)
 
@@ -36,8 +36,8 @@ export default function SmartImage({ photo, alt, sizes = '100vw', className = ''
   const { t } = useApp()
 
   if (r.kind === 'empty') {
-    // placeholder: gradasi lembut bernada palet (pasir/kabut/sage/anggrek, dipilih dari label)
-    // + bunga jepun garis tipis & lengkung gapura samar → tetap cantik walau foto belum diisi
+    // placeholder: gradasi gelap hangat (sedikit berbeda per label) + bingkai emas tipis
+    // + bunga jepun garis emas → tetap cantik walau foto belum diisi
     const tint = TINTS[hash(label || alt) % TINTS.length]
     return (
       <div
@@ -47,15 +47,16 @@ export default function SmartImage({ photo, alt, sizes = '100vw', className = ''
         aria-label={label ? `${t.emptyPhoto}: ${label}` : alt}
         onClick={onClick}
       >
-        <div className="absolute inset-0 bg-[radial-gradient(70%_55%_at_50%_42%,rgba(255,255,255,.55),transparent_70%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(70%_55%_at_50%_40%,rgba(201,165,92,.12),transparent_70%)]" />
+        <div className="absolute inset-3 border border-emas/20" />
         <div className="relative flex flex-col items-center">
-          <svg viewBox="0 0 64 64" className="w-12 text-prada/60" fill="none" stroke="currentColor" strokeWidth="1.1" aria-hidden="true">
+          <svg viewBox="0 0 64 64" className="w-12 text-emas/70" fill="none" stroke="currentColor" strokeWidth="1.1" aria-hidden="true">
             {[0, 72, 144, 216, 288].map((a) => (
               <path key={a} d="M32 32 C25 25 24 12 32 7 C40 12 39 25 32 32Z" transform={`rotate(${a} 32 32)`} />
             ))}
             <circle cx="32" cy="32" r="2.4" fill="currentColor" stroke="none" opacity=".7" />
           </svg>
-          {label && <span className="label mt-4 px-6 text-center !text-[11px] !text-ink-soft/70">{label}</span>}
+          {label && <span className="label mt-4 px-6 text-center !text-[11px] !text-gading-mute">{label}</span>}
         </div>
       </div>
     )

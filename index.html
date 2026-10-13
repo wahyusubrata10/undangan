@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#fbf8f2" />
-    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#120d09" />
+    <meta name="color-scheme" content="dark" />
     <!-- OG: nilai default; Vercel Middleware menimpa dengan nama tamu (?to=) & URL absolut -->
     <title>Pawiwahan Wahyu &amp; Diah · 01.01.2027</title>
     <meta name="description" content="Dengan memohon Asung Kertha Wara Nugraha Ida Sang Hyang Widhi Wasa, kami mengundang Anda pada hari bahagia kami. 1 Januari 2027." />
@@ -19,16 +19,16 @@
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <style>
-      /* tampilan instan sebelum JS: layar gelap + cahaya emas (hindari kedip putih) */
-      html,body{background:#fbf8f2;margin:0}
-      #boot{position:fixed;inset:0;display:grid;place-items:center;background:linear-gradient(180deg,#f7f1e6,#fbf8f2 45%,#f3ebdd);z-index:0}
-      #boot i{width:1px;height:30vh;background:linear-gradient(transparent,#b8975a,transparent);opacity:.6}
+      /* tampilan instan sebelum JS: layar gelap + garis cahaya emas (hindari kedip putih) */
+      html,body{background:#120d09;margin:0}
+      #boot{position:fixed;inset:0;display:grid;place-items:center;background:radial-gradient(60% 45% at 50% 55%,#2a1e12,#120d09 70%);z-index:0}
+      #boot i{width:1px;height:30vh;background:linear-gradient(transparent,#c9a55c,transparent);opacity:.7}
     </style>
   </head>
   <body>
     <div id="boot" aria-hidden="true"><i></i></div>
     <div id="root"></div>
-    <noscript><p style="color:#3b2f25;text-align:center;padding:2rem;font-family:serif">Mohon aktifkan JavaScript untuk membuka undangan.</p></noscript>
+    <noscript><p style="color:#f2e6cd;text-align:center;padding:2rem;font-family:serif">Mohon aktifkan JavaScript untuk membuka undangan.</p></noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

@@ -73,12 +73,12 @@ export default function Invitation() {
 
   return (
     <>
-      {/* warna latar halaman: ivory dasar + lapisan cream/pasir yang di-crossfade (opacity) */}
+      {/* warna latar halaman: malam dasar + lapisan bernuansa (nila/kayu/hutan/merah) yang di-crossfade (opacity) */}
       <div className="pointer-events-none fixed inset-0 -z-0" aria-hidden="true">
-        <div id="tone-mist" className="absolute inset-0 bg-mist-soft opacity-0" />
-        <div id="tone-cream" className="absolute inset-0 bg-cream opacity-0" />
-        <div id="tone-sage" className="absolute inset-0 bg-sage-soft opacity-0" />
-        <div id="tone-blush" className="absolute inset-0 bg-blush opacity-0" />
+        <div id="tone-nila" className="absolute inset-0 bg-tone-nila opacity-0" />
+        <div id="tone-kayu" className="absolute inset-0 bg-tone-kayu opacity-0" />
+        <div id="tone-hutan" className="absolute inset-0 bg-tone-hutan opacity-0" />
+        <div id="tone-merah" className="absolute inset-0 bg-tone-merah opacity-0" />
         <div className="grain absolute inset-0" />
       </div>
       <main ref={root} className="relative z-10">

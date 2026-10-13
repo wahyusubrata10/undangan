@@ -6,11 +6,11 @@ interface Props {
   children: ReactNode
   className?: string
   /** warna latar halaman saat section ini aktif (crossfade halus) */
-  tone?: 'ivory' | 'mist' | 'cream' | 'sage' | 'blush'
+  tone?: 'malam' | 'nila' | 'kayu' | 'hutan' | 'merah'
   label?: string
 }
 
-export function Section({ id, children, className = '', tone = 'ivory', label }: Props) {
+export function Section({ id, children, className = '', tone = 'malam', label }: Props) {
   return (
     <section id={id} data-section={id} data-tone={tone} aria-label={label} className={`relative ${className}`}>
       {children}
@@ -27,7 +27,7 @@ export function SectionTitle({ label, title, align = 'center', className = '' }:
           {label}
         </p>
       )}
-      <h2 className="display-i mt-4 text-[clamp(3rem,13vw,5.5rem)] text-ink" data-anim="lines">
+      <h2 className="display-i mt-4 text-[clamp(3rem,13vw,5.5rem)] text-gading" data-anim="lines">
         {title}
       </h2>
     </header>

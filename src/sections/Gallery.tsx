@@ -3,7 +3,7 @@ import { useApp } from '@/context'
 import { wedding } from '@/config/wedding'
 import { Section } from '@/components/Section'
 import SmartImage from '@/components/SmartImage'
-import { Lamak } from '@/ornaments'
+import { UkiranBand } from '@/ornaments/ukiran'
 import { photoUrl } from '@/lib/media'
 
 const Lightbox = lazy(() => import('@/components/Lightbox'))
@@ -92,14 +92,14 @@ export default function Gallery() {
   )
 
   return (
-    <Section id="gallery" tone="sage" label={t.nav.gallery} className="pb-24 lg:pb-36">
+    <Section id="gallery" tone="hutan" label={t.nav.gallery} className="pb-24 lg:pb-36">
       {/* A — judul + strip foto yang digeser kiri-kanan (tidak mengunci scroll) */}
       <div className="px-6 pt-24 text-center lg:pt-36">
-        <Lamak className="mx-auto w-28" />
+        <UkiranBand className="mx-auto w-56" />
         <p className="label mt-8" data-anim="fade">
           {t.gallerySub}
         </p>
-        <h2 className="display-i mt-4 text-[clamp(3.4rem,15vw,6.5rem)] text-ink" data-anim="lines">
+        <h2 className="display-i mt-4 text-[clamp(3.4rem,15vw,6.5rem)] text-gading" data-anim="lines">
           {t.galleryTitle}
         </h2>
       </div>
@@ -127,25 +127,25 @@ export default function Gallery() {
         </div>
         {/* panah (desktop saja) */}
         <div className="hidden lg:block">
-          <button type="button" onClick={() => slide(-1)} className="btn-line absolute left-4 top-[32svh] -translate-y-1/2 !bg-ivory/90 !px-4" aria-label={t.prev}>
+          <button type="button" onClick={() => slide(-1)} className="btn-line absolute left-4 top-[32svh] -translate-y-1/2 !bg-malam/90 !px-4" aria-label={t.prev}>
             ‹
           </button>
-          <button type="button" onClick={() => slide(1)} className="btn-line absolute right-4 top-[32svh] -translate-y-1/2 !bg-ivory/90 !px-4" aria-label={t.next}>
+          <button type="button" onClick={() => slide(1)} className="btn-line absolute right-4 top-[32svh] -translate-y-1/2 !bg-malam/90 !px-4" aria-label={t.next}>
             ›
           </button>
         </div>
         {/* penanda */}
         <div className="mt-6 flex items-center justify-center gap-4">
-          <span className="font-display text-[1.1rem] italic text-ink">
-            {String(active + 1).padStart(2, '0')} <span className="text-ink-mute">/ {String(film.length).padStart(2, '0')}</span>
+          <span className="font-display text-[1.1rem] italic text-gading">
+            {String(active + 1).padStart(2, '0')} <span className="text-gading-mute">/ {String(film.length).padStart(2, '0')}</span>
           </span>
           <div className="flex gap-1.5" aria-hidden="true">
             {film.map((_, i) => (
-              <span key={i} className={`h-1 rounded-full transition-all duration-500 ${i === active ? 'w-6 bg-prada' : 'w-1.5 bg-ink/15'}`} />
+              <span key={i} className={`h-1 rounded-full transition-all duration-500 ${i === active ? 'w-6 bg-emas' : 'w-1.5 bg-gading/15'}`} />
             ))}
           </div>
         </div>
-        <p className="mt-3 text-center text-[12px] tracking-[0.3em] uppercase text-ink-mute lg:hidden">← {t.swipe} →</p>
+        <p className="mt-3 text-center text-[12px] tracking-[0.3em] uppercase text-gading-mute lg:hidden">← {t.swipe} →</p>
       </div>
 
       {/* B — grid rapi 2 kolom, rasio seragam */}
@@ -163,7 +163,7 @@ export default function Gallery() {
               {/^https?:\/\/(www\.)?(youtube\.com|youtu\.be|player\.vimeo\.com)/.test(v.src) ? (
                 <iframe src={v.src} title={c(v.title) || 'Video'} loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" className="aspect-video w-full" />
               ) : (
-                <video src={v.src} poster={photoUrl(v.poster)} controls playsInline preload="none" className="aspect-video w-full bg-ink object-cover" />
+                <video src={v.src} poster={photoUrl(v.poster)} controls playsInline preload="none" className="aspect-video w-full bg-black object-cover" />
               )}
               {v.title && <figcaption className="label mt-3 text-center">{c(v.title)}</figcaption>}
             </figure>

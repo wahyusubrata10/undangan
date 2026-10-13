@@ -21,7 +21,7 @@ import { SplitText } from 'gsap/SplitText'
 gsap.registerPlugin(ScrollTrigger, SplitText)
 
 const EASE = 'power2.out'
-export const TONES = ['mist', 'cream', 'sage', 'blush'] as const
+export const TONES = ['nila', 'kayu', 'hutan', 'merah'] as const
 
 export function setupMotion(root: HTMLElement, reduced: boolean): () => void {
   const ctx = gsap.context(() => {

@@ -33,10 +33,10 @@ function makeSprite(size: number): HTMLCanvasElement {
   const l = size * 0.46
   const w = l * 0.48
   const grad = g.createRadialGradient(0, 0, 0, 0, 0, l)
-  grad.addColorStop(0, '#f2c94c')
-  grad.addColorStop(0.3, '#f8e3a0')
-  grad.addColorStop(0.6, '#fffdf7')
-  grad.addColorStop(1, '#fbf5ea')
+  grad.addColorStop(0, '#e6b94a')
+  grad.addColorStop(0.3, '#efd7a0')
+  grad.addColorStop(0.6, '#efe4cc')
+  grad.addColorStop(1, '#ddd0b2')
   for (let i = 0; i < 5; i++) {
     g.save()
     g.rotate((i / 5) * Math.PI * 2)
@@ -46,7 +46,7 @@ function makeSprite(size: number): HTMLCanvasElement {
     g.bezierCurveTo(w * 0.2, -l * 1.12, w * 0.95, -l * 0.9, w * 0.62, -l * 0.5)
     g.bezierCurveTo(w * 0.4, -l * 0.22, w * 0.12, -l * 0.06, 0, 0)
     g.fillStyle = grad
-    g.shadowColor = 'rgba(110,90,60,.18)'
+    g.shadowColor = 'rgba(0,0,0,.35)'
     g.shadowBlur = size * 0.04
     g.fill()
     g.restore()
@@ -157,7 +157,7 @@ export function createPetals(canvas: HTMLCanvasElement, opts: { count: number; o
       if (p.x < -60) p.x = W + 40
       else if (p.x > W + 60) p.x = -40
       const sx = Math.abs(Math.cos(p.flip)) * 0.6 + 0.4 // berputar 3D semu
-      ctx.globalAlpha = p.life > 0 ? Math.min(1, p.life / 40) : 0.92
+      ctx.globalAlpha = p.life > 0 ? Math.min(1, p.life / 40) : 0.5
       ctx.setTransform(dpr * sx * Math.cos(p.r), dpr * sx * Math.sin(p.r), -dpr * Math.sin(p.r), dpr * Math.cos(p.r), p.x * dpr, p.y * dpr)
       ctx.drawImage(sprite, -p.s / 2, -p.s / 2, p.s, p.s)
     }

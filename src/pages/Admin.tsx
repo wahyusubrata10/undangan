@@ -53,7 +53,7 @@ export default function Admin() {
   return (
     <Shell>
       {auth === 'dev' && (
-        <p className="mb-6 rounded-xl border border-prada/40 bg-cream p-3 text-[13px] text-ink">
+        <p className="mb-6 rounded-xl border border-emas/40 bg-malam-2 p-3 text-[13px] text-gading">
           Mode pengembangan: API Vercel tidak berjalan di <code>npm run dev</code>, login dilewati. Di produksi halaman ini dilindungi password (<code>ADMIN_PASSWORD</code>).
         </p>
       )}
@@ -64,13 +64,13 @@ export default function Admin() {
             ['rsvp', 'Data RSVP'],
           ] as const
         ).map(([k, label]) => (
-          <button key={k} type="button" onClick={() => setTab(k)} className={`rounded-full px-4 py-2 text-sm transition-colors ${tab === k ? 'bg-ink text-ivory' : 'bg-ink/[.05] text-ink-soft hover:bg-ink/10'}`}>
+          <button key={k} type="button" onClick={() => setTab(k)} className={`rounded-full px-4 py-2 text-sm transition-colors ${tab === k ? 'bg-emas text-malam' : 'bg-gading/[.05] text-gading-soft hover:bg-gading/10'}`}>
             {label}
           </button>
         ))}
         <button
           type="button"
-          className="ml-auto text-xs text-ink-soft underline"
+          className="ml-auto text-xs text-gading-soft underline"
           onClick={async () => {
             await fetch('/api/admin-login', { method: 'DELETE' }).catch(() => {})
             setAuth('out')
@@ -86,13 +86,13 @@ export default function Admin() {
 
 function Shell({ children }: { children?: React.ReactNode }) {
   return (
-    <div className="min-h-svh bg-ivory text-ink">
-      <header className="border-b border-ink/10 bg-cream">
+    <div className="min-h-svh bg-malam text-gading">
+      <header className="border-b border-gading/10 bg-malam-2">
         <div className="mx-auto flex max-w-6xl items-center gap-3 px-5 py-5">
           <Jepun className="w-8" />
           <div>
             <p className="label">Panel Admin</p>
-            <h1 className="font-display text-2xl italic text-ink">
+            <h1 className="font-display text-2xl italic text-gading">
               {wedding.groom.nick} &amp; {wedding.bride.nick}
             </h1>
           </div>
@@ -126,7 +126,7 @@ function Login({ onIn }: { onIn: () => void }) {
     <Shell>
       <form onSubmit={submit} className="soft mx-auto mt-10 max-w-sm rounded-3xl p-8 text-center">
         <Canang className="mx-auto w-14" />
-        <h2 className="mt-3 font-display text-2xl italic text-ink-mute">Masuk Admin</h2>
+        <h2 className="mt-3 font-display text-2xl italic text-gading-mute">Masuk Admin</h2>
         <input type="password" className="field mt-6" placeholder="Password" value={pw} onChange={(e) => setPw(e.target.value)} autoFocus autoComplete="current-password" />
         <button className="btn mt-4 w-full" disabled={busy || !pw}>
           {busy ? 'Memeriksa…' : 'Masuk'}
@@ -214,23 +214,23 @@ function LinkGenerator() {
   }
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[380px_1fr]">
+    <div className="grid grid-cols-1 gap-8 lg:grid-cols-[380px_minmax(0,1fr)]">
       <section className="space-y-5">
         <label className="block">
           <span className="label !text-[10px]">URL undangan</span>
-          <input className="field mt-2 !border !border-ink/15 !rounded-lg !px-3" value={base} onChange={(e) => setBase(e.target.value)} placeholder="https://wahyu-diah.vercel.app" />
+          <input className="field mt-2 !border !border-gading/15 !rounded-lg !px-3" value={base} onChange={(e) => setBase(e.target.value)} placeholder="https://wahyu-diah.vercel.app" />
         </label>
         <label className="block">
           <span className="label !text-[10px]">Daftar tamu (satu per baris)</span>
-          <textarea className="field mt-2 !border !border-ink/15 !rounded-lg !px-3 min-h-56 font-mono text-[13px]" value={list} onChange={(e) => setList(e.target.value)} spellCheck={false} />
-          <span className="mt-1 block text-[11px] leading-relaxed text-ink-soft">
+          <textarea className="field mt-2 !border !border-gading/15 !rounded-lg !px-3 min-h-56 font-mono text-[13px]" value={list} onChange={(e) => setList(e.target.value)} spellCheck={false} />
+          <span className="mt-1 block text-[11px] leading-relaxed text-gading-soft">
             Format: <code>Nama | Sapaan | No. WA</code> (sapaan & nomor opsional). Bisa juga salin kolom langsung dari Excel/Google Sheets. Sapaan default: “{defaultSal}”.
           </span>
         </label>
         <label className="block">
           <span className="label !text-[10px]">Template pesan WhatsApp</span>
-          <textarea className="field mt-2 !border !border-ink/15 !rounded-lg !px-3 min-h-56 text-[13px]" value={template} onChange={(e) => setTemplate(e.target.value)} />
-          <span className="mt-1 block text-[11px] text-ink-soft">
+          <textarea className="field mt-2 !border !border-gading/15 !rounded-lg !px-3 min-h-56 text-[13px]" value={template} onChange={(e) => setTemplate(e.target.value)} />
+          <span className="mt-1 block text-[11px] text-gading-soft">
             Placeholder: <code>{'{sapaan} {nama} {link} {mempelai} {tanggal}'}</code>. Ubah default-nya di <code>wedding.ts → share</code>.
           </span>
         </label>
@@ -238,8 +238,8 @@ function LinkGenerator() {
 
       <section>
         <div className="mb-4 flex flex-wrap items-center gap-3">
-          <p className="mr-auto text-sm text-ink-soft">
-            <b className="text-ink">{rows.length}</b> tamu
+          <p className="mr-auto text-sm text-gading-soft">
+            <b className="text-gading">{rows.length}</b> tamu
           </p>
           <button type="button" className="btn-line" onClick={exportCsv} disabled={!rows.length}>
             Export CSV
@@ -256,18 +256,18 @@ function LinkGenerator() {
                   <img src={qrs[r.link]} alt={`QR ${r.name}`} className="h-24 w-24 rounded-lg" />
                 </a>
               ) : (
-                <div className="h-24 w-24 shrink-0 rounded-lg bg-ink/5" />
+                <div className="h-24 w-24 shrink-0 rounded-lg bg-gading/5" />
               )}
               <div className="min-w-0 flex-1">
-                <p className="font-semibold text-ink">
-                  <span className="mr-2 text-ink-soft">{i + 1}.</span>
+                <p className="font-semibold text-gading">
+                  <span className="mr-2 text-gading-soft">{i + 1}.</span>
                   {r.name}
                 </p>
-                <p className="text-[12px] text-ink-soft">
+                <p className="text-[12px] text-gading-soft">
                   {r.salutation}
                   {r.phone && ` · +${r.phone}`}
                 </p>
-                <p className="mt-1 truncate font-mono text-[12px] text-ink-mute">{r.link}</p>
+                <p className="mt-1 truncate font-mono text-[12px] text-gading-mute">{r.link}</p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <a className="btn !px-4 !py-2 !text-[10px]" href={waUrl(r.message, r.phone || undefined)} target="_blank" rel="noopener noreferrer">
                     Kirim WA
@@ -341,8 +341,8 @@ function RsvpTable() {
           ] as const
         ).map(([k, v]) => (
           <div key={k} className="soft rounded-2xl p-4 text-center">
-            <p className="font-display text-3xl text-ink">{v}</p>
-            <p className="text-[11px] uppercase tracking-wider text-ink-soft">{k}</p>
+            <p className="font-display text-3xl text-gading">{v}</p>
+            <p className="text-[11px] uppercase tracking-wider text-gading-soft">{k}</p>
           </div>
         ))}
       </div>
@@ -368,9 +368,9 @@ function RsvpTable() {
           Export CSV
         </button>
       </div>
-      <div className="overflow-x-auto rounded-2xl border border-ink/10">
+      <div className="overflow-x-auto rounded-2xl border border-gading/10">
         <table className="w-full min-w-[640px] text-left text-sm">
-          <thead className="bg-cream text-[11px] uppercase tracking-wider text-ink-mute">
+          <thead className="bg-malam-2 text-[11px] uppercase tracking-wider text-gading-mute">
             <tr>
               <th className="p-3">Waktu</th>
               <th className="p-3">Nama</th>
@@ -383,25 +383,25 @@ function RsvpTable() {
           <tbody>
             {items === null && (
               <tr>
-                <td className="p-4 text-ink-soft" colSpan={6}>
+                <td className="p-4 text-gading-soft" colSpan={6}>
                   Memuat…
                 </td>
               </tr>
             )}
             {items?.length === 0 && (
               <tr>
-                <td className="p-4 text-ink-soft" colSpan={6}>
+                <td className="p-4 text-gading-soft" colSpan={6}>
                   Belum ada RSVP.
                 </td>
               </tr>
             )}
             {items?.map((w) => (
-              <tr key={w.id} className="border-t border-ink/10 align-top">
-                <td className="whitespace-nowrap p-3 text-ink-soft">{new Date(w.created_at).toLocaleString('id-ID')}</td>
+              <tr key={w.id} className="border-t border-gading/10 align-top">
+                <td className="whitespace-nowrap p-3 text-gading-soft">{new Date(w.created_at).toLocaleString('id-ID')}</td>
                 <td className="p-3 font-semibold">{w.name}</td>
                 <td className="p-3">{label[w.attendance]}</td>
                 <td className="p-3">{w.guests}</td>
-                <td className="max-w-md whitespace-pre-line p-3 text-ink-soft">{w.message}</td>
+                <td className="max-w-md whitespace-pre-line p-3 text-gading-soft">{w.message}</td>
                 <td className="p-3">
                   <button type="button" className="text-xs text-[#a34a3a] underline" onClick={() => void remove(w.id)}>
                     Hapus

@@ -1,30 +1,25 @@
 @import 'tailwindcss';
 
 /* =========================================================
-   Palet "pagi di pura": ivory, cream, pasir, coklat hangat, prada redup,
-   + hijau daun/sage, biru kabut pagi, merah muda anggrek, hijau teratai,
-   kuning jepun. Semua bernada lembut agar tetap menyatu.
+   Palet "malam di pura": coklat kehitaman, teks gading, aksen emas prada.
+   Lapisan tone (nila/kayu/hutan/merah) hanya bergeser sedikit dari malam
+   agar tiap bagian terasa berbeda namun tetap satu suasana.
    ========================================================= */
 @theme {
-  --color-ivory: #fbf8f2;
-  --color-cream: #f3ebdd;
-  --color-pasir: #e8dcc6;
-  --color-paras: #efe9df; /* batu paras putih */
-  --color-ink: #3b2f25; /* teks utama */
-  --color-ink-soft: #6e5d4c; /* teks sekunder */
-  --color-ink-mute: #9a8a77; /* label */
-  --color-prada: #b8975a;
-  --color-prada-soft: #d6c08f;
-  --color-janur: #a7b07a;
+  --color-malam: #120d09; /* latar utama */
+  --color-malam-2: #1a130d; /* permukaan */
+  --color-malam-3: #251b12; /* permukaan terangkat */
+  --color-gading: #f2e6cd; /* teks utama */
+  --color-gading-soft: #cdbb98; /* teks sekunder */
+  --color-gading-mute: #9a8767; /* label */
+  --color-emas: #c9a55c; /* prada */
+  --color-emas-soft: #e7d09b;
+  --color-emas-deep: #8c6b2e;
   --color-jepun: #f2c94c;
-  --color-putih: #ffffff;
-  --color-sage: #7e9471; /* daun, sawah */
-  --color-sage-soft: #e9eee2; /* latar section */
-  --color-mist: #d9e6e8; /* langit / kabut pagi */
-  --color-mist-soft: #eef4f4; /* latar section */
-  --color-orchid: #e3a9b4; /* anggrek */
-  --color-blush: #f8eeec; /* latar section */
-  --color-lotus: #a9c6be; /* air kolam teratai */
+  --color-tone-nila: #170f15;
+  --color-tone-kayu: #1b130c;
+  --color-tone-hutan: #0e140f;
+  --color-tone-merah: #1a0d0c;
 
   --font-display: 'Cormorant Garamond', Georgia, serif;
   --font-accent: 'Italiana', 'Cormorant Garamond', serif;
@@ -35,14 +30,14 @@
 }
 
 :root {
-  color-scheme: light;
+  color-scheme: dark;
   -webkit-tap-highlight-color: transparent;
 }
 
 html {
-  background: var(--color-ivory);
+  background: var(--color-malam);
   scrollbar-width: thin;
-  scrollbar-color: var(--color-prada-soft) transparent;
+  scrollbar-color: var(--color-emas-deep) transparent;
 }
 html.lenis,
 html.lenis body {
@@ -57,8 +52,8 @@ html.lenis body {
 
 body {
   margin: 0;
-  background: var(--color-ivory);
-  color: var(--color-ink);
+  background: var(--color-malam);
+  color: var(--color-gading);
   font-family: var(--font-sans);
   font-weight: 300;
   font-size: 15px;
@@ -73,11 +68,11 @@ body.is-locked {
   touch-action: none;
 }
 ::selection {
-  background: var(--color-prada-soft);
-  color: var(--color-ink);
+  background: var(--color-emas);
+  color: var(--color-malam);
 }
 :focus-visible {
-  outline: 1.5px solid var(--color-prada);
+  outline: 1.5px solid var(--color-emas);
   outline-offset: 3px;
   border-radius: 4px;
 }
@@ -89,7 +84,7 @@ body.is-locked {
   font-weight: 400;
   letter-spacing: 0.36em;
   text-transform: uppercase;
-  color: var(--color-ink-mute);
+  color: var(--color-emas);
 }
 .display {
   font-family: var(--font-display);
@@ -111,7 +106,14 @@ body.is-locked {
 .aksara {
   font-family: var(--font-aksara);
   line-height: 2.1;
-  color: var(--color-prada);
+  color: var(--color-emas);
+}
+/* teks emas metalik — hanya untuk elemen yang TIDAK dipecah SplitText */
+.gold-text {
+  background: linear-gradient(100deg, #a8823d 0%, #f0dca6 38%, #c9a55c 58%, #ecd296 82%, #a8823d 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 .lead {
   font-family: var(--font-display);
@@ -119,7 +121,7 @@ body.is-locked {
   font-style: italic;
   font-size: 1.22rem;
   line-height: 1.6;
-  color: var(--color-ink-soft);
+  color: var(--color-gading-soft);
 }
 
 /* baris teks untuk reveal per-baris (mask) */
@@ -135,55 +137,71 @@ body.is-locked {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.35;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .38 0 0 0 0 .3 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.5;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .95 0 0 0 0 .85 0 0 0 0 .62 0 0 0 .055 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 /* ---------- Tombol ---------- */
+/* utama: lempeng emas prada dengan garis dalam tipis */
 .btn {
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
-  padding: 0.95rem 1.8rem;
-  border-radius: 999px;
+  padding: 1rem 1.9rem;
+  border-radius: 2px;
   font-family: var(--font-sans);
   font-size: 11px;
-  font-weight: 400;
+  font-weight: 500;
   letter-spacing: 0.32em;
   text-transform: uppercase;
-  color: var(--color-ivory);
-  background: var(--color-ink);
+  color: #1b130b;
+  background: linear-gradient(135deg, #ecd497 0%, #c9a55c 52%, #a8823d 100%);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 244 214 / 0.35),
+    0 14px 34px -16px rgb(201 165 92 / 0.55);
   transition:
     transform 0.5s var(--ease-expo),
-    background-color 0.3s;
+    filter 0.3s;
+}
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border: 1px solid rgb(27 19 11 / 0.22);
+  border-radius: 1px;
+  pointer-events: none;
 }
 .btn:hover {
-  background: #2c231b;
+  filter: brightness(1.07);
 }
 .btn:active {
   transform: scale(0.97);
 }
+/* sekunder: garis emas tipis */
 .btn-line {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.7rem 1.3rem;
-  border-radius: 999px;
+  padding: 0.72rem 1.3rem;
+  border-radius: 2px;
   font-size: 10.5px;
   font-weight: 400;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: var(--color-ink);
-  background: rgb(59 47 37 / 0.06);
+  color: var(--color-emas-soft);
+  background: rgb(201 165 92 / 0.04);
+  border: 1px solid rgb(201 165 92 / 0.42);
   transition:
     background-color 0.3s,
+    border-color 0.3s,
     transform 0.5s var(--ease-expo);
 }
 .btn-line:hover {
-  background: rgb(59 47 37 / 0.11);
+  background: rgb(201 165 92 / 0.12);
+  border-color: rgb(201 165 92 / 0.7);
 }
 .btn-line:active {
   transform: scale(0.97);
@@ -196,30 +214,39 @@ body.is-locked {
   padding-bottom: 2px;
 }
 
-/* kartu minimal: tanpa border, latar sedikit lebih gelap + bayangan sangat lembut */
+/* kartu: panel gelap dengan bingkai emas ganda (garis luar + garis dalam) */
 .soft {
-  background: rgb(255 255 255 / 0.55);
-  box-shadow: 0 30px 60px -40px rgb(59 47 37 / 0.35);
+  position: relative;
+  background: linear-gradient(180deg, rgb(37 27 18 / 0.78), rgb(24 17 11 / 0.78));
+  border: 1px solid rgb(201 165 92 / 0.32);
+  box-shadow: 0 40px 70px -40px rgb(0 0 0 / 0.8);
+}
+.soft::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1px solid rgb(201 165 92 / 0.14);
+  pointer-events: none;
 }
 
 .field {
   width: 100%;
   border: 0;
-  border-bottom: 1px solid rgb(59 47 37 / 0.18);
+  border-bottom: 1px solid rgb(201 165 92 / 0.3);
   background: transparent;
   padding: 0.75rem 0;
-  color: var(--color-ink);
+  color: var(--color-gading);
   font-size: 16px;
   font-weight: 300;
   border-radius: 0;
   transition: border-color 0.3s;
 }
 .field::placeholder {
-  color: rgb(59 47 37 / 0.35);
+  color: rgb(242 230 205 / 0.32);
 }
 .field:focus {
   outline: none;
-  border-color: var(--color-prada);
+  border-color: var(--color-emas);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -351,4 +378,25 @@ body.is-locked {
   to {
     transform: translate3d(0, 10px, 0) rotate(6deg);
   }
+}
+
+/* bintang berkelip & nyala pelita (hanya opacity) */
+.sc-twinkle {
+  animation: twinkle 3.6s ease-in-out infinite;
+}
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 0.2;
+  }
+}
+.sc-glow {
+  animation: ember 2.8s ease-in-out infinite;
+}
+.is-opening .sc-twinkle,
+.is-opening .sc-glow {
+  animation: none;
 }

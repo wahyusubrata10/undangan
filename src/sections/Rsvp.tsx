@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import { useApp } from '@/context'
 import { wedding } from '@/config/wedding'
 import { Section, SectionTitle } from '@/components/Section'
-import { FloralCorner } from '@/ornaments/scene'
+import { Bingkai, Padma, UkiranBand } from '@/ornaments/ukiran'
 import { relativeTime } from '@/lib/format'
 import { getGuestbook, LIMITS, type Attendance, type PublicWish, type SubmitError } from '@/services/guestbook'
 
@@ -76,11 +76,14 @@ export default function Rsvp() {
   if (!wedding.rsvp.enabled) return null
 
   return (
-    <Section id="rsvp" tone="cream" label={t.nav.rsvp} className="overflow-hidden px-6 py-24 lg:py-36">
-      <FloralCorner flip className="pointer-events-none absolute -left-4 -top-2 w-40 sm:w-56" />
+    <Section id="rsvp" tone="kayu" label={t.nav.rsvp} className="overflow-hidden px-6 py-24 lg:py-36">
+      <div data-anim="fade">
+        <Padma className="mx-auto mb-8 w-20" />
+      </div>
       <SectionTitle label={t.rsvpSub} title={t.rsvpTitle} />
 
-      <form onSubmit={submit} className="mx-auto mt-16 max-w-md" data-anim="up" noValidate>
+      <form onSubmit={submit} className="soft mx-auto mt-16 max-w-md px-7 py-12 sm:px-10" data-anim="up" noValidate>
+        <Bingkai className="inset-[6px]" corner="w-12 sm:w-14" />
         <label className="block">
           <span className="label !text-[12px]">{t.name}</span>
           <input className="field" value={name} onChange={(e) => setName(e.target.value)} maxLength={LIMITS.name} placeholder={t.namePlaceholder} autoComplete="name" required />
@@ -96,7 +99,7 @@ export default function Rsvp() {
                 role="radio"
                 aria-checked={attendance === v}
                 onClick={() => setAttendance(v)}
-                className={`rounded-full px-4 py-2 text-[12.5px] transition-colors duration-300 ${attendance === v ? 'bg-ink text-ivory' : 'bg-ink/[.05] text-ink-soft hover:bg-ink/10'}`}
+                className={`rounded-[2px] border px-4 py-2 text-[12.5px] transition-colors duration-300 ${attendance === v ? 'border-emas bg-emas/15 text-emas-soft' : 'border-emas/20 text-gading-soft hover:border-emas/45'}`}
               >
                 {label}
               </button>
@@ -110,13 +113,13 @@ export default function Rsvp() {
               <div className="mt-8 flex items-center justify-between">
                 <span className="label !text-[12px]">{t.guestCount}</span>
                 <div className="flex items-center gap-4">
-                  <button type="button" className="grid h-9 w-9 place-items-center rounded-full bg-ink/[.06] text-ink disabled:opacity-30" onClick={() => setGuests((g) => Math.max(1, g - 1))} disabled={guests <= 1} aria-label="-1">
+                  <button type="button" className="grid h-9 w-9 place-items-center rounded-[2px] border border-emas/30 text-emas-soft disabled:opacity-30" onClick={() => setGuests((g) => Math.max(1, g - 1))} disabled={guests <= 1} aria-label="-1">
                     −
                   </button>
                   <span className="display w-6 text-center text-2xl" aria-live="polite">
                     {guests}
                   </span>
-                  <button type="button" className="grid h-9 w-9 place-items-center rounded-full bg-ink/[.06] text-ink disabled:opacity-30" onClick={() => setGuests((g) => Math.min(wedding.rsvp.maxGuests, g + 1))} disabled={guests >= wedding.rsvp.maxGuests} aria-label="+1">
+                  <button type="button" className="grid h-9 w-9 place-items-center rounded-[2px] border border-emas/30 text-emas-soft disabled:opacity-30" onClick={() => setGuests((g) => Math.min(wedding.rsvp.maxGuests, g + 1))} disabled={guests >= wedding.rsvp.maxGuests} aria-label="+1">
                     +
                   </button>
                 </div>
@@ -139,28 +142,29 @@ export default function Rsvp() {
         <button type="submit" className="btn mt-10 w-full" disabled={status === 'sending'}>
           {status === 'sending' ? t.sending : t.send}
         </button>
-        <p className="mt-3 text-center text-[12px] text-ink-mute">{t.rsvpPrivate}</p>
+        <p className="mt-3 text-center text-[12px] text-gading-mute">{t.rsvpPrivate}</p>
         <div aria-live="polite" className="min-h-6">
           <AnimatePresence mode="wait">
             {status !== 'idle' && status !== 'sending' && (
-              <motion.p key={status} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className={`mt-3 text-center text-[13px] ${status === 'sent' ? 'text-[#6f7a3e]' : 'text-[#a34a3a]'}`}>
+              <motion.p key={status} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className={`mt-3 text-center text-[13px] ${status === 'sent' ? 'text-emas-soft' : 'text-[#e29a86]'}`}>
                 {status === 'sent' ? t.thanksRsvp : errText[status]}
               </motion.p>
             )}
           </AnimatePresence>
         </div>
-        {gb.mode === 'demo' && <p className="mt-1 text-center text-[12px] text-ink-mute/70">{t.demoMode}</p>}
+        {gb.mode === 'demo' && <p className="mt-1 text-center text-[12px] text-gading-mute/70">{t.demoMode}</p>}
       </form>
 
       {/* daftar ucapan: nama + ucapan + waktu */}
       <div className="mx-auto mt-24 max-w-xl">
+        <UkiranBand className="mx-auto mb-6 w-56" />
         <ul className="flex flex-col" aria-busy={loading}>
           {items.length === 0 && !loading && <li className="lead py-10 text-center !text-base">{t.noWishes}</li>}
           {items.map((w) => (
-            <li key={w.id} className="border-t border-ink/10 py-8 first:border-t-0">
-              <p className="lead !text-[1.12rem] !text-ink">“{w.message}”</p>
-              <p className="mt-3 text-[12px] tracking-[0.12em] text-ink-soft">
-                — {w.name} <span className="text-ink-mute">· {relativeTime(w.created_at, t, lang)}</span>
+            <li key={w.id} className="border-t border-emas/15 py-8 first:border-t-0">
+              <p className="lead !text-[1.12rem] !text-gading">“{w.message}”</p>
+              <p className="mt-3 text-[12px] tracking-[0.12em] text-gading-soft">
+                — {w.name} <span className="text-gading-mute">· {relativeTime(w.created_at, t, lang)}</span>
               </p>
             </li>
           ))}
@@ -170,7 +174,7 @@ export default function Rsvp() {
             <button type="button" className="btn-line !px-4" onClick={() => setPage((p) => Math.max(0, p - 1))} disabled={page === 0} aria-label={t.prev}>
               ‹
             </button>
-            <span className="text-[12px] tracking-[0.2em] text-ink-soft">
+            <span className="text-[12px] tracking-[0.2em] text-gading-soft">
               {page + 1} / {pages}
             </span>
             <button type="button" className="btn-line !px-4" onClick={() => setPage((p) => Math.min(pages - 1, p + 1))} disabled={page >= pages - 1} aria-label={t.next}>

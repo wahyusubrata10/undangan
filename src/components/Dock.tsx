@@ -41,7 +41,7 @@ function MusicButton() {
     <button
       type="button"
       onClick={() => music.toggle()}
-      className="relative grid h-11 w-11 place-items-center rounded-full bg-ivory/95 text-ink shadow-[0_12px_30px_-14px_rgba(59,47,37,.45)]"
+      className="relative grid h-11 w-11 place-items-center rounded-full border border-emas/35 bg-malam/90 text-emas-soft shadow-[0_12px_30px_-14px_rgba(0,0,0,.8)]"
       aria-label={playing ? t.musicPause : t.musicPlay}
       aria-pressed={playing}
       title={typeof wedding.music.title === 'string' ? wedding.music.title : undefined}
@@ -109,7 +109,7 @@ function AutoScrollButton() {
     <button
       type="button"
       onClick={() => setOn((v) => !v)}
-      className={`grid h-11 w-11 place-items-center rounded-full shadow-[0_12px_30px_-14px_rgba(59,47,37,.45)] transition-colors ${on ? 'bg-ink text-ivory' : 'bg-ivory/95 text-ink'}`}
+      className={`grid h-11 w-11 place-items-center rounded-full border shadow-[0_12px_30px_-14px_rgba(0,0,0,.8)] transition-colors ${on ? 'border-emas bg-emas text-malam' : 'border-emas/35 bg-malam/90 text-emas-soft'}`}
       aria-label={on ? t.autoScrollStop : t.autoScroll}
       aria-pressed={on}
       title={on ? t.autoScrollStop : t.autoScroll}
@@ -141,7 +141,7 @@ function SectionNav({ ids }: { ids: SectionId[] }) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 12, scale: 0.97 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute bottom-14 right-0 w-56 overflow-hidden rounded-2xl bg-ivory p-2 shadow-[0_30px_60px_-20px_rgba(59,47,37,.45)]"
+            className="absolute bottom-14 right-0 w-56 overflow-hidden rounded-[3px] border border-emas/30 bg-malam-2 p-2 shadow-[0_30px_60px_-20px_rgba(0,0,0,.85)]"
             aria-label={t.navigate}
           >
             {ids.map((id) => {
@@ -155,7 +155,7 @@ function SectionNav({ ids }: { ids: SectionId[] }) {
                     setOpen(false)
                     scrollToEl(`#${id}`)
                   }}
-                  className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-[13px] transition-colors ${active === id ? 'bg-ink/[.07] text-ink' : 'text-ink-soft hover:bg-ink/5'}`}
+                  className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-[13px] transition-colors ${active === id ? 'bg-gading/[.07] text-gading' : 'text-gading-soft hover:bg-gading/5'}`}
                   aria-current={active === id ? 'true' : undefined}
                 >
                   {Icon && <Icon width={18} height={18} />}
@@ -170,7 +170,7 @@ function SectionNav({ ids }: { ids: SectionId[] }) {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="grid h-11 w-11 place-items-center rounded-full bg-ivory/95 text-ink shadow-[0_12px_30px_-14px_rgba(59,47,37,.45)]"
+        className="grid h-11 w-11 place-items-center rounded-full border border-emas/35 bg-malam/90 text-emas-soft shadow-[0_12px_30px_-14px_rgba(0,0,0,.8)]"
         aria-label={t.navigate}
         aria-expanded={open}
       >
@@ -187,14 +187,14 @@ function LangSwitch() {
   const { lang, setLang, t } = useApp()
   if (wedding.meta.langs.length < 2) return null
   return (
-    <div className="mt-1 flex items-center gap-1 border-t border-ink/10 px-2 pt-2" role="group" aria-label={t.language}>
+    <div className="mt-1 flex items-center gap-1 border-t border-gading/10 px-2 pt-2" role="group" aria-label={t.language}>
       {wedding.meta.langs.map((l) => (
         <button
           key={l}
           type="button"
           onClick={() => setLang(l)}
           aria-pressed={lang === l}
-          className={`flex-1 rounded-lg py-1.5 text-[12px] tracking-[0.2em] transition-colors ${lang === l ? 'bg-ink text-ivory' : 'text-ink-soft hover:bg-ink/5'}`}
+          className={`flex-1 rounded-lg py-1.5 text-[12px] tracking-[0.2em] transition-colors ${lang === l ? 'bg-emas text-malam' : 'text-gading-soft hover:bg-gading/5'}`}
         >
           {langLabels[l]}
         </button>

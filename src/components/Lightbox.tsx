@@ -162,7 +162,7 @@ export default function Lightbox({ photos, index, onClose }: Props) {
       <div className="absolute inset-0" onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp}>
         <div ref={img} className="flex h-full w-full items-center justify-center will-change-transform">
           {r.kind === 'empty' ? (
-            <div className="grid aspect-[3/4] w-[70%] max-w-sm place-items-center rounded-3xl bg-white/5 text-xs tracking-[0.3em] text-ivory/60 uppercase">
+            <div className="grid aspect-[3/4] w-[70%] max-w-sm place-items-center rounded-3xl bg-white/5 text-xs tracking-[0.3em] text-malam/60 uppercase">
               {t.emptyPhoto} {i + 1}
             </div>
           ) : (
@@ -180,10 +180,10 @@ export default function Lightbox({ photos, index, onClose }: Props) {
         </div>
       </div>
       <div className="pointer-events-none absolute inset-x-0 top-0 flex items-center justify-between p-4 pt-[max(1rem,env(safe-area-inset-top))]">
-        <span className="text-xs tracking-[0.3em] text-ivory/70">
+        <span className="text-xs tracking-[0.3em] text-malam/70">
           {String(i + 1).padStart(2, '0')} / {String(photos.length).padStart(2, '0')}
         </span>
-        <button type="button" onClick={close} className="pointer-events-auto grid h-11 w-11 place-items-center rounded-full bg-white/10 text-ivory backdrop-blur" aria-label={t.close}>
+        <button type="button" onClick={close} className="pointer-events-auto grid h-11 w-11 place-items-center rounded-full bg-white/10 text-malam backdrop-blur" aria-label={t.close}>
           <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.6">
             <path d="M6 6 L18 18 M18 6 L6 18" strokeLinecap="round" />
           </svg>
@@ -191,10 +191,10 @@ export default function Lightbox({ photos, index, onClose }: Props) {
       </div>
       {photos.length > 1 && (
         <>
-          <button type="button" onClick={() => go(-1)} className="absolute left-3 top-1/2 hidden h-12 w-12 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-ivory backdrop-blur md:grid" aria-label={t.prev}>
+          <button type="button" onClick={() => go(-1)} className="absolute left-3 top-1/2 hidden h-12 w-12 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-malam backdrop-blur md:grid" aria-label={t.prev}>
             ‹
           </button>
-          <button type="button" onClick={() => go(1)} className="absolute right-3 top-1/2 hidden h-12 w-12 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-ivory backdrop-blur md:grid" aria-label={t.next}>
+          <button type="button" onClick={() => go(1)} className="absolute right-3 top-1/2 hidden h-12 w-12 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-malam backdrop-blur md:grid" aria-label={t.next}>
             ›
           </button>
         </>

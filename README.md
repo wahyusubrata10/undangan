@@ -64,16 +64,16 @@ Selesai! ✅
 |---|---|
 | # | Tahap | Isi |
 |---|---|---|
-| 1 | **Cover** | Lukisan pemandangan pura di pagi hari (SVG orisinal): langit berkabut, Gunung Agung, meru bertingkat, pohon kelapa, tembok penyengker, candi bentar bata merah & paras (karang simbar lidah api, puncak bermahkota api), tangga batu dan kolam teratai, dibingkai rangkaian bunga jepun & anggrek di kiri-kanan. Nama tamu diambil dari `?to=` (disanitasi dari XSS). **Buka Undangan**: gerbang terbelah, bingkai bunga tersibak, kamera maju pelan, kelopak jepun berhamburan, musik fade-in, fullscreen di HP. |
-| 2 | **Pembuka** | Latar biru kabut. Canang sari dengan asap dupa, Om Swastyastu, kutipan singkat, kalimat undangan, nama kedua mempelai + aksara Bali + tanggal. |
+| 1 | **Cover** | Lukisan pura di malam bulan purnama (SVG orisinal): bulan terbit di balik Gunung Agung, bintang berkelip, siluet meru & pohon kelapa bergaris emas, tembok penyengker, candi bentar dengan lis & karang simbar emas prada, pelita menyala, kolam teratai memantulkan bulan. Dibingkai tiang ukiran emas (patra punggel) di kiri-kanan. HP: nama di atas, tamu & tombol di bawah; desktop: semua teks di kiri, gapura & bulan bebas. Nama tamu dari `?to=` (disanitasi dari XSS). **Buka Undangan**: tiang ukiran tersibak, gerbang terbelah, kamera maju pelan, kelopak jepun berhamburan, musik fade-in, fullscreen di HP. |
+| 2 | **Pembuka** | Seperti kartu undangan: bingkai emas dengan sudut ukiran, lambang padma, Om Swastyastu, kutipan, kalimat undangan, nama kedua mempelai (emas) + aksara Bali + tanggal. |
 | 3 | **Mempelai Pria** | Panel foto layar penuh (desktop: foto 58% + teks), nama lengkap, aksara, orang tua. |
 | 4 | **Mempelai Wanita** | Panel berikutnya meluncur naik menutupi panel pria (panel pria sedikit mengecil & meredup); di desktop posisinya dicerminkan. |
 | 5 | **Berdua** (klimaks) | Panel foto/video berdua full-bleed dengan nama besar kedua mempelai. |
 | 6 | **Galeri "Momen Kami"** | 5 foto pertama tampil besar dalam strip yang **digeser kiri-kanan biasa** (tidak mengunci scroll), dengan efek kedalaman & penanda 01/05, lalu grid rapi 2 kolom (rasio seragam 3:4; bila jumlahnya ganjil, foto terakhir dibuat lebar penuh). Latar hijau sage. Ketuk foto → lightbox (swipe, pinch-zoom, tombol back HP). |
 | 7 | **Countdown + Acara** | Angka hitung mundur tipis yang stabil, kartu acara minimal, Google Maps, Google Calendar & `.ics`, live streaming opsional. |
-| 8 | **Amplop** | Latar merah muda lembut. Rekening/e-wallet minimal, salin dengan feedback, QRIS, alamat kado. |
+| 8 | **Amplop** | Kartu gelap berbingkai emas ganda: rekening/e-wallet, salin dengan feedback, QRIS, alamat kado. |
 | 9 | **Ucapan & Doa** | Form RSVP + daftar ucapan (**hanya nama, ucapan, waktu**). |
-| 10 | **Penutup** | Foto penutup, terima kasih, Om Shanti Shanti Shanti Om, lalu pemandangan pura di senja hari dengan candi bentar yang menutup pelan mengikuti scroll. |
+| 10 | **Penutup** | Foto penutup berbingkai ukiran, terima kasih, Om Shanti Shanti Shanti Om, lalu pemandangan pura malam dengan candi bentar yang menutup pelan mengikuti scroll. |
 
 Tahap 3–5 adalah **panel bertumpuk** memakai `position: sticky` (scroll native, tanpa pin JavaScript): tiap panel diam utuh sejenak (±45% layar) agar teks terbaca, lalu panel berikutnya meluncur naik menutupinya. Paling mulus di HP karena tidak ada scroll yang "ditahan".
 
@@ -81,7 +81,7 @@ Tahap 3–5 adalah **panel bertumpuk** memakai `position: sticky` (scroll native
 
 **Privasi tamu:** status kehadiran, jumlah tamu, dan statistik **tidak pernah** dikirim ke halaman tamu (API publik hanya mengembalikan nama, ucapan, waktu; database tertutup untuk publik). Semua itu hanya ada di `/admin`.
 
-**Gaya:** editorial tanpa bingkai. Palet dasar ivory/cream/pasir dengan teks coklat hangat, prada redup, dan kuning jepun, ditambah warna alam yang senada: **sage** (daun), **biru kabut** (langit pagi), **merah muda anggrek**, dan **hijau teratai**. Warna latar berganti halus antar-section (kabut → ivory → sage → ivory → merah muda → krem). Foto yang belum diisi tampil sebagai placeholder bergradasi lembut dengan bunga jepun garis tipis. Ornamen Bali orisinal dipakai sebagai aksen yang bergerak halus: candi bentar bata merah & paras dengan karang, penjor melambai, sinar pagi, burung kokokan terbang, canang sari dengan asap dupa, ranting jepun bergoyang, sulur patra sari yang tergambar sendiri, gebogan, tedung, lamak, janur, dan sawah terasering. Font: Cormorant Garamond Light, Italiana, dan Jost.
+**Gaya:** "malam di pura" — latar coklat kehitaman, teks gading, aksen **emas prada**. Tiap bagian bergeser sedikit nuansanya (plum, coklat kayu, hijau hutan, merah tua) agar terasa berbeda namun tetap satu suasana. Ornamen berupa **ukiran Bali emas timbul** yang dibuat prosedural (`src/ornaments/ukiran.tsx`): patra punggel (sulur melingkar dengan lobus lidah api & garis pahatan), sudut bingkai, pembatas, tiang ukir, lambang kori (candi) & padma (teratai). Kartu & foto dibingkai garis emas ganda dengan sudut ukiran. Foto yang belum diisi tampil sebagai placeholder gelap berbingkai emas. Font: Cormorant Garamond Light, Italiana, dan Jost.
 
 **Bahasa:** Indonesia dan English (`?lang=en`, atau lewat menu navigasi). Struktur Bahasa Bali sudah disiapkan di `src/i18n/ban.ts`.
 
@@ -239,7 +239,7 @@ Ikuti petunjuk di bagian atas [`apps-script/Code.gs`](apps-script/Code.gs): buat
 **Yang berjalan di Vercel:**
 
 - `api/invite.ts` melayani halaman utama dan menyisipkan meta OG (judul berisi nama tamu) ke HTML, karena WhatsApp tidak menjalankan JavaScript. Bila gagal, otomatis dialihkan ke `/app.html` sehingga undangan tetap terbuka.
-- `api/og.ts` menghasilkan gambar preview 1200×630 per tamu (gapura emas + "Kepada Yth. …").
+- `api/og.ts` menghasilkan gambar preview 1200×630 per tamu (tema gelap-emas: candi bentar bergaris prada + "Kepada Yth. …").
 - `api/rsvp.ts`, `api/admin-login.ts`, dan `api/admin-rsvp.ts` berjalan di Edge Functions.
 
 ---
@@ -280,7 +280,7 @@ src/
   config/wedding.ts       ← konten (satu-satunya yang perlu diedit)
   config/media.generated  ← dibuat otomatis oleh `npm run media`
   i18n/                   ← teks UI (id, en, ban)
-  ornaments/              ← SVG orisinal: candi bentar, jepun, penjor, janur, canang sari, tedung, lamak, sawah; scene.tsx = pemandangan pura (meru, kelapa, kolam teratai) + bingkai bunga jepun & anggrek
+  ornaments/              ← SVG orisinal: ukiran.tsx (patra punggel emas: sudut, pembatas, tiang, kori, padma, bingkai); scene.tsx (pura malam: bulan, meru, kelapa, kolam; gerbang di lapisan terpisah); candi bentar & ornamen lain
   sections/               ← Cover, Opening, Meet (panel bertumpuk pria→wanita→berdua), Gallery (strip geser + grid), Events, Gift, Rsvp, Closing
   components/             ← Backdrop (video), Dock (musik/nav/auto-scroll), Lightbox, PatraWipe, Particles, SmartImage
   fx/                     ← opening timeline, motion (ScrollTrigger scrub), scroll (Lenis), petals (canvas 2D), audio
