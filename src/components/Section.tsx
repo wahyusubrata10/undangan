@@ -6,7 +6,7 @@ interface Props {
   children: ReactNode
   className?: string
   /** warna latar halaman saat section ini aktif (crossfade halus) */
-  tone?: 'ivory' | 'cream' | 'pasir'
+  tone?: 'ivory' | 'mist' | 'cream' | 'sage' | 'blush'
   label?: string
 }
 

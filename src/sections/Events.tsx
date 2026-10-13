@@ -14,31 +14,11 @@ function diff(target: number) {
   return { done: ms <= 0, d: Math.floor(s / 86400), h: Math.floor((s % 86400) / 3600), m: Math.floor((s % 3600) / 60), s: s % 60 }
 }
 
-/** Digit menggulung vertikal (odometer) — hanya transform. */
-function Roll({ value }: { value: number }) {
-  return (
-    <span className="relative inline-block h-[1em] w-[0.56em] overflow-hidden align-top">
-      <span className="absolute left-0 top-0 flex w-full flex-col transition-transform duration-[900ms] ease-[cubic-bezier(.16,1,.3,1)]" style={{ transform: `translateY(${-value * 10}%)` }}>
-        {Array.from({ length: 10 }, (_, i) => (
-          <span key={i} className="block h-[1em] text-center leading-none">
-            {i}
-          </span>
-        ))}
-      </span>
-    </span>
-  )
-}
-
 function Unit({ n, label, min = 2 }: { n: number; label: string; min?: number }) {
   return (
     <div className="flex flex-col items-center">
       <span className="display text-[clamp(3rem,15vw,5.5rem)] leading-none text-ink [font-variant-numeric:lining-nums_tabular-nums]" aria-hidden="true">
-        {String(n)
-          .padStart(min, '0')
-          .split('')
-          .map((v, i) => (
-            <Roll key={i} value={Number(v)} />
-          ))}
+        {String(n).padStart(min, '0')}
       </span>
       <span className="label mt-3 !text-[12px]">{label}</span>
     </div>
@@ -118,8 +98,8 @@ export default function Events() {
   const { t, c } = useApp()
   const ls = wedding.liveStream
   return (
-    <Section id="events" tone="ivory" label={t.nav.events} className="overflow-hidden px-6 py-32">
-      <Tedung className="pointer-events-none absolute -right-6 top-24 h-[70vh] w-auto opacity-[.09]" data-parallax="0.2" />
+    <Section id="events" tone="ivory" label={t.nav.events} className="overflow-hidden px-6 py-24 lg:py-36">
+      <Tedung className="pointer-events-none absolute -right-6 top-24 hidden h-[70vh] w-auto opacity-[.09] lg:block" data-parallax="0.2" />
       <SectionTitle label={t.countdownTitle} title={t.saveDate} />
       <div className="mt-14">
         <Countdown />

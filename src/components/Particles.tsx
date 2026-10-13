@@ -17,7 +17,7 @@ export default function Particles({ front }: { front: boolean }) {
     let removeTilt = () => {}
     void import('@/fx/petals').then(({ createPetals }) => {
       if (cancelled || !canvas.current) return
-      h = createPetals(canvas.current, { count: deviceTier() === 'low' ? 7 : 11, onFallback: () => setOff(true) })
+      h = createPetals(canvas.current, { count: deviceTier() === 'low' ? 5 : 8, onFallback: () => setOff(true) })
       if (!h) return
       const handle = h
       const w = window as Window & { __pendingBurst?: boolean }

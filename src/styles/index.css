@@ -1,8 +1,9 @@
 @import 'tailwindcss';
 
 /* =========================================================
-   Palet "cahaya pagi di Bali": ivory, cream, pasir, coklat hangat,
-   prada redup, janur muda, sentuhan kuning jepun.
+   Palet "pagi di pura": ivory, cream, pasir, coklat hangat, prada redup,
+   + hijau daun/sage, biru kabut pagi, merah muda anggrek, hijau teratai,
+   kuning jepun. Semua bernada lembut agar tetap menyatu.
    ========================================================= */
 @theme {
   --color-ivory: #fbf8f2;
@@ -17,6 +18,13 @@
   --color-janur: #a7b07a;
   --color-jepun: #f2c94c;
   --color-putih: #ffffff;
+  --color-sage: #7e9471; /* daun, sawah */
+  --color-sage-soft: #e9eee2; /* latar section */
+  --color-mist: #d9e6e8; /* langit / kabut pagi */
+  --color-mist-soft: #eef4f4; /* latar section */
+  --color-orchid: #e3a9b4; /* anggrek */
+  --color-blush: #f8eeec; /* latar section */
+  --color-lotus: #a9c6be; /* air kolam teratai */
 
   --font-display: 'Cormorant Garamond', Georgia, serif;
   --font-accent: 'Italiana', 'Cormorant Garamond', serif;

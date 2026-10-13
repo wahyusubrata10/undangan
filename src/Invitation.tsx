@@ -56,11 +56,10 @@ export default function Invitation() {
     }
   }, [opened, reduced])
 
-  // section aktif untuk navigasi (pria/wanita/berdua diatur oleh Meet)
+  // section aktif untuk navigasi
   useEffect(() => {
     if (!opened) return
     const triggers = ids
-      .filter((id) => !['groom', 'bride', 'couple'].includes(id) || reduced)
       .map((id) =>
         ScrollTrigger.create({
           trigger: `#${id}`,
@@ -70,14 +69,16 @@ export default function Invitation() {
         }),
       )
     return () => triggers.forEach((tr) => tr.kill())
-  }, [opened, ids, setActive, reduced])
+  }, [opened, ids, setActive])
 
   return (
     <>
       {/* warna latar halaman: ivory dasar + lapisan cream/pasir yang di-crossfade (opacity) */}
       <div className="pointer-events-none fixed inset-0 -z-0" aria-hidden="true">
+        <div id="tone-mist" className="absolute inset-0 bg-mist-soft opacity-0" />
         <div id="tone-cream" className="absolute inset-0 bg-cream opacity-0" />
-        <div id="tone-pasir" className="absolute inset-0 bg-pasir opacity-0" />
+        <div id="tone-sage" className="absolute inset-0 bg-sage-soft opacity-0" />
+        <div id="tone-blush" className="absolute inset-0 bg-blush opacity-0" />
         <div className="grain absolute inset-0" />
       </div>
       <main ref={root} className="relative z-10">

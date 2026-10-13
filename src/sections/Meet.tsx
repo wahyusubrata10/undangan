@@ -3,46 +3,62 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useApp } from '@/context'
 import { wedding } from '@/config/wedding'
-import type { Person, SectionId } from '@/config/types'
+import type { Person } from '@/config/types'
 import SmartImage from '@/components/SmartImage'
-import { CandiBali } from '@/ornaments'
 import { coupleOrder } from '@/lib/couple'
 import { toAksaraBali } from '@/lib/aksara'
-import { navTargets } from '@/fx/scroll'
 import { photoUrl } from '@/lib/media'
 
 gsap.registerPlugin(ScrollTrigger)
 
 /**
- * 3 · 4 · 5 — Perkenalan PRIA → WANITA → foto BERDUA dalam satu panggung yang di-pin.
- * Satu master timeline (scrub) agar kesinambungan visual tidak pernah patah:
- *   A. gerbang paras terbuka, foto pria membesar dari tengah
- *   B. foto pria bergeser & memudar, foto wanita masuk dengan mask (tirai) dari kanan
- *   C. kedua foto mengecil jadi dua potret, bergerak ke tengah, lalu melebur jadi foto berdua full-bleed
+ * 3 · 4 · 5 — PRIA → WANITA → BERDUA sebagai panel bertumpuk.
+ * Tiap panel `position: sticky` → panel berikutnya meluncur naik menutupi panel sebelumnya
+ * dengan scroll NATIVE (tanpa pin JavaScript) sehingga paling mulus di HP.
+ * Di antara panel ada jeda kosong (tak terlihat) agar tiap panel sempat diam utuh.
+ * Sentuhan halus (scrub, hanya transform/opacity):
+ *  • foto di panel yang masuk perlahan zoom-out (1.08 → 1)
+ *  • panel yang tertutup sedikit mengecil & meredup → terasa berlapis/berkesinambungan
  */
-const PHASE = { groom: 1.7, bride: 4.0, couple: 7.0, end: 7.6 }
-
-function PersonText({ p, role, cls }: { p: Person; role: string; cls: string }) {
+function PersonPanel({ p, role, mirror }: { p: Person; role: string; mirror?: boolean }) {
   const { c } = useApp()
   return (
-    <div className={`${cls} absolute inset-x-0 bottom-0 z-20 px-7 pb-[max(3rem,env(safe-area-inset-bottom))] text-left lg:inset-y-0 lg:flex lg:w-[42%] lg:flex-col lg:justify-center lg:px-14`}>
-      <p className="label t-item">{role}</p>
-      <p className="aksara t-item mt-2 text-lg" lang="ban">
-        {p.aksara || toAksaraBali(p.nick)}
-      </p>
-      <h3 className="display-i t-item text-[clamp(2.6rem,11vw,4.6rem)] text-ink">{p.fullName}</h3>
-      <p className="t-item mt-5 text-[13px] text-ink-soft">{c(p.childOf)}</p>
-      <p className="t-item font-display text-[1.25rem] leading-snug text-ink">
-        {p.father}
-        <br />
-        &amp; {p.mother}
-      </p>
-      {p.origin && <p className="t-item mt-2 text-[12px] text-ink-mute">{c(p.origin)}</p>}
-      {p.instagram && (
-        <a href={`https://instagram.com/${p.instagram.replace(/^@/, '')}`} target="_blank" rel="noopener noreferrer" className="t-item link-u mt-4 inline-block self-start text-[12px] tracking-[0.2em] text-ink-soft">
-          @{p.instagram.replace(/^@/, '')}
-        </a>
-      )}
+    <div className="mt-panel-inner relative h-full w-full bg-ivory">
+      {/* foto: HP full-bleed, desktop 58% */}
+      <div className={`absolute inset-0 overflow-hidden ${mirror ? 'lg:right-[42%]' : 'lg:left-[42%]'}`}>
+        <div className="mt-photo absolute inset-0">
+          <SmartImage photo={p.photo} alt={p.fullName} sizes="(min-width:1024px) 58vw, 100vw" className="h-full w-full" />
+        </div>
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[64%] bg-[linear-gradient(to_top,rgba(251,248,242,.98)_0%,rgba(251,248,242,.88)_40%,rgba(251,248,242,0))] lg:hidden" />
+      </div>
+      {/* teks */}
+      <div
+        className={`absolute inset-x-0 bottom-0 z-10 px-7 pb-[max(3rem,env(safe-area-inset-bottom))] lg:inset-y-0 lg:flex lg:w-[42%] lg:flex-col lg:justify-center lg:px-16 ${mirror ? 'lg:left-auto lg:right-0' : ''}`}
+      >
+        <p className="label" data-anim="up">
+          {role}
+        </p>
+        <p className="aksara mt-2 text-lg" lang="ban" data-anim="up">
+          {p.aksara || toAksaraBali(p.nick)}
+        </p>
+        <h3 className="display-i text-[clamp(2.5rem,10.5vw,4.4rem)] text-ink" data-anim="up">
+          {p.fullName}
+        </h3>
+        <div data-anim="up">
+          <p className="mt-5 text-[13px] text-ink-soft">{c(p.childOf)}</p>
+          <p className="font-display text-[1.25rem] leading-snug text-ink">
+            {p.father}
+            <br />
+            &amp; {p.mother}
+          </p>
+          {p.origin && <p className="mt-2 text-[12px] text-ink-mute">{c(p.origin)}</p>}
+          {p.instagram && (
+            <a href={`https://instagram.com/${p.instagram.replace(/^@/, '')}`} target="_blank" rel="noopener noreferrer" className="link-u mt-4 inline-block text-[12px] tracking-[0.2em] text-ink-soft">
+              @{p.instagram.replace(/^@/, '')}
+            </a>
+          )}
+        </div>
+      </div>
     </div>
   )
 }
@@ -73,178 +89,89 @@ function CoupleMedia() {
 }
 
 export default function Meet() {
-  const { t, c, reduced, setActive } = useApp()
+  const { t, c, reduced } = useApp()
   const [a, b] = coupleOrder()
   const roleOf = (p: Person) => (p === wedding.groom ? t.groom : t.bride)
   const root = useRef<HTMLElement>(null)
 
   useEffect(() => {
     if (reduced || !root.current) return
-    const el = root.current
     const ctx = gsap.context(() => {
-      const q = gsap.utils.selector(el)
-      const tl = gsap.timeline({ defaults: { ease: 'power2.inOut' } })
-      // kondisi awal
-      gsap.set(q('.m-a'), { scale: 0.42, transformOrigin: '50% 55%' })
-      gsap.set(q('.m-a-img'), { scale: 1.3 })
-      gsap.set(q('.m-b'), { xPercent: 100 })
-      gsap.set(q('.m-b-img'), { xPercent: -100, scale: 1.15 })
-      gsap.set(q('.m-c'), { opacity: 0, scale: 0.44 })
-      gsap.set(q('.m-a-text .t-item, .m-b-text .t-item, .m-c-text .t-item'), { opacity: 0, y: 36 })
-
-      // A — gerbang terbuka, kamera masuk, foto pria membesar dari tengah
-      tl.to(q('.m-gate-l'), { xPercent: -105, scale: 1.25, transformOrigin: '100% 100%', duration: 1.2 }, 0)
-        .to(q('.m-gate-r'), { xPercent: 105, scale: 1.25, transformOrigin: '0% 100%', duration: 1.2 }, 0)
-        .to(q('.m-a'), { scale: 1, duration: 1.2 }, 0.05)
-        .to(q('.m-a-img'), { scale: 1, duration: 1.4 }, 0.05)
-        .to(q('.m-a-shade'), { opacity: 1, duration: 0.6 }, 0.8)
-        .to(q('.m-a-text .t-item'), { opacity: 1, y: 0, stagger: 0.08, duration: 0.5, ease: 'power3.out' }, 1.0)
-        // B — pria bergeser & memudar, wanita masuk dengan tirai dari kanan
-        .to(q('.m-a-text .t-item'), { opacity: 0, y: -24, stagger: 0.04, duration: 0.4, ease: 'power2.in' }, 2.2)
-        .to(q('.m-a'), { xPercent: -28, opacity: 0, duration: 1.1 }, 2.35)
-        .to(q('.m-b'), { xPercent: 0, duration: 1.1 }, 2.4)
-        .to(q('.m-b-img'), { xPercent: 0, scale: 1, duration: 1.2 }, 2.4)
-        .to(q('.m-b-shade'), { opacity: 1, duration: 0.5 }, 3.0)
-        .to(q('.m-b-text .t-item'), { opacity: 1, y: 0, stagger: 0.08, duration: 0.5, ease: 'power3.out' }, 3.3)
-        // C — dua potret bertemu di tengah lalu melebur menjadi foto berdua
-        .to(q('.m-b-text .t-item'), { opacity: 0, y: -24, stagger: 0.04, duration: 0.4, ease: 'power2.in' }, 4.6)
-        .to(q('.m-b-shade'), { opacity: 0, duration: 0.4 }, 4.6)
-        .to(q('.m-b'), { scale: 0.44, x: '23vw', duration: 0.9 }, 4.75)
-        .set(q('.m-a'), { xPercent: 0, x: '-23vw', scale: 0.44 }, 4.75)
-        .set(q('.m-a-shade'), { opacity: 0 }, 4.75)
-        .to(q('.m-a'), { opacity: 1, duration: 0.6 }, 4.9)
-        .to(q('.m-a, .m-b'), { x: 0, duration: 0.9, ease: 'power3.inOut' }, 5.6)
-        .to(q('.m-a, .m-b'), { opacity: 0, duration: 0.5 }, 6.1)
-        .to(q('.m-c'), { opacity: 1, duration: 0.5 }, 6.0)
-        .to(q('.m-c'), { scale: 1, duration: 1.0, ease: 'power2.out' }, 6.15)
-        .to(q('.m-c-shade'), { opacity: 1, duration: 0.6 }, 6.6)
-        .to(q('.m-c-text .t-item'), { opacity: 1, y: 0, stagger: 0.1, duration: 0.5, ease: 'power3.out' }, 6.7)
-        .to({}, { duration: PHASE.end - 7.3 })
-
-      const st = ScrollTrigger.create({
-        trigger: el,
-        start: 'top top',
-        end: () => `+=${window.innerHeight * 2.5}`,
-        pin: true,
-        scrub: 0.5,
-        anticipatePin: 1,
-        animation: tl,
-        invalidateOnRefresh: true,
-        onToggle: (self) => {
-          q('.m-a, .m-b, .m-c').forEach((n) => ((n as HTMLElement).style.willChange = self.isActive ? 'transform, opacity' : ''))
-        },
-        onUpdate: (self) => {
-          const p = self.progress * PHASE.end
-          setActive(p < 2.3 ? 'groom' : p < 4.7 ? 'bride' : 'couple')
-        },
+      const panels = gsap.utils.toArray<HTMLElement>('.mt-panel', root.current)
+      panels.forEach((panel, i) => {
+        const photo = panel.querySelector<HTMLElement>('.mt-photo')
+        // foto zoom-out pelan saat panel naik masuk layar
+        if (photo && i > 0)
+          gsap.fromTo(photo, { scale: 1.08 }, { scale: 1, ease: 'none', scrollTrigger: { trigger: panel, start: 'top bottom', end: 'top top', scrub: true } })
+        // panel yang akan tertutup: mengecil & meredup sedikit
+        const next = panels[i + 1]
+        const inner = panel.querySelector<HTMLElement>('.mt-panel-inner')
+        if (next && inner)
+          gsap.fromTo(
+            inner,
+            { scale: 1, opacity: 1 },
+            {
+              scale: 0.94,
+              opacity: 0.55,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: next,
+                start: 'top bottom',
+                end: 'top top',
+                scrub: true,
+                onToggle: (self) => (inner.style.willChange = self.isActive ? 'transform, opacity' : ''),
+              },
+            },
+          )
       })
-      const at = (time: number) => () => st.start + (time / PHASE.end) * (st.end - st.start)
-      navTargets.groom = at(PHASE.groom)
-      navTargets.bride = at(PHASE.bride)
-      navTargets.couple = at(PHASE.couple)
-    }, el)
-    return () => {
-      delete navTargets.groom
-      delete navTargets.bride
-      delete navTargets.couple
-      ctx.revert()
-    }
-  }, [reduced, setActive])
+    }, root)
+    return () => ctx.revert()
+  }, [reduced])
 
-  const shade = 'pointer-events-none absolute inset-x-0 bottom-0 h-[62%] bg-[linear-gradient(to_top,rgba(251,248,242,.97)_0%,rgba(251,248,242,.88)_38%,rgba(251,248,242,0))] lg:hidden'
+  // jeda: panel diam penuh selama ±45% layar sebelum panel berikutnya naik → teks sempat terbaca
+  const hold = <div className="h-[45svh]" aria-hidden="true" />
 
-  // JSX biasa (bukan komponen di dalam komponen) agar tidak di-remount saat re-render
   const coupleText = (
-    <div className="m-c-text absolute inset-x-0 bottom-0 z-20 px-7 pb-[max(3.5rem,env(safe-area-inset-bottom))] text-center lg:pb-20">
-      <p className="label t-item">{t.nav.couple}</p>
-      <h3 className="display-i t-item mt-3 text-[clamp(3.6rem,17vw,8rem)] text-ink">
+    <div className="absolute inset-x-0 bottom-0 z-10 px-7 pb-[max(3.5rem,env(safe-area-inset-bottom))] text-center lg:pb-20">
+      <p className="label" data-anim="up">
+        {t.nav.couple}
+      </p>
+      <h3 className="display-i mt-3 text-[clamp(3.4rem,16vw,7.5rem)] text-ink" data-anim="up">
         {a.nick} <span className="accent align-middle text-[0.4em] not-italic text-prada">&amp;</span> {b.nick}
       </h3>
-      <p className="aksara t-item text-lg" lang="ban">{`${a.aksara || toAksaraBali(a.nick)}  ${b.aksara || toAksaraBali(b.nick)}`}</p>
-      <p className="lead t-item mx-auto mt-2 max-w-sm !text-[1.05rem]">{c(wedding.greeting.coupleLine)}</p>
+      <p className="aksara text-lg" lang="ban" data-anim="up">{`${a.aksara || toAksaraBali(a.nick)}  ${b.aksara || toAksaraBali(b.nick)}`}</p>
+      <p className="lead mx-auto mt-2 max-w-sm !text-[1.05rem]" data-anim="up">
+        {c(wedding.greeting.coupleLine)}
+      </p>
     </div>
   )
 
-  /* ---- reduced motion: tiga section statis berurutan ---- */
-  if (reduced) {
-    const statik = (id: SectionId, children: React.ReactNode) => (
-      <section id={id} data-section={id} data-tone="ivory" className="relative h-svh overflow-hidden">
-        {children}
-      </section>
-    )
-    return (
-      <>
-        {statik(
-          'groom',
-          <>
-            <SmartImage photo={a.photo} alt={a.fullName} label={roleOf(a)} className="absolute inset-0 h-full w-full" />
-            <div className={shade} />
-            <PersonText p={a} role={roleOf(a)} cls="" />
-          </>,
-        )}
-        {statik(
-          'bride',
-          <>
-            <SmartImage photo={b.photo} alt={b.fullName} label={roleOf(b)} className="absolute inset-0 h-full w-full" />
-            <div className={shade} />
-            <PersonText p={b} role={roleOf(b)} cls="" />
-          </>,
-        )}
-        {statik(
-          'couple',
-          <>
-            <div className="absolute inset-0">
-              <CoupleMedia />
-            </div>
-            <div className={shade} />
-            {coupleText}
-          </>,
-        )}
-      </>
-    )
-  }
-
   return (
-    <section ref={root} id="groom" data-section="groom" data-tone="ivory" aria-label={`${t.groom}, ${t.bride}, ${t.nav.couple}`} className="relative h-svh overflow-hidden bg-ivory">
-      {/* C — foto berdua (paling bawah, melebur ke atas) */}
-      <div className="m-c absolute inset-0">
-        <CoupleMedia />
-        <div className={`m-c-shade opacity-0 ${shade}`} />
+    <section ref={root} data-section="meet" aria-label={`${t.groom}, ${t.bride}, ${t.nav.couple}`} className="relative">
+      {/* jangkar navigasi (dalam alur normal, tidak ikut sticky) */}
+      <div aria-hidden="true">
+        <div id="groom" data-tone="ivory" className="pointer-events-none absolute inset-x-0 top-0 h-svh" />
+        <div id="bride" data-tone="ivory" className="pointer-events-none absolute inset-x-0 top-[145svh] h-svh" />
+        <div id="couple" data-tone="ivory" className="pointer-events-none absolute inset-x-0 top-[290svh] h-svh" />
       </div>
 
-      {/* A — mempelai pertama */}
-      <div className="m-a absolute inset-0 overflow-hidden lg:left-[42%]">
-        <div className="m-a-img absolute inset-0">
-          <SmartImage photo={a.photo} alt={a.fullName} label={roleOf(a)} sizes="(min-width:1024px) 58vw, 100vw" className="h-full w-full" priority />
-        </div>
-        <div className={`m-a-shade opacity-0 ${shade}`} />
+      <div className="mt-panel sticky top-0 h-svh overflow-hidden bg-pasir">
+        <PersonPanel p={a} role={roleOf(a)} />
       </div>
-
-      {/* B — mempelai kedua (tirai dari kanan) */}
-      <div className="m-b absolute inset-0 overflow-hidden lg:right-[42%]">
-        <div className="m-b-img absolute inset-0">
-          <SmartImage photo={b.photo} alt={b.fullName} label={roleOf(b)} sizes="(min-width:1024px) 58vw, 100vw" className="h-full w-full" />
-        </div>
-        <div className={`m-b-shade opacity-0 ${shade}`} />
+      {hold}
+      <div className="mt-panel sticky top-0 h-svh overflow-hidden bg-pasir shadow-[0_-30px_60px_-30px_rgba(59,47,37,.35)]">
+        <PersonPanel p={b} role={roleOf(b)} mirror />
       </div>
-
-      {/* gerbang paras yang terbuka saat masuk */}
-      <div className="pointer-events-none absolute inset-y-0 left-0 right-0 z-10 flex justify-center lg:left-[42%]" aria-hidden="true">
-        <div className="m-gate-l relative h-full w-1/2">
-          <CandiBali side="left" className="absolute bottom-0 right-0 h-[92%] w-auto max-w-none" />
-        </div>
-        <div className="m-gate-r relative h-full w-1/2">
-          <CandiBali side="right" className="absolute bottom-0 left-0 h-[92%] w-auto max-w-none" />
+      {hold}
+      <div className="mt-panel relative h-svh overflow-hidden shadow-[0_-30px_60px_-30px_rgba(59,47,37,.35)]">
+        <div className="mt-panel-inner relative h-full w-full bg-ivory">
+          <div className="mt-photo absolute inset-0">
+            <CoupleMedia />
+          </div>
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[62%] bg-[linear-gradient(to_top,rgba(251,248,242,1)_0%,rgba(251,248,242,.85)_40%,rgba(251,248,242,0))]" />
+          {coupleText}
         </div>
       </div>
-
-      <PersonText p={a} role={roleOf(a)} cls="m-a-text" />
-      <div className="lg:[&>div]:left-auto lg:[&>div]:right-0">
-        <PersonText p={b} role={roleOf(b)} cls="m-b-text" />
-      </div>
-      {coupleText}
-      <span id="bride" className="sr-only" />
-      <span id="couple" className="sr-only" />
     </section>
   )
 }

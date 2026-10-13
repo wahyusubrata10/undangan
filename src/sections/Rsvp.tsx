@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import { useApp } from '@/context'
 import { wedding } from '@/config/wedding'
 import { Section, SectionTitle } from '@/components/Section'
-import { JepunBranch } from '@/ornaments'
+import { FloralCorner } from '@/ornaments/scene'
 import { relativeTime } from '@/lib/format'
 import { getGuestbook, LIMITS, type Attendance, type PublicWish, type SubmitError } from '@/services/guestbook'
 
@@ -76,8 +76,8 @@ export default function Rsvp() {
   if (!wedding.rsvp.enabled) return null
 
   return (
-    <Section id="rsvp" tone="ivory" label={t.nav.rsvp} className="overflow-hidden px-6 py-32">
-      <JepunBranch className="pointer-events-none absolute -left-6 top-6 w-40 -scale-x-100 sm:w-56" />
+    <Section id="rsvp" tone="cream" label={t.nav.rsvp} className="overflow-hidden px-6 py-24 lg:py-36">
+      <FloralCorner flip className="pointer-events-none absolute -left-4 -top-2 w-40 sm:w-56" />
       <SectionTitle label={t.rsvpSub} title={t.rsvpTitle} />
 
       <form onSubmit={submit} className="mx-auto mt-16 max-w-md" data-anim="up" noValidate>

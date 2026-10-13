@@ -1,10 +1,12 @@
 import { forwardRef } from 'react'
 import { useApp } from '@/context'
 import { wedding } from '@/config/wedding'
-import { CandiBali, Kokokan, Penjor, SawahLayer, SunRays } from '@/ornaments'
+import { Kokokan } from '@/ornaments'
+import { FloralGarland, PuraScene } from '@/ornaments/scene'
 import { dotDate } from '@/lib/format'
 import { toAksaraBali } from '@/lib/aksara'
 import { coupleOrder } from '@/lib/couple'
+import { useMediaQuery } from '@/hooks/useEnv'
 
 interface Props {
   onOpen: () => void
@@ -12,79 +14,82 @@ interface Props {
 }
 
 /**
- * Cover — cahaya pagi: langit ivory, kabut tipis, sawah terasering, candi bentar batu paras putih.
- * Masuk bundle awal → tanpa GSAP. Animasi pembuka ada di fx/opening.ts.
+ * Cover — pemandangan pura di pagi hari (ilustrasi SVG) dengan candi bentar, meru, kelapa,
+ * kolam teratai, dibingkai bunga jepun & anggrek.
+ *  • HP (potret): nama di langit atas, tamu & tombol di area kolam bawah.
+ *  • Layar lebar: semua teks di langit atas, pemandangan bebas di bawah.
+ * Bagian ini masuk bundle awal → tanpa GSAP. Animasi pembuka di fx/opening.ts.
  */
 const Cover = forwardRef<HTMLDivElement, Props>(function Cover({ onOpen, opening }, ref) {
   const { t, c, guest } = useApp()
   const [a, b] = coupleOrder()
   const main = wedding.events[0]
+  const landscape = useMediaQuery('(min-aspect-ratio: 5/4)')
+
+  const names = (
+    <>
+      <p className="label">{c(wedding.eventTitle)}</p>
+      <h1 className="display-i mt-3 text-[clamp(3.2rem,15vw,6rem)] text-ink">
+        {a.nick}
+        <span className="accent mx-2 align-middle text-[0.42em] not-italic text-prada">&amp;</span>
+        {b.nick}
+      </h1>
+      <p className="aksara text-[17px]" lang="ban">
+        {`${a.aksara || toAksaraBali(a.nick)}  ${b.aksara || toAksaraBali(b.nick)}`}
+      </p>
+      {main && <p className="mt-1 text-[12px] tracking-[0.5em] text-ink-soft">{dotDate(main.start, main.tzLabel)}</p>}
+    </>
+  )
+
+  const guestBlock = (
+    <>
+      <p className="label">{t.dear}</p>
+      <p className="mt-2 text-[13px] text-ink-soft">{guest.salutation}</p>
+      <p className="display mt-1 max-w-[20rem] text-[2rem] leading-tight text-ink" data-testid="guest-name">
+        {guest.name}
+      </p>
+      <button type="button" onClick={onOpen} disabled={opening} className="cv-btn btn mt-6" aria-label={t.openInvitation}>
+        <span className="relative grid h-2 w-2 place-items-center">
+          <span className="absolute h-2 w-2 rounded-full bg-jepun" style={{ animation: 'breathe 2.4s ease-in-out infinite' }} />
+          <span className="h-1.5 w-1.5 rounded-full bg-jepun" />
+        </span>
+        {t.openInvitation}
+      </button>
+      {guest.personalized && <p className="mt-3 text-[12px] text-ink-mute">{t.sorryTypo}</p>}
+    </>
+  )
 
   return (
     <div ref={ref} className="cover fixed inset-0 z-50 overflow-hidden bg-ivory select-none" role="dialog" aria-modal="true" aria-label={`${c(wedding.eventTitle)} ${a.nick} & ${b.nick}`}>
-      {/* langit pagi + matahari lembut */}
-      <div className="cv-sky absolute inset-0" aria-hidden="true">
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,#f7f1e6_0%,#fbf8f2_45%,#f3ebdd_100%)]" />
-        <div className="cv-sun absolute left-1/2 top-[30%] lg:left-1/4 h-[60vh] w-[60vh] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,236,190,.85)_0%,rgba(255,236,190,.25)_40%,transparent_70%)]" />
-        <SunRays className="left-1/2 top-[30%] lg:left-1/4 h-[120vh] w-[120vh] -translate-x-1/2 -translate-y-1/2" />
-        <Kokokan className="inset-x-0 top-[14%] h-[26%]" count={5} duration={30} />
-        <SawahLayer layer="far" className="absolute inset-x-0 bottom-[16%] h-[22vh] w-full opacity-70" />
-        <SawahLayer layer="mid" className="absolute inset-x-0 bottom-[6%] h-[22vh] w-full opacity-80" />
-        {/* kabut pagi */}
-        <div className="absolute inset-x-[-10%] bottom-[14%] h-[18vh] bg-[radial-gradient(50%_60%_at_50%_50%,rgba(255,255,255,.9),transparent)]" style={{ animation: 'mist 14s ease-in-out infinite alternate' }} />
+      {/* pemandangan */}
+      <div className="cv-scene absolute inset-0 will-change-transform" aria-hidden="true">
+        <PuraScene landscape={landscape} className="h-full w-full" />
+        <Kokokan className="inset-x-0 top-[14%] h-[18%]" count={4} duration={30} />
       </div>
 
-      {/* candi bentar paras putih */}
-      <div className="cv-gate pointer-events-none absolute inset-x-0 bottom-0 flex h-[min(calc(100svh-18rem),136vw,70svh)] justify-center lg:right-1/2 lg:h-[84svh]" aria-hidden="true">
-        <div className="cv-left relative h-full w-1/2 will-change-transform">
-          <CandiBali side="left" className="absolute bottom-0 right-0 h-full w-auto max-w-none" />
-        </div>
-        <div className="cv-right relative h-full w-1/2 will-change-transform">
-          <CandiBali side="right" className="absolute bottom-0 left-0 h-full w-auto max-w-none" />
-        </div>
+      {/* bingkai bunga kiri-kanan */}
+      <div className="cv-flora-l pointer-events-none absolute inset-y-0 left-0 w-[21%] max-w-[230px] lg:w-[15%]" aria-hidden="true">
+        <FloralGarland side="left" className="h-full w-full" />
       </div>
-      {/* penjor di kiri & kanan, melambai pelan */}
-      <div className="cv-penjor-l pointer-events-none absolute -left-3 bottom-[4vh] h-[58svh] opacity-80" aria-hidden="true">
-        <div className="penjor-sway h-full">
-          <Penjor className="h-full w-auto -scale-x-100" />
-        </div>
+      <div className="cv-flora-r pointer-events-none absolute inset-y-0 right-0 w-[21%] max-w-[230px] lg:w-[15%]" aria-hidden="true">
+        <FloralGarland side="right" className="h-full w-full" />
       </div>
-      <div className="cv-penjor-r pointer-events-none absolute -right-3 bottom-[4vh] h-[58svh] opacity-80" aria-hidden="true">
-        <div className="penjor-sway h-full" style={{ animationDelay: '-4s' }}>
-          <Penjor className="h-full w-auto" />
-        </div>
-      </div>
-      <SawahLayer layer="near" className="cv-near pointer-events-none absolute inset-x-0 bottom-0 h-[12vh] w-full" />
 
-      {/* teks */}
-      <header className="cv-top absolute inset-x-0 top-0 z-10 flex flex-col items-center px-6 pt-[max(2.2rem,env(safe-area-inset-top))] text-center lg:left-1/2 lg:pt-[16svh]">
-        <p className="label">{c(wedding.eventTitle)}</p>
-        <h1 className="display-i mt-3 text-[clamp(3.4rem,17vw,6.5rem)] text-ink">
-          {a.nick}
-          <span className="accent mx-2 align-middle text-[0.42em] not-italic text-prada">&amp;</span>
-          {b.nick}
-        </h1>
-        <p className="aksara mt-1 text-[18px]" lang="ban">
-          {`${a.aksara || toAksaraBali(a.nick)}  ${b.aksara || toAksaraBali(b.nick)}`}
-        </p>
-        {main && <p className="mt-1 text-[12px] tracking-[0.5em] text-ink-soft">{dotDate(main.start, main.tzLabel)}</p>}
-      </header>
-
-      <div className="cv-plaque absolute inset-x-0 bottom-0 z-10 flex flex-col items-center px-6 pb-[max(2.2rem,env(safe-area-inset-bottom))] pt-28 text-center bg-[linear-gradient(to_top,rgba(251,248,242,.97)_0%,rgba(251,248,242,.9)_55%,transparent)] lg:left-1/2 lg:bg-none lg:pb-[14svh]">
-        <p className="label">{t.dear}</p>
-        <p className="mt-2 text-[13px] text-ink-soft">{guest.salutation}</p>
-        <p className="display mt-1 max-w-[20rem] text-[2rem] leading-tight text-ink" data-testid="guest-name">
-          {guest.name}
-        </p>
-        <button type="button" onClick={onOpen} disabled={opening} className="cv-btn btn mt-7" aria-label={t.openInvitation}>
-          <span className="relative grid h-2 w-2 place-items-center">
-            <span className="absolute h-2 w-2 rounded-full bg-jepun" style={{ animation: 'breathe 2.4s ease-in-out infinite' }} />
-            <span className="h-1.5 w-1.5 rounded-full bg-jepun" />
-          </span>
-          {t.openInvitation}
-        </button>
-        {guest.personalized && <p className="mt-4 text-[12px] text-ink-mute">{t.sorryTypo}</p>}
-      </div>
+      {landscape ? (
+        <header className="cv-top absolute inset-x-0 top-0 z-10 flex flex-col items-center px-6 pt-[5svh] text-center">
+          {names}
+          <div className="mt-5 flex flex-col items-center">{guestBlock}</div>
+        </header>
+      ) : (
+        <>
+          <header className="cv-top absolute inset-x-0 top-0 z-10 flex flex-col items-center px-[22%] pt-[max(2rem,env(safe-area-inset-top))] text-center">
+            {names}
+          </header>
+          <div className="cv-plaque absolute inset-x-0 bottom-0 z-10 flex flex-col items-center px-6 pb-[max(2rem,env(safe-area-inset-bottom))] pt-24 text-center bg-[linear-gradient(to_top,rgba(251,248,242,.97)_0%,rgba(251,248,242,.9)_58%,rgba(251,248,242,0))]">
+            {guestBlock}
+          </div>
+        </>
+      )}
     </div>
   )
 })

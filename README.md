@@ -64,24 +64,24 @@ Selesai! ✅
 |---|---|
 | # | Tahap | Isi |
 |---|---|---|
-| 1 | **Cover** | Cahaya pagi: langit ivory, kabut, sawah terasering, candi bentar khas Bali (ramping menjulang, badan bata merah, lis & ukiran batu paras, karang simbar lidah api di tiap tingkat, puncak bermahkota api, pelinggih kecil) tertutup; di desktop gapura di kiri & teks di kanan, nama tamu dari `?to=` (disanitasi dari XSS). **Buka Undangan**: gerbang terbelah, kamera maju, kelopak jepun berhamburan, musik fade-in, fullscreen di HP. |
-| 2 | **Pembuka** | Om Swastyastu, kutipan singkat, nama kedua mempelai besar + aksara Bali. |
-| 3 | **Mempelai Pria** | Gerbang paras terbuka saat di-scroll, foto pria membesar dari tengah hingga full-bleed; nama, putra ke-, orang tua. |
-| 4 | **Mempelai Wanita** | Foto pria bergeser & memudar, foto wanita masuk dengan tirai dari kanan. |
-| 5 | **Berdua** (klimaks) | Dua potret bertemu di tengah lalu melebur menjadi foto/video berdua full-bleed. |
-| 6 | **Galeri "Momen Kami"** | 5 foto pertama tampil besar dalam strip yang **digeser kiri-kanan biasa** (tidak mengunci scroll), dengan efek kedalaman & penanda 01/05, lalu mosaik editorial untuk sisanya. Ketuk foto → lightbox (swipe, pinch-zoom, tombol back HP). |
-| 7 | **Countdown + Acara** | Angka odometer tipis, kartu acara minimal, Google Maps, Google Calendar & `.ics`, live streaming opsional. |
-| 8 | **Amplop** | Rekening/e-wallet minimal, salin dengan feedback, QRIS, alamat kado. |
+| 1 | **Cover** | Lukisan pemandangan pura di pagi hari (SVG orisinal): langit berkabut, Gunung Agung, meru bertingkat, pohon kelapa, tembok penyengker, candi bentar bata merah & paras (karang simbar lidah api, puncak bermahkota api), tangga batu dan kolam teratai, dibingkai rangkaian bunga jepun & anggrek di kiri-kanan. Nama tamu diambil dari `?to=` (disanitasi dari XSS). **Buka Undangan**: gerbang terbelah, bingkai bunga tersibak, kamera maju pelan, kelopak jepun berhamburan, musik fade-in, fullscreen di HP. |
+| 2 | **Pembuka** | Latar biru kabut. Canang sari dengan asap dupa, Om Swastyastu, kutipan singkat, kalimat undangan, nama kedua mempelai + aksara Bali + tanggal. |
+| 3 | **Mempelai Pria** | Panel foto layar penuh (desktop: foto 58% + teks), nama lengkap, aksara, orang tua. |
+| 4 | **Mempelai Wanita** | Panel berikutnya meluncur naik menutupi panel pria (panel pria sedikit mengecil & meredup); di desktop posisinya dicerminkan. |
+| 5 | **Berdua** (klimaks) | Panel foto/video berdua full-bleed dengan nama besar kedua mempelai. |
+| 6 | **Galeri "Momen Kami"** | 5 foto pertama tampil besar dalam strip yang **digeser kiri-kanan biasa** (tidak mengunci scroll), dengan efek kedalaman & penanda 01/05, lalu grid rapi 2 kolom (rasio seragam 3:4; bila jumlahnya ganjil, foto terakhir dibuat lebar penuh). Latar hijau sage. Ketuk foto → lightbox (swipe, pinch-zoom, tombol back HP). |
+| 7 | **Countdown + Acara** | Angka hitung mundur tipis yang stabil, kartu acara minimal, Google Maps, Google Calendar & `.ics`, live streaming opsional. |
+| 8 | **Amplop** | Latar merah muda lembut. Rekening/e-wallet minimal, salin dengan feedback, QRIS, alamat kado. |
 | 9 | **Ucapan & Doa** | Form RSVP + daftar ucapan (**hanya nama, ucapan, waktu**). |
-| 10 | **Penutup** | Terima kasih, Om Shanti Shanti Shanti Om, gapura menutup mengikuti scroll. |
+| 10 | **Penutup** | Foto penutup, terima kasih, Om Shanti Shanti Shanti Om, lalu pemandangan pura di senja hari dengan candi bentar yang menutup pelan mengikuti scroll. |
 
-Tahap 3–5 adalah **satu panggung yang di-pin** dengan satu master timeline, sehingga perpindahan pria → wanita → berdua tidak pernah patah.
+Tahap 3–5 adalah **panel bertumpuk** memakai `position: sticky` (scroll native, tanpa pin JavaScript): tiap panel diam utuh sejenak (±45% layar) agar teks terbaca, lalu panel berikutnya meluncur naik menutupinya. Paling mulus di HP karena tidak ada scroll yang "ditahan".
 
 **Ekstra:** `/admin` (generator link, pesan WhatsApp, QR check-in, export CSV, statistik & moderasi ucapan), OG image per tamu untuk preview WhatsApp, kontrol musik dengan visualizer, auto-scroll "Nikmati Undangan", navigasi section, kelopak jepun yang menghindari jari/kursor & mengikuti gyroscope, dan easter egg (**ketuk nama mempelai 3x** untuk hujan bunga jepun).
 
 **Privasi tamu:** status kehadiran, jumlah tamu, dan statistik **tidak pernah** dikirim ke halaman tamu (API publik hanya mengembalikan nama, ucapan, waktu; database tertutup untuk publik). Semua itu hanya ada di `/admin`.
 
-**Gaya:** editorial tanpa bingkai, palet ivory/cream/pasir dengan teks coklat hangat, prada redup, janur muda, dan kuning jepun. Ornamen Bali orisinal dipakai sebagai aksen yang bergerak halus: candi bentar bata merah & paras dengan karang, penjor melambai, sinar pagi, burung kokokan terbang, canang sari dengan asap dupa, ranting jepun bergoyang, sulur patra sari yang tergambar sendiri, gebogan, tedung, lamak, janur, dan sawah terasering. Font: Cormorant Garamond Light, Italiana, dan Jost.
+**Gaya:** editorial tanpa bingkai. Palet dasar ivory/cream/pasir dengan teks coklat hangat, prada redup, dan kuning jepun, ditambah warna alam yang senada: **sage** (daun), **biru kabut** (langit pagi), **merah muda anggrek**, dan **hijau teratai**. Warna latar berganti halus antar-section (kabut → ivory → sage → ivory → merah muda → krem). Foto yang belum diisi tampil sebagai placeholder bergradasi lembut dengan bunga jepun garis tipis. Ornamen Bali orisinal dipakai sebagai aksen yang bergerak halus: candi bentar bata merah & paras dengan karang, penjor melambai, sinar pagi, burung kokokan terbang, canang sari dengan asap dupa, ranting jepun bergoyang, sulur patra sari yang tergambar sendiri, gebogan, tedung, lamak, janur, dan sawah terasering. Font: Cormorant Garamond Light, Italiana, dan Jost.
 
 **Bahasa:** Indonesia dan English (`?lang=en`, atau lewat menu navigasi). Struktur Bahasa Bali sudah disiapkan di `src/i18n/ban.ts`.
 
@@ -280,8 +280,8 @@ src/
   config/wedding.ts       ← konten (satu-satunya yang perlu diedit)
   config/media.generated  ← dibuat otomatis oleh `npm run media`
   i18n/                   ← teks UI (id, en, ban)
-  ornaments/              ← SVG orisinal: candi bentar paras, jepun, penjor, janur, canang sari, tedung, lamak, sawah
-  sections/               ← Cover, Opening, Meet (pria→wanita→berdua), Gallery (strip geser + mosaik), Events, Gift, Rsvp, Closing
+  ornaments/              ← SVG orisinal: candi bentar, jepun, penjor, janur, canang sari, tedung, lamak, sawah; scene.tsx = pemandangan pura (meru, kelapa, kolam teratai) + bingkai bunga jepun & anggrek
+  sections/               ← Cover, Opening, Meet (panel bertumpuk pria→wanita→berdua), Gallery (strip geser + grid), Events, Gift, Rsvp, Closing
   components/             ← Backdrop (video), Dock (musik/nav/auto-scroll), Lightbox, PatraWipe, Particles, SmartImage
   fx/                     ← opening timeline, motion (ScrollTrigger scrub), scroll (Lenis), petals (canvas 2D), audio
   services/guestbook/     ← adapter Supabase / Sheets / demo
@@ -294,9 +294,9 @@ scripts/                  ← optimasi foto, kompres video, musik placeholder
 
 **Standar yang diterapkan**
 
-- Satu sistem gerak: **Lenis + GSAP ScrollTrigger** dalam satu loop RAF (`lerp 0.09`). Konten muncul dalam ±0,9 detik begitu masuk layar dan berbalik saat di-scroll kembali; parallax & sekuens pria→wanita→berdua (±2,5 layar) **terikat scroll** (`scrub`), hanya `transform`/`opacity`, `will-change` dipasang hanya selama trigger aktif. Framer Motion hanya untuk micro-interaction (tombol salin, form, menu).
+- Satu sistem gerak: **Lenis + GSAP ScrollTrigger** dalam satu loop RAF (`lerp 0.09`). Konten muncul **sekali** dengan fade + geser kecil (±0,85 detik) begitu masuk layar dan tidak menghilang lagi saat di-scroll kembali; parallax ringan & efek panel bertumpuk **terikat scroll** (`scrub`), hanya `transform`/`opacity`, `will-change` dipasang hanya selama trigger aktif. Framer Motion hanya untuk micro-interaction (tombol salin, form, menu).
 - Warna latar berpindah ivory → cream → pasir lewat lapisan yang di-crossfade (opacity).
-- `prefers-reduced-motion`: semua diganti fade sederhana; sekuens pria/wanita/berdua jadi tiga section biasa; kelopak dimatikan.
+- `prefers-reduced-motion`: semua diganti fade sederhana; panel bertumpuk tanpa efek skala; kelopak dimatikan.
 - Kelopak jepun memakai **canvas 2D** (±2 KB), berhenti saat tab tersembunyi, dan mengurangi jumlah/resolusi otomatis bila FPS turun.
 - Video/partikel/musik di-pause saat tab disembunyikan. Iframe peta baru dimuat saat diminta.
 - Hasil Lighthouse mobile (build lokal): **Performance 95–99 · Accessibility 100 · Best Practices 100 · SEO 100**.

@@ -15,19 +15,9 @@ const FILM = 5
  * 6 · Galeri sinematik (menggantikan "Kisah Kami").
  *  A. Strip foto besar yang digeser kiri-kanan biasa (native scroll-snap, tidak
  *     mengunci scroll ke bawah) dengan efek kedalaman & penanda foto aktif.
- *  B. Mosaik editorial: ukuran & rasio berirama, foto terbuka seperti tirai.
+ *  B. Grid rapi 2 kolom dengan rasio seragam 3:4.
  * Semua foto bisa diketuk → lightbox (swipe, pinch-zoom, tombol back HP).
  */
-const MOSAIC: { span: string; ratio: string; offset?: string }[] = [
-  { span: 'col-span-6', ratio: '4/5' },
-  { span: 'col-span-3', ratio: '3/4' },
-  { span: 'col-span-3', ratio: '3/4', offset: 'mt-16' },
-  { span: 'col-span-4', ratio: '4/5' },
-  { span: 'col-span-2', ratio: '2/5', offset: 'mt-24' },
-  { span: 'col-span-2', ratio: '2/5' },
-  { span: 'col-span-4', ratio: '4/5', offset: 'mt-10' },
-]
-
 export default function Gallery() {
   const { t, c, reduced } = useApp()
   const photos = wedding.photos.gallery
@@ -84,7 +74,7 @@ export default function Gallery() {
 
   const tile = (i: number, ratio: string, cls = '') => (
     <button key={i} type="button" className={`group block w-full text-left ${cls}`} onClick={() => setOpen(i)} aria-label={`${t.photo} ${i + 1}`}>
-      <div className="overflow-hidden" data-curtain>
+      <div className="overflow-hidden" data-anim="photo">
         <div>
           <SmartImage
             photo={photos[i]}
@@ -102,9 +92,9 @@ export default function Gallery() {
   )
 
   return (
-    <Section id="gallery" tone="cream" label={t.nav.gallery}>
+    <Section id="gallery" tone="sage" label={t.nav.gallery} className="pb-24 lg:pb-36">
       {/* A — judul + strip foto yang digeser kiri-kanan (tidak mengunci scroll) */}
-      <div className="px-6 pt-32 text-center">
+      <div className="px-6 pt-24 text-center lg:pt-36">
         <Lamak className="mx-auto w-28" />
         <p className="label mt-8" data-anim="fade">
           {t.gallerySub}
@@ -158,22 +148,16 @@ export default function Gallery() {
         <p className="mt-3 text-center text-[12px] tracking-[0.3em] uppercase text-ink-mute lg:hidden">← {t.swipe} →</p>
       </div>
 
-      {/* B — mosaik editorial */}
+      {/* B — grid rapi 2 kolom, rasio seragam */}
       {rest.length > 0 && (
-        <div className="mx-auto grid max-w-4xl grid-cols-6 gap-3 px-4 pb-28 pt-20 sm:gap-6">
-          {rest.map((_, k) => {
-            const m = MOSAIC[k % MOSAIC.length]!
-            return (
-              <div key={k} className={`${m.span} ${m.offset ?? ''}`} data-parallax={k % 2 ? '0.05' : undefined}>
-                {tile(FILM + k, m.ratio)}
-              </div>
-            )
-          })}
+        <div className="mx-auto grid max-w-3xl grid-cols-2 gap-3 px-5 pt-16 sm:gap-5">
+          {/* jumlah ganjil → foto terakhir dibuat lebar penuh agar grid tetap rapi */}
+          {rest.map((_, k) => (rest.length % 2 === 1 && k === rest.length - 1 ? tile(FILM + k, '3/2', 'col-span-2') : tile(FILM + k, '3/4')))}
         </div>
       )}
 
       {wedding.galleryVideos.length > 0 && (
-        <div className="mx-auto flex max-w-3xl flex-col gap-10 px-6 pb-24">
+        <div className="mx-auto flex max-w-3xl flex-col gap-10 px-6 pt-16">
           {wedding.galleryVideos.map((v, i) => (
             <figure key={i} data-anim="up">
               {/^https?:\/\/(www\.)?(youtube\.com|youtu\.be|player\.vimeo\.com)/.test(v.src) ? (

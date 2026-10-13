@@ -74,7 +74,7 @@ export default function Gift() {
   const g = wedding.gift
   if (!g.enabled) return null
   return (
-    <Section id="gift" tone="cream" label={t.nav.gift} className="px-6 py-32">
+    <Section id="gift" tone="blush" label={t.nav.gift} className="px-6 py-24 lg:py-36">
       <Gebogan className="mx-auto mb-8 w-20" data-anim="up" />
       <SectionTitle label={t.sendGift} title={t.giftTitle} />
       <p className="lead mx-auto mt-8 max-w-md text-center !text-[1.05rem]" data-anim="lines">

@@ -1,14 +1,18 @@
 /**
- * Sistem gerak terpadu (GSAP ScrollTrigger + Lenis), hanya transform & opacity.
+ * Sistem gerak — tenang, rapi, konsisten (GSAP ScrollTrigger + Lenis).
  *
- *  [data-anim="lines"]      teks muncul per baris dari balik mask (SplitText) saat masuk layar
- *  [data-anim="up|fade"]    elemen naik/memudar saat masuk layar
- *  svg .draw                garis ornamen tergambar (stroke)
- *  [data-curtain]           foto terbuka seperti tirai (wrapper & isi bergerak berlawanan)
- *  [data-parallax="0.15"]   lapisan bergerak dengan kecepatan berbeda (foreground/midground/background)
- *  [data-tone="cream|pasir"] warna latar halaman berpindah halus mengikuti section
+ * Prinsip:
+ *  • Elemen muncul SEKALI saat masuk layar (fade + naik kecil, ±0,8 dtk) lalu tetap terlihat.
+ *    Tidak ada yang menghilang saat scroll ke atas.
+ *  • Hanya transform & opacity. Trigger dibuat seminimal mungkin (batch).
+ *  • Parallax hanya untuk elemen yang benar-benar ditandai [data-parallax].
  *
- * Section pria → wanita → berdua memakai master timeline ber-scrub sendiri (sections/Meet.tsx).
+ *  [data-anim="up|fade"]    muncul saat masuk layar (di-batch → sedikit trigger)
+ *  [data-anim="lines"]      judul besar: per baris dari balik mask (sekali)
+ *  [data-anim="photo"]      foto: memudar + skala 1.05 → 1 (sekali)
+ *  svg .draw                garis ornamen tergambar (sekali)
+ *  [data-parallax="0.1"]    lapisan bergerak pelan mengikuti scroll (scrub)
+ *  [data-tone="…"]          warna latar halaman berpindah lembut mengikuti section
  */
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -16,26 +20,39 @@ import { SplitText } from 'gsap/SplitText'
 
 gsap.registerPlugin(ScrollTrigger, SplitText)
 
-/** will-change hanya selama trigger aktif */
-const wc = (els: Element | Element[], v: string) => (self: ScrollTrigger) => {
-  const list = Array.isArray(els) ? els : [els]
-  list.forEach((e) => ((e as HTMLElement).style.willChange = self.isActive ? v : ''))
-}
+const EASE = 'power2.out'
+export const TONES = ['mist', 'cream', 'sage', 'blush'] as const
 
 export function setupMotion(root: HTMLElement, reduced: boolean): () => void {
   const ctx = gsap.context(() => {
     if (reduced) return
 
-    /*
-     * Konten muncul dengan durasi waktu (≈0,9 dtk) begitu masuk layar — tidak perlu scroll jauh.
-     * Berbalik saat di-scroll kembali ke atas (toggleActions), jadi tetap terasa hidup & terhubung scroll.
-     * Parallax di bawah tetap scrub (terikat posisi scroll secara kontinu).
-     */
-    const enter = (trigger: Element, start = 'top 90%') => ({ trigger, start, toggleActions: 'play none none reverse' as const })
-    const wcOn = (els: Element | Element[]) => () => (Array.isArray(els) ? els : [els]).forEach((e) => ((e as HTMLElement).style.willChange = 'transform, opacity'))
-    const wcOff = (els: Element | Element[]) => () => (Array.isArray(els) ? els : [els]).forEach((e) => ((e as HTMLElement).style.willChange = ''))
+    // ---- elemen biasa: di-batch, sekali ----
+    const els = gsap.utils.toArray<HTMLElement>('[data-anim="up"],[data-anim="fade"],[data-anim="photo"]', root)
+    els.forEach((el) => {
+      const kind = el.dataset.anim
+      gsap.set(el, { opacity: 0, y: kind === 'up' ? 20 : 0, scale: kind === 'photo' ? 1.04 : 1 })
+    })
+    ScrollTrigger.batch(els, {
+      start: 'top 92%',
+      once: true,
+      onEnter: (batch) =>
+        gsap.to(batch, {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.85,
+          ease: EASE,
+          stagger: 0.08,
+          overwrite: true,
+          clearProps: 'transform,willChange',
+          onStart() {
+            batch.forEach((b) => ((b as HTMLElement).style.willChange = 'transform, opacity'))
+          },
+        }),
+    })
 
-    // teks per baris dari balik mask
+    // ---- judul besar per baris (sekali) ----
     gsap.utils.toArray<HTMLElement>('[data-anim="lines"]', root).forEach((el) => {
       SplitText.create(el, {
         type: 'lines',
@@ -43,65 +60,47 @@ export function setupMotion(root: HTMLElement, reduced: boolean): () => void {
         autoSplit: true,
         onSplit(self) {
           return gsap.from(self.lines, {
-            yPercent: 105,
-            opacity: 0,
-            duration: 0.95,
+            yPercent: 100,
+            duration: 0.9,
             ease: 'power3.out',
             stagger: 0.08,
-            scrollTrigger: enter(el),
-            onStart: wcOn(self.lines),
-            onComplete: wcOff(self.lines),
+            scrollTrigger: { trigger: el, start: 'top 90%', once: true },
           })
         },
       })
     })
 
-    gsap.utils.toArray<HTMLElement>('[data-anim="up"],[data-anim="fade"]', root).forEach((el) => {
-      gsap.from(el, {
-        y: el.dataset.anim === 'up' ? 34 : 0,
-        opacity: 0,
-        duration: 0.9,
-        ease: 'power3.out',
-        scrollTrigger: enter(el, 'top 94%'),
-        onStart: wcOn(el),
-        onComplete: wcOff(el),
-      })
-    })
-
-    // garis ornamen "tergambar" (stroke) saat masuk layar
+    // ---- garis ornamen tergambar (sekali) ----
     gsap.utils.toArray<SVGPathElement>('svg .draw', root).forEach((p) => {
-      gsap.fromTo(p, { strokeDasharray: 1, strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.6, ease: 'power2.inOut', scrollTrigger: enter(p.ownerSVGElement ?? p, 'top 92%') })
+      gsap.fromTo(p, { strokeDasharray: 1, strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.6, ease: 'power2.inOut', scrollTrigger: { trigger: p.ownerSVGElement ?? p, start: 'top 92%', once: true } })
     })
 
-    // tirai foto: wrapper & isi bergerak berlawanan → seperti mask terbuka (tanpa clip-path)
-    gsap.utils.toArray<HTMLElement>('[data-curtain]', root).forEach((el) => {
-      const inner = el.firstElementChild as HTMLElement | null
-      if (!inner) return
-      const dir = el.dataset.curtain === 'x' ? 'xPercent' : 'yPercent'
-      gsap
-        .timeline({ scrollTrigger: enter(el, 'top 92%'), defaults: { duration: 1.15, ease: 'expo.out' }, onStart: wcOn([el, inner]), onComplete: wcOff([el, inner]) })
-        .from(el, { [dir]: 100 }, 0)
-        .from(inner, { [dir]: -100, scale: 1.15 }, 0)
-    })
-
-    // parallax berlapis (kontinu, terikat scroll)
+    // ---- parallax pelan (hanya yang ditandai) ----
     gsap.utils.toArray<HTMLElement>('[data-parallax]', root).forEach((el) => {
-      const sp = Number(el.dataset.parallax) || 0.15
+      const sp = Number(el.dataset.parallax) || 0.1
       gsap.fromTo(
         el,
         { yPercent: sp * 100 },
-        { yPercent: -sp * 100, ease: 'none', scrollTrigger: { trigger: el.closest('section') ?? el, start: 'top bottom', end: 'bottom top', scrub: true, onToggle: wc(el, 'transform') } },
+        {
+          yPercent: -sp * 100,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: el.closest('section') ?? el,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: true,
+            onToggle: (self) => (el.style.willChange = self.isActive ? 'transform' : ''),
+          },
+        },
       )
     })
   }, root)
 
-  // warna latar halaman mengikuti section (crossfade lapisan, hanya opacity)
   const offTone = setupTones(root, reduced)
 
-  // posisi trigger dihitung ulang setelah gambar/font selesai dimuat
+  // posisi trigger dihitung ulang setelah gambar/font dimuat
   const refresh = () => ScrollTrigger.refresh()
-  const imgs = Array.from(root.querySelectorAll('img'))
-  imgs.forEach((img) => !img.complete && img.addEventListener('load', refresh, { once: true }))
+  root.querySelectorAll('img').forEach((img) => !img.complete && img.addEventListener('load', refresh, { once: true }))
   void document.fonts?.ready.then(refresh)
   window.addEventListener('load', refresh)
 
@@ -112,26 +111,21 @@ export function setupMotion(root: HTMLElement, reduced: boolean): () => void {
   }
 }
 
+/** Warna latar halaman: lapisan per nada di-crossfade (hanya opacity) mengikuti section aktif. */
 function setupTones(root: HTMLElement, reduced: boolean) {
-  const cream = document.getElementById('tone-cream')
-  const pasir = document.getElementById('tone-pasir')
-  if (!cream || !pasir) return () => {}
-  const secs = Array.from(root.querySelectorAll<HTMLElement>('[data-tone]'))
-  const target = { cream: 0, pasir: 0 }
-  const setC = gsap.quickTo(cream, 'opacity', { duration: reduced ? 0 : 0.9, ease: 'power2.out' })
-  const setP = gsap.quickTo(pasir, 'opacity', { duration: reduced ? 0 : 0.9, ease: 'power2.out' })
-  const triggers = secs.map((sec) =>
+  const layers = Object.fromEntries(TONES.map((t) => [t, document.getElementById(`tone-${t}`)])) as Record<string, HTMLElement | null>
+  const setters = Object.fromEntries(
+    TONES.map((t) => [t, layers[t] ? gsap.quickTo(layers[t], 'opacity', { duration: reduced ? 0 : 1.1, ease: 'power2.inOut' }) : null]),
+  )
+  const triggers = Array.from(root.querySelectorAll<HTMLElement>('[data-tone]')).map((sec) =>
     ScrollTrigger.create({
       trigger: sec,
-      start: 'top 55%',
-      end: 'bottom 55%',
+      start: 'top 60%',
+      end: 'bottom 60%',
       onToggle: (self) => {
         if (!self.isActive) return
         const tone = sec.dataset.tone
-        target.cream = tone === 'cream' ? 1 : 0
-        target.pasir = tone === 'pasir' ? 1 : 0
-        setC(target.cream)
-        setP(target.pasir)
+        TONES.forEach((t) => setters[t]?.(t === tone ? 1 : 0))
       },
     }),
   )
